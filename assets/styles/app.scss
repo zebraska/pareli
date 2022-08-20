@@ -11,8 +11,13 @@ $danger: #d72229;
 @import "~bootstrap-select/dist/css/bootstrap-select.min";
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
 
-h1{
-    margin:0px;
+.required:after {
+    content: " *";
+    color: red;
+}
+
+h1 {
+    margin: 0px;
     padding: 0px;
     padding-left: 1vw;
     padding-top: 2vh;
@@ -20,41 +25,50 @@ h1{
     font-size: 2vh;
 }
 
-.menu-title{
-    margin:0px;
+.menu-title {
+    margin: 0px;
     padding: 0px;
     font-size: 2vh;
 }
 
-hr{
-    margin:0px;
+hr {
+    margin: 0px;
     padding: 0px;
 }
 
-.table-title{
+.table-title {
     font-size: 2vh;
-    padding-right:1vw;
-    height:4vh;
+    padding-right: 1vw;
+    height: 4vh;
     background-color: #201E1F;
-    color: #EFE9F4;
+    color: $secondary;
 }
 
-.table-content{
+.table-content {
     font-size: 1.8vh;
-    height:70vh;
-    overflow-y:scroll;
+    height: 70vh;
+    overflow-y: scroll;
 }
 
-.table-content-line{
-    height:10vh;
+.table-content-line {
+    height: 10vh;
 }
 
-.btn-primary{
+.table-content-line:hover {
+    background-color: $secondary;
+}
+
+.btn-primary {
     height: 5vh;
     font-size: 1.5vh;
     padding: 1vh;
 }
 
+@for $i from 1 through 6 {
+    .p-#{$i} {
+        padding: 1vh*$i;
+    }
+}
 
 @for $i from 1 through 6 {
     .pt-#{$i} {
@@ -94,35 +108,54 @@ hr{
     }
 }
 
-.row{
+@for $i from 1 through 6 {
+    .text-#{$i} {
+        font-size: 1vh*$i;
+    }
+}
+
+.row {
     padding: 0px;
     margin: 0px;
 }
 
 //Scrollbar
-.table-content::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 6px rgba(205, 220, 40, .3);
-	background-color: #F5F5F5;
-	border-radius: 1vw;
+.table-content::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(205, 220, 40, .3);
+    background-color: #F5F5F5;
+    border-radius: 1vw;
 }
 
-.table-content::-webkit-scrollbar
-{
-	width: 1vw;
-	background-color: #F5F5F5;
+.table-content::-webkit-scrollbar {
+    width: 1vw;
+    background-color: #F5F5F5;
 }
 
-.table-content::-webkit-scrollbar-thumb
-{
-	background-color: #cddc28;
-	border-radius: 1vw;
-	background-image: -webkit-linear-gradient(90deg,
-	                                          rgba(205, 220, 40, .2) 25%,
-											  transparent 25%,
-											  transparent 50%,
-											  rgba(205, 220, 40, .2) 50%,
-											  rgba(205, 220, 40, .2) 75%,
-											  transparent 75%,
-											  transparent)
+.table-content::-webkit-scrollbar-thumb {
+    background-color: #cddc28;
+    border-radius: 1vw;
+    background-image: -webkit-linear-gradient(90deg,
+            rgba(205, 220, 40, .2) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(205, 220, 40, .2) 50%,
+            rgba(205, 220, 40, .2) 75%,
+            transparent 75%,
+            transparent)
+}
+
+.spinner-grow {
+    width: 40vh;
+    height: 40vh;
+    display: block;
+    position: fixed;
+    top: 50%;
+    right: 50%;
+    margin-top: -20vh;
+    margin-right: -20vh;
+}
+
+.spinner-border{
+    width: 20vh;
+    height: 20vh;
 }

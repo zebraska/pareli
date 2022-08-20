@@ -1,0 +1,21 @@
+{% for flashMessage in app.session.flashbag.get("success") %}
+	<div class="alert alert-success" role="alert">
+		<i class="fa-solid fa-circle-check text-3"></i>
+		<span class='text-2 pl-4'><b>Succès - </b>{{ flashMessage }}</span>
+		<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close' style="float: right;"></button>
+	</div>
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get("danger") %}
+	<div class="alert alert-danger" role="alert">
+		<i class="fa-solid fa-triangle-exclamation text-3"></i>
+		<span class='text-2 pl-4'><b>Erreur - </b>{{ flashMessage }}</span>
+		<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close' style="float: right;"></button>
+	</div>
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get("warning") %}
+	<div class="alert alert-warning" role="alert">
+		<i class="fa-solid fa-triangle-exclamation text-3"></i>
+		<span class='text-2 pl-4'><b>Attention - </b>{{ flashMessage }}</span>
+		<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close' style="float: right;"></button>
+	</div>
+{% endfor %}

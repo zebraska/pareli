@@ -1,0 +1,131 @@
+<div>
+	<div class='row'>
+		<div class='col-2 py-2'>
+			<div class='border border-dark rounded p-0' style='height:5vh'>
+				<h1 class='m-0 p-2 text-center'>
+					<i class="fa-solid fa-box-open pr-2"></i>Fournisseurs</h1>
+			</div>
+		</div>
+		<div class='col-7 pt-2'>
+			<div class="input-group">
+				<input type="search" style='height:5vh' class="form-control rounded border border-primary" placeholder="Rechercher par ville ou nom"/>
+			</div>
+		</div>
+		<div class='col-3 py-2'>
+			<div class="d-grid">
+				<button action="{{path('app_volunteer_supplier_getform_create')}}" data-target-spinner='modal-content' data-spinner-type='2' class='btn btn-primary ajax-link-action' data-bs-toggle="modal" data-bs-target="#supplierModal">Ajouter un fournisseur</button>
+			</div>
+		</div>
+	</div>
+	<hr/>
+	<div class='table-title'>
+		<div class='row'>
+			<div class='col-2'>Nom</div>
+			<div class='col-2'>Adresse</div>
+			<div class='col-2'>Contact commercial</div>
+			<div class='col-2'>Contact enlèvement</div>
+			<div class='col-2'>Contenant et quantité</div>
+		</div>
+	</div>
+	<hr/>
+	<div class='table-content'>
+		{% for provider in providers %}
+			<div class='row table-content-line' style='cursor:pointer' data-bs-toggle="modal" data-bs-target="#supplierModalEdit">
+				<div class='col-2'>{{provider.name}}</div>
+				<div class='col-2'>{{provider.address}}<br/>{{provider.zipCode}}<br/>{{provider.city}}</div>
+				<div class='col-2'>{{provider.commercialContactName}}<br/>{{provider.commercialContactPhone}}<br/>{{provider.commercialContactMail}}</div>
+				<div class='col-2'>{{provider.removalContactName}}<br/>{{provider.removalContactPhone}}<br/>{{provider.removalContactMail}}</div>
+				<div class='col-2 text-danger'>
+					{% if provider.containersQuantitys|length %}
+						afficher
+					{% else %}
+						Aucun contenant renseigné
+					{% endif %}
+				</div>
+			</div>
+			<hr/>
+		{% endfor %}
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+	<div class="modal-dialog modal-dialog-centered modal-xl">
+		<div id='modal-content' class="modal-content"></div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="supplierModalEdit" tabindex="-1" aria-labelledby="supplierModalEditLabel" aria-hidden="true" data-bs-backdrop="static">
+	<div class="modal-dialog modal-dialog-centered modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="supplierModalEditLabel">Détail du fournisseur</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class='row'>
+					<div class='col-12 mb-3'>
+						<label for="exampleFormControlInput1" class="form-label">Nom</label>
+						<input type="text" class="form-control border border-primary" id="exampleFormControlInput1" value='2LM'>
+					</div>
+					<div class='col-12 mb-3'>
+						<label for="exampleFormControlInput1" class="form-label">Adresse</label>
+						<input type="text" class="form-control border border-primary" id="exampleFormControlInput1" value='18 r du Patis ZI Nord'>
+					</div>
+					<div class='col-12 mb-3'>
+						<label for="exampleFormControlInput1" class="form-label">Interlocuteur</label>
+						<input type="text" class="form-control border border-primary" id="exampleFormControlInput1" value="en face de l'usine LU">
+					</div>
+					<div class='col-3 mb-3'>
+						<label for="exampleFormControlInput1" class="form-label">Repère</label>
+						<input type="text" class="form-control border border-primary" id="exampleFormControlInput1" value=''>
+					</div>
+					<div class='col-3 mb-3'>
+						<label for="exampleFormControlInput1" class="form-label">CP</label>
+						<input type="text" class="form-control border border-primary" id="exampleFormControlInput1" value='44690'>
+					</div>
+					<div class='col-6 mb-3'>
+						<label for="exampleFormControlInput1" class="form-label">Ville</label>
+						<input type="text" class="form-control border border-primary" id="exampleFormControlInput1" value='La Haye Fouassière'>
+					</div>
+					<div class="col-3 mb-3">
+						<label for="exampleFormControlInput1" class="form-label">Téléphone 1</label>
+						<input type="text" class="form-control border border-primary" id="exampleFormControlInput1" value='02 40 54 82 50'>
+					</div>
+					<div class="col-3 mb-3">
+						<label for="exampleFormControlInput1" class="form-label">Téléphone 2</label>
+						<input type="text" class="form-control border border-primary" id="exampleFormControlInput1" value=''>
+					</div>
+					<div class="col-6 mb-3">
+						<label for="exampleFormControlInput1" class="form-label">Type</label>
+						<select class='form-control border border-primary'>
+							<option>Administration</option>
+							<option selected='true'>Entreprise</option>
+							<option>Scolaire</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<hr/>
+			<div class="row py-2">
+				<div class='col-3'>
+					<div class="d-grid">
+						<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Fermer</button>
+					</div>
+				</div>
+				<div class='col-3'></div>
+				<div class='col-3'>
+					<div class="d-grid">
+						<button type="button" class="btn btn-danger">Supprimer</button>
+					</div>
+				</div>
+				<div class='col-3'>
+					<div class="d-grid">
+						<button type="button" class="btn btn-success">Modifier</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

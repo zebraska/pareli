@@ -1,0 +1,57 @@
+<div class='table-content' style='cursor:pointer'>
+	{% for delivery in pagination %}
+		<div class='row table-content-line'>
+			<div class='col-11'>
+				<div class='row table-content-cell'>
+					<div class='col-3 ajax-link-action' action="{{path('app_volunteer_provider_getform',{'type':'info','id':delivery.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+						<b>{{delivery.dateRequest|date('d/m/Y')}}</b>
+						<span class='table-content-line-edit justify-content-right'>
+							<i class="fa-solid fa-pen-to-square"></i>
+						</span>
+						<br/>
+						{% if delivery.state == 0 %}
+							<i class="fa-solid fa-calendar text-danger text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':delivery.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
+							Non planifié
+						{% elseif delivery.state == 1 %}
+							<i class="fa-solid fa-calendar-plus text-primary text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':delivery.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
+							Planifié le 01/01/2020
+						{% elseif delivery.state == 2 %}
+							<i class="fa-solid fa-calendar-check text-success text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':delivery.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
+							Réalisé le 01/01/2020
+						{% endif %}
+					</div>
+					<div class='col-3 ajax-link-action' style='height:25vh;overflow-y:hidden' action="{{path('app_volunteer_provider_getform',{'type':'contact','id':delivery.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+						{{delivery.comment}}
+						<span class='table-content-line-edit justify-content-right'>
+							<i class="fa-solid fa-pen-to-square"></i>
+						</span>
+					</div>
+					<div class='col-3 ajax-link-action' action="{{path('app_volunteer_provider_getform',{'type':'comment','id':delivery.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#deliveryModal">
+						<b>{{delivery.recycler.name}}</b>
+					</div>
+					<div class='col-3'></div>
+				</div>
+			</div>
+			<div class='col-1 text-center'>
+				<i class="fa-solid fa-trash text-danger text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_delivery_delete',{'id':delivery.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2' data-confirm="Confirmer la suppression de la livraison ?"></i>
+			</div>
+		</div>
+		<hr/>
+	{% endfor %}
+</div>
+<div class='row table-bottom'>
+	<div class="navigation col-2" style='height:5vh;'>
+		<select class='form-control border border-dark ajax-filter-action'>
+			{% if(pagination.getTotalItemCount/10>1)%}
+				{% for i in 1..((pagination.getTotalItemCount/10)+1) %}
+					<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_provider_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>Page
+						{{i}}</option>
+				{% endfor %}
+			{% endif %}
+		</select>
+	</div>
+	<div class="count col-10 text-3" style='text-align:right'>
+		<b>{{pagination.getTotalItemCount}}
+			résultats</b>
+	</div>
+</div>

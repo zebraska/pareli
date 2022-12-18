@@ -6,57 +6,54 @@
 					<i class="fa-solid fa-box-open pr-2"></i>Fournisseurs</h1>
 			</div>
 		</div>
-		<div class='col-7 pt-2'>
-			<div class="input-group">
-				<input type="search" style='height:5vh' class="form-control rounded border border-primary" placeholder="Rechercher par ville ou nom"/>
+		<div class='col-5 pt-2'>
+			<div id='input-search' class="input-group">
+				{% include 'volunteer/provider/component/search.html.twig' %}
+			</div>
+		</div>
+		<div class='col-2 py-2'>
+			<div class='row'>
+				<div id='select-filters' class='col-9'>
+					{% include 'volunteer/provider/component/filter.html.twig' %}
+				</div>
+				<div class='col-3 d-grid'>
+					<button action="{{path('app_volunteer_provider')}}" data-bs-toggle='tooltip' data-bs-title='Réinialiser les filtres' data-bs-placement="top" data-target-spinner='body-interface' data-spinner-type='1' class='btn btn-dark ajax-link-action'>
+						<i class="fa-solid fa-rotate-right text-2 mt-1"></i>
+					</button>
+				</div>
 			</div>
 		</div>
 		<div class='col-3 py-2'>
 			<div class="d-grid">
-				<button action="{{path('app_volunteer_supplier_getform_create')}}" data-target-spinner='modal-content' data-spinner-type='2' class='btn btn-primary ajax-link-action' data-bs-toggle="modal" data-bs-target="#supplierModal">Ajouter un fournisseur</button>
+				<button action="{{path('app_volunteer_provider_getform',{'type':'info'})}}" data-target-spinner='modal-content' data-spinner-type='2' class='btn btn-primary ajax-link-action' data-bs-toggle="modal" data-bs-target="#supplierModal">Ajouter un fournisseur</button>
 			</div>
 		</div>
 	</div>
 	<hr/>
 	<div class='table-title'>
 		<div class='row'>
-			<div class='col-2'>Nom</div>
-			<div class='col-2'>Adresse</div>
-			<div class='col-2'>Contact commercial</div>
-			<div class='col-2'>Contact enlèvement</div>
-			<div class='col-2'>Contenant et quantité</div>
+			<div class='col-3'>Informations</div>
+			<div class='col-3'>Contacts</div>
+			<div class='col-3'>Commentaires</div>
+			<div class='col-2'>Contenants</div>
+			<div class='col-1'></div>
 		</div>
 	</div>
 	<hr/>
-	<div class='table-content'>
-		{% for provider in providers %}
-			<div class='row table-content-line' style='cursor:pointer' data-bs-toggle="modal" data-bs-target="#supplierModalEdit">
-				<div class='col-2'>{{provider.name}}</div>
-				<div class='col-2'>{{provider.address}}<br/>{{provider.zipCode}}<br/>{{provider.city}}</div>
-				<div class='col-2'>{{provider.commercialContactName}}<br/>{{provider.commercialContactPhone}}<br/>{{provider.commercialContactMail}}</div>
-				<div class='col-2'>{{provider.removalContactName}}<br/>{{provider.removalContactPhone}}<br/>{{provider.removalContactMail}}</div>
-				<div class='col-2 text-danger'>
-					{% if provider.containersQuantitys|length %}
-						afficher
-					{% else %}
-						Aucun contenant renseigné
-					{% endif %}
-				</div>
-			</div>
-			<hr/>
-		{% endfor %}
+	<div id='table-content'>
+		{% include 'volunteer/provider/table/content.html.twig' %}
 	</div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-xl">
 		<div id='modal-content' class="modal-content"></div>
 	</div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="supplierModalEdit" tabindex="-1" aria-labelledby="supplierModalEditLabel" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="supplierModalEdit" tabindex="-1" aria-labelledby="supplierModalEditLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-xl">
 		<div class="modal-content">
 			<div class="modal-header">

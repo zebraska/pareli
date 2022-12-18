@@ -17,7 +17,11 @@
 		<div id='flash-message' style='position:absolute;z-index:2000;width:90%;top:2%;left:5%'>
 			{% include 'flashMessages.html.twig' %}
 		</div>
-		{% block menu %}{% endblock %}
+		<div id='menu-interface'>
+			{% block menu %}
+				MENU
+			{% endblock %}
+		</div>
 		<div id='body-interface'>
 			{% block body %}
 				BODY

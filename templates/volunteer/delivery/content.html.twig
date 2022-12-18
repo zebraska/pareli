@@ -1,0 +1,59 @@
+<div>
+	<div class='row'>
+		<div class='col-2 py-2'>
+			<div class='border rounded p-0 d-grid' style='height:5vh'>
+				<button class='btn btn-secondary m-0 p-2 text-center ajax-link-action' action="{{path('app_volunteer_removal')}}" data-target-spinner='body-interface' data-spinner-type='1'>
+					<i class="fa-solid fa-truck-fast pr-2"></i>Livraisons
+				</button>
+			</div>
+		</div>
+		<div class='col-6 pt-2'>
+			<div class="input-group">
+				<input type="search" style='height:5vh' class="form-control rounded border border-primary" placeholder="Rechercher par ville ou fournisseur"/>
+			</div>
+		</div>
+		<div class='col-2 py-2'>
+			<div class="input-group" style='height:5vh'>
+				<select class="form-control rounded border border-primary" style='height:5vh'>
+					<option>Vertou et Saint-Nazaire</option>
+					<option>Vertou</option>
+					<option>Saint-Nazaire</option>
+				</select>
+			</div>
+		</div>
+		<div class='col-2 py-2'>
+			<div class="input-group" style='height:5vh'>
+				<select class="form-control rounded border border-primary" style='height:5vh'>
+					<option>Tous</option>
+					<option>A faire</option>
+					<option>Planifié</option>
+					<option>Réalisé</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<hr/>
+	<div class='table-title'>
+		<div class='row'>
+			<div class='col-11'>
+				<div class='row'>
+					<div class='col-3'>Date</div>
+					<div class='col-3'>Instructions</div>
+					<div class='col-3'>Recycleur</div>
+					<div class='col-3'></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr/>
+	<div id='table-content'>
+		{% include 'volunteer/delivery/table/content.html.twig' %}
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel" aria-hidden="true" data-bs-backdrop="static">
+	<div class="modal-dialog modal-dialog-centered modal-xl">
+		<div id='modal-content' class="modal-content"></div>
+	</div>
+</div>

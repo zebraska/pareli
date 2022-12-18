@@ -1,6 +1,29 @@
 <div class='row bg-secondary py-1 shadow-lg' style='height:15vh'>
-	{% include 'volunteer/menu/element.html.twig' with {'title': 'Enlèvements','icon':'fa-solid fa-truck','route':'app_volunteer_removals'} only %}
-	{% include 'volunteer/menu/element.html.twig' with {'title': 'Fournisseurs','icon':'fa-solid fa-box-open','route':'app_volunteer_supplier'} only %}
-	{% include 'volunteer/menu/element.html.twig' with {'title': 'Planning','icon':'fa-solid fa-calendar-days','route':'app_volunteer_planning'} only %}
-	<!--{% include 'volunteer/menu/element.html.twig' with {'title': 'Poids','icon':'fa-solid fa-weight-scale','route':'app_volunteer_supplier'} only %}-->
+	{% include 'volunteer/menu/element.html.twig' with {
+		'title': 'Fournisseurs',
+		'icon':'fa-solid fa-box-open',
+		'route':'app_volunteer_provider',
+		'controlerName': ((controller_name == 'Volunteer/ProviderController') ? true : false)
+	} only %}
+
+	{% include 'volunteer/menu/element.html.twig' with {
+		'title': 'Recycleurs',
+		'icon':'fa-solid fa-recycle',
+		'route':'app_volunteer_recycler',
+		'controlerName': ((controller_name == 'Volunteer/RecyclerController') ? true : false)
+	} only %}
+
+	{% include 'volunteer/menu/element.html.twig' with {
+		'title': 'Planning',
+		'icon':'fa-solid fa-calendar-days',
+		'route':'app_volunteer_planning',
+		'controlerName': ((controller_name == 'Volunteer/PlanningController') ? true : false)
+	} only %}
+
+	{% include 'volunteer/menu/element.html.twig' with {
+		'title': 'Demandes',
+		'icon':'fa-solid fa-truck',
+		'route':'app_volunteer_removal',
+		'controlerName': ((controller_name == 'Volunteer/RemovalController') ? true : false)
+	} only %}
 </div>

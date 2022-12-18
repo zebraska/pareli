@@ -11,8 +11,6 @@ class IndexController extends AbstractController
     #[Route('/volunteer', name: 'app_volunteer')]
     public function index(): Response
     {
-        return $this->render('volunteer/index.html.twig', [
-            'controller_name' => 'Volunteer/IndexController',
-        ]);
+        return $this->redirectToRoute('app_volunteer_removal');
     }
 }

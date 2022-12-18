@@ -15,7 +15,7 @@ class Removal
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'date')]
+    #[ORM\Column(type: 'datetime')]
     private $dateCreate;
 
     #[ORM\Column(type: 'date')]
@@ -28,12 +28,19 @@ class Removal
     #[ORM\JoinColumn(nullable: false)]
     private $provider;
 
-    #[ORM\ManyToMany(targetEntity: Container::class)]
-    private $containers;
+    #[ORM\OneToMany(mappedBy: 'removal', targetEntity: RemovalContainerQuantity::class, orphanRemoval: true)]
+    private $removalContainerQuantities;
+
+    #[ORM\Column(type: 'integer')]
+    private $state;
+
+    #[ORM\ManyToOne(targetEntity: PlanningLine::class, inversedBy: 'removals')]
+    private $planningLine;
 
     public function __construct()
     {
         $this->containers = new ArrayCollection();
+        $this->removalContainerQuantities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,26 +97,61 @@ class Removal
     }
 
     /**
-     * @return Collection<int, Container>
+     * @return Collection<int, RemovalContainerQuantity>
      */
-    public function getContainers(): Collection
+    public function getRemovalContainerQuantities(): Collection
     {
-        return $this->containers;
+        return $this->removalContainerQuantities;
     }
 
-    public function addContainer(Container $container): self
+    public function addRemovalContainerQuantity(RemovalContainerQuantity $removalContainerQuantity): self
     {
-        if (!$this->containers->contains($container)) {
-            $this->containers[] = $container;
+        if (!$this->removalContainerQuantities->contains($removalContainerQuantity)) {
+            $this->removalContainerQuantities[] = $removalContainerQuantity;
+            $removalContainerQuantity->setRemoval($this);
         }
 
         return $this;
     }
 
-    public function removeContainer(Container $container): self
+    public function removeRemovalContainerQuantity(RemovalContainerQuantity $removalContainerQuantity): self
     {
-        $this->containers->removeElement($container);
+        if ($this->removalContainerQuantities->removeElement($removalContainerQuantity)) {
+            // set the owning side to null (unless already changed)
+            if ($removalContainerQuantity->getRemoval() === $this) {
+                $removalContainerQuantity->setRemoval(null);
+            }
+        }
 
         return $this;
+    }
+
+    public function getState(): ?int
+    {
+        return $this->state;
+    }
+
+    public function setState(int $state): self
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    public function getPlanningLine(): ?PlanningLine
+    {
+        return $this->planningLine;
+    }
+
+    public function setPlanningLine(?PlanningLine $planningLine): self
+    {
+        $this->planningLine = $planningLine;
+
+        return $this;
+    }
+
+    public function getDisplayName(): String
+    {
+        return $this->provider->getName();
     }
 }

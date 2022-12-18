@@ -1,0 +1,14 @@
+
+{% if active %}
+<div class='p-1 table-content-cell ajax-link-action' action="{{path('app_volunteer_planning_remove_companion',{'companionId':companion.id,'pLineId':pLine.id})}}" data-target-spinner='select-companion-{{companion.id}}' data-spinner-type='2' style='cursor:pointer'>
+	<div class='border border-rounded p-4 border-success text-success'>
+		{{companion.displayName}}
+	</div>
+</div>
+{% else %}
+<div class='p-1 table-content-cell ajax-link-action' action="{{path('app_volunteer_planning_add_companion',{'companionId':companion.id,'pLineId':pLine.id})}}" data-target-spinner='select-companion-{{companion.id}}' data-spinner-type='2' style='cursor:pointer'>
+	<div class='border border-rounded p-4'>
+		{{companion.displayName}}
+	</div>
+</div>
+{% endif %}

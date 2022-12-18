@@ -24,8 +24,11 @@ class Provider
     #[ORM\Column(type: 'string', length: 255)]
     private $address;
 
-    #[ORM\Column(type: 'string', length: 10)]
+    #[ORM\Column(type: 'string', length: 10, nullable: true)]
     private $zipCode;
+
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private $city;
 
     #[ORM\Column(type: 'string', length: 20)]
     private $attachment;
@@ -39,13 +42,19 @@ class Provider
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $commercialContactMail;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $removalContactName;
 
-    #[ORM\Column(type: 'string', length: 20)]
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $removalContactPhone;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $removalContactNameTwo;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $removalContactPhoneTwo;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $removalContactMail;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -61,14 +70,11 @@ class Provider
     private $containersQuantitys;
 
     #[ORM\ManyToOne(targetEntity: CertificateRequestType::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private $certificateRequestType;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $linkInfo;
-
-    #[ORM\Column(type: 'string', length: 100)]
-    private $city;
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private $isExistPlan;
 
     public function __construct()
     {
@@ -290,18 +296,6 @@ class Provider
         return $this;
     }
 
-    public function getLinkInfo(): ?string
-    {
-        return $this->linkInfo;
-    }
-
-    public function setLinkInfo(?string $linkInfo): self
-    {
-        $this->linkInfo = $linkInfo;
-
-        return $this;
-    }
-
     public function getCity(): ?string
     {
         return $this->city;
@@ -310,6 +304,42 @@ class Provider
     public function setCity(string $city): self
     {
         $this->city = $city;
+
+        return $this;
+    }
+
+    public function getRemovalContactNameTwo(): ?string
+    {
+        return $this->removalContactNameTwo;
+    }
+
+    public function setRemovalContactNameTwo(string $removalContactNameTwo): self
+    {
+        $this->removalContactNameTwo = $removalContactNameTwo;
+
+        return $this;
+    }
+
+    public function getRemovalContactPhoneTwo(): ?string
+    {
+        return $this->removalContactPhoneTwo;
+    }
+
+    public function setRemovalContactPhoneTwo(string $removalContactPhoneTwo): self
+    {
+        $this->removalContactPhoneTwo = $removalContactPhoneTwo;
+
+        return $this;
+    }
+
+    public function getIsExistPlan(): ?bool
+    {
+        return $this->isExistPlan;
+    }
+
+    public function setIsExistPlan(?bool $isExistPlan): self
+    {
+        $this->isExistPlan = $isExistPlan;
 
         return $this;
     }

@@ -62,46 +62,67 @@ $(document).on('click', '.ajax-link-action', function (event) {
     executeAjaxAction($(this));
 });
 
-function executeAjaxAction(element) {
+$(document).on('keyup', '.ajax-search-action', delay(function (event) {
+    executeAjaxAction($(this), $(this).attr('action').replace('__replace_search__', $(this).val()));
+}, 100));
+
+$(document).on('change', '.ajax-filter-action', delay(function (event) {
+    executeAjaxAction($(this).find(':selected'));
+}, 100));
+
+function executeAjaxAction(element, action = null) {
+    var usedAction = element.attr('action');
+    if (action != null) {
+        usedAction = action;
+    }
+
     if (element.attr('data-spinner-type') == 1) {
         document.getElementById(element.attr('data-target-spinner')).innerHTML = '<div class="spinner-grow text-secondary" role="status"><span class="sr-only">Chargement...</span></div>';
     }
     else {
         document.getElementById(element.attr('data-target-spinner')).innerHTML = '<span class="row justify-content-center my-4"><div class="spinner-border text-dark" role="status"><span class="sr-only">Chargement...</span></div></span>';
     }
-    $.ajax({
-        method: "POST",
-        url: element.attr('action'),
-        beforeSend: function (jqXHR, settings) {
-            jqXHR.url = settings.url;
-        },
-        success: function (response) {
-            window.history.pushState(publicPath + response.bundleName, '', publicPath + response.bundleName);
-            for (var rank in response.views) {
-                document.getElementById(response.views[rank].target).innerHTML = response.views[rank].view;
+    var check = true;
+    if (element.attr('data-confirm')) {
+        check = confirm(element.attr('data-confirm'));
+    }
+    if (check) {
+        $.ajax({
+            method: "POST",
+            url: usedAction,
+            beforeSend: function (jqXHR, settings) {
+                jqXHR.url = settings.url;
+            },
+            success: function (response) {
+                window.history.pushState(publicPath + response.bundleName, '', publicPath + response.bundleName);
+                for (var rank in response.views) {
+                    console.log(response.views[rank].target);
+                    document.getElementById(response.views[rank].target).innerHTML = response.views[rank].view;
+                }
+                /*if (response.redirectTo != false) {
+                    console.log('redirect');
+                    window.location.href = response.redirectTo;
+                }*/
+                document.getElementById('flash-message').innerHTML = response.flashMessage;
+                $(".alert-success").fadeTo(2500, 500).slideUp(500, function () {
+                    $(".alert-success").slideUp(500);
+                });
+                $(".tooltip").hide();
+                loadTooltips();
+                loadSelectpickers();
+            },
+            error: function (jqXHR, error) {
+                document.getElementById('flash-message').innerHTML = "<div class='alert alert-danger alert-dismissible fade show' role='alert'>"
+                    +
+                    "<p>Une erreur est survenue, merci de communiquer le lien suivant à l'adresse cyril.contant@zebratero.com ou par téléphone au 06 08 43 13 47 :</p>"
+                    +
+                    jqXHR.url
+                    +
+                    "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>";
+                $(".alert-error").fadeTo(2500, 500);
             }
-            /*if (response.redirectTo != false) {
-                console.log('redirect');
-                window.location.href = response.redirectTo;
-            }*/
-            document.getElementById('flash-message').innerHTML = response.flashMessage;
-            $(".alert-success").fadeTo(2500, 500).slideUp(500, function () {
-                $(".alert-success").slideUp(500);
-            });
-            loadTooltips();
-            loadSelectpickers();
-        },
-        error: function (jqXHR, error) {
-            document.getElementById('flash-message').innerHTML = "<div class='alert alert-danger alert-dismissible fade show' role='alert'>"
-                +
-                "<p>Une erreur est survenue, merci de communiquer le lien suivant à l'adresse cyril.contant@zebratero.com ou par téléphone au 06 08 43 13 47 :</p>"
-                +
-                jqXHR.url
-                +
-                "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>";
-            $(".alert-error").fadeTo(2500, 500);
-        }
-    });
+        });
+    }
 }
 
 
@@ -163,4 +184,12 @@ function executeAjaxFormAction(event) {
             modal.hide();
         }
     });
+}
+
+function delay(fn, ms) {
+    let timer = 0
+    return function (...args) {
+        clearTimeout(timer)
+        timer = setTimeout(fn.bind(this, ...args), ms || 0)
+    }
 }

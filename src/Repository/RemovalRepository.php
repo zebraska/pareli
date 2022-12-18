@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query;
 
 /**
  * @extends ServiceEntityRepository<Removal>
@@ -45,6 +46,25 @@ class RemovalRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    /**
+     * @return Removal[] Return dql query for the main vue
+     */
+    public function getPaginationMainQuery(String $search = '', String $filter = ''): Query
+    {
+        $qb = $this->createQueryBuilder('r')->join('r.provider', 'p');
+        if ($search!='') {
+            $qb = $qb->andWhere('p.name LIKE :search OR p.city LIKE :search')->setParameter('search', '%'.$search.'%');
+        }
+
+        if ($filter=='1') {
+            $qb = $qb->andWhere('p.containersQuantitys is empty');
+        }
+
+        return $qb->orderBy('r.dateCreate', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery();
     }
 
     // /**

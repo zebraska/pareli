@@ -6,6 +6,7 @@ use App\Entity\Provider;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -47,32 +48,22 @@ class ProviderRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Provider[] Returns an array of Provider objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Provider[] Return dql query for the main vue
+     */
+    public function getPaginationMainQuery(String $search = '', String $filter = ''): Query
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('p');
+        if ($search!='') {
+            $qb = $qb->andWhere('p.name LIKE :search OR p.city LIKE :search')->setParameter('search', '%'.$search.'%');
+        }
 
-    /*
-    public function findOneBySomeField($value): ?Provider
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ($filter=='1') {
+            $qb = $qb->andWhere('p.containersQuantitys is empty');
+        }
+
+        return $qb->orderBy('p.id', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery();
     }
-    */
 }

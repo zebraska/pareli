@@ -1,0 +1,57 @@
+<div class='table-content'>
+	{% for recycler in pagination %}
+		<div class='row'>
+			<div class='col-11'>
+				<div class='row table-content-line table-content-cell' style='cursor:pointer;height:20vh'>
+					<div class='col-3 ajax-link-action' action="{{path('app_volunteer_recycler_getform',{'type':'info','id':recycler.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+						<b>{{recycler.name}}</b>
+						<span class='table-content-line-edit justify-content-right'>
+							<i class="fa-solid fa-pen-to-square"></i>
+						</span>
+					</div>
+					<div class='col-3 ajax-link-action' action="{{path('app_volunteer_recycler_getform',{'type':'contact','id':recycler.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+						{{recycler.address}}
+						<span class='table-content-line-edit justify-content-right'>
+							<i class="fa-solid fa-pen-to-square"></i>
+						</span>
+					</div>
+					<div class='col-3 ajax-link-action' action="{{path('app_volunteer_recycler_getform',{'type':'contact','id':recycler.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+						{{recycler.zipCode}}
+						<span class='table-content-line-edit justify-content-right'>
+							<i class="fa-solid fa-pen-to-square"></i>
+						</span>
+					</div>
+					<div class='col-3 ajax-link-action' action="{{path('app_volunteer_recycler_getform',{'type':'comment','id':recycler.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal" style='height:25vh;overflow-y:hidden'>
+						{{recycler.city}}
+						<span class='table-content-line-edit justify-content-right'>
+							<i class="fa-solid fa-pen-to-square"></i>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class='col-1 text-center'>
+				<span class="ajax-link-action" action="{{path('app_volunteer_delivery_getform',{'recyclerId':recycler.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+					<i class="fa-solid fa-truck-fast text-3 mt-3 text-primary" data-bs-toggle='tooltip' data-bs-title='Ajouter une livraison' data-bs-placement="left"></i>
+				</span><br/>
+				<i class="fa-solid fa-trash text-danger text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_recycler_delete',{'id':recycler.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle='tooltip' data-bs-title='Supprimer' data-bs-placement="left" data-confirm="Confirmer la suppression de l'enlèvement ?"></i>
+			</div>
+		</div>
+		<hr/>
+	{% endfor %}
+</div>
+<div class='row table-bottom'>
+	<div class="navigation col-2" style='height:5vh;'>
+		<select class='form-control border border-dark ajax-filter-action'>
+			{% if(pagination.getTotalItemCount/10>1)%}
+				{% for i in 1..((pagination.getTotalItemCount/10)+1) %}
+					<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_recycler_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>Page
+						{{i}}</option>
+				{% endfor %}
+			{% endif %}
+		</select>
+	</div>
+	<div class="count col-10 text-3" style='text-align:right'>
+		<b>{{pagination.getTotalItemCount}}
+			résultats</b>
+	</div>
+</div>

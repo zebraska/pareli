@@ -46,16 +46,28 @@ hr {
 
 .table-content {
     font-size: 1.8vh;
-    height: 70vh;
+    height: 69vh;
     overflow-y: scroll;
 }
 
 .table-content-line {
-    height: 10vh;
+    height: 25vh;
 }
 
-.table-content-line:hover {
+.table-content-cell:hover {
     background-color: $secondary;
+}
+
+.table-content-cell:hover span{
+    color: $primary;
+}
+
+.table-content-line-edit {
+    color: white;
+}
+
+.table-bottom{
+    background-color: #EFE9F4;
 }
 
 .btn-primary {

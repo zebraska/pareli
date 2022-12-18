@@ -45,27 +45,6 @@ class ProviderType extends AbstractType
                 ],
                 'label' => 'Rattaché à'
             ])
-            ->add('commercialContactName', TextType::class,[
-                'label' => 'Nom'
-            ])
-            ->add('commercialContactPhone', TextType::class,[
-                'label' => 'Téléphone'
-            ])
-            ->add('commercialContactMail', TextType::class,[
-                'label' => 'Email'
-            ])
-            ->add('removalContactName', TextType::class,[
-                'label' => 'Nom'
-            ])
-            ->add('removalContactPhone', TextType::class,[
-                'label' => 'Téléphone'
-            ])
-            ->add('removalContactMail', TextType::class,[
-                'label' => 'Email'
-            ])
-            ->add('certificateContactMail', TextType::class,[
-                'label' => 'Email'
-            ])
             ->add('isRegular', ChoiceType::class,[
                 'choices'  => [
                     'Réguliers' => true,
@@ -79,10 +58,17 @@ class ProviderType extends AbstractType
                 'label' => "Périodicité"
             ])
             ->add('comment', TextareaType::class,[
-                'label' => "Instructions d'enlèvements permanentes"
+                'label' => "Instructions d'enlèvements permanentes",
+                'required' => false,
             ])
-            ->add('linkInfo', TextType::class,[
-                'label' => "Lien vers une fiche de renseignement ou d'un plan"
+            ->add('isExistPlan', TextType::class,[
+                'label' => "Plan disponible ?",
+                'choices'  => [
+                    'Non renseigné' => null,
+                    'Non' => 0,
+                    'Oui' => 1,
+                ],
+                'required' => false,
             ])
         ;
     }

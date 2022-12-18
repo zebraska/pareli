@@ -1,0 +1,64 @@
+{{ form_start(form) }}
+<div class="modal-header">
+	<h5 class="modal-title" id="supplierModalLabel">Contacts</h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div id='modal-body' class="modal-body p-0 m-0">
+	<div class='row'>
+		<p>
+			<b>Interlocuteur commercial</b>
+		</p>
+		<div class='col-4 mb-3'>
+			{{ form_label(form.commercialContactName) }}
+			{{ form_widget(form.commercialContactName, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<div class='col-4 mb-3'>
+			{{ form_label(form.commercialContactPhone) }}
+			{{ form_widget(form.commercialContactPhone, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<div class='col-4 mb-3'>
+			{{ form_label(form.commercialContactMail) }}
+			{{ form_widget(form.commercialContactMail, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<hr/>
+		<p>
+			<b>Interlocuteur pour l'enlèvement</b>
+		</p>
+		<div class='col-4 mb-3'>
+			{{ form_label(form.removalContactName) }}
+			{{ form_widget(form.removalContactName, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<div class='col-4 mb-3'>
+			{{ form_label(form.removalContactPhone) }}
+			{{ form_widget(form.removalContactPhone, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<div class='col-4 mb-3'>
+			{{ form_label(form.removalContactMail) }}
+			{{ form_widget(form.removalContactMail, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<hr/>
+		<p>
+			<b>Certificat de destruction</b>
+		</p>
+		<div class='col-12 mb-3'>
+			{{ form_label(form.certificateContactMail) }}
+			{{ form_widget(form.certificateContactMail, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<hr/>
+	</div>
+</div>
+<hr/>
+<div class="row py-2">
+	<div class='col-3'>
+		<div class="d-grid">
+			<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Fermer</button>
+		</div>
+	</div>
+	<div class='col-6'></div>
+	<div class='col-3'>
+		<div class="d-grid">
+			<button type="submit" class="btn btn-success" data-spinner-type='1'>Valider</button>
+		</div>
+	</div>
+</div>
+{{ form_end(form) }}

@@ -1,0 +1,96 @@
+<div class='table-content'>
+	{% for provider in pagination %}
+		<div class='row table-content-line' style='cursor:pointer'>
+			<div class='col-3 table-content-cell ajax-link-action' action="{{path('app_volunteer_provider_getform',{'type':'info','id':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+				<b>{{provider.name}}</b>
+				({{provider.typeStruct}})<br/>
+				{{provider.address}}<br/>{{provider.zipCode}}<br/>
+				<b>{{provider.city}}</b>
+				({{provider.attachment}})<br/>
+				Enlèvements
+				{{provider.isRegular?'réguliers':'ponctuels'}}<br/>
+				<span class='table-content-line-edit justify-content-right'>
+					<i class="fa-solid fa-pen-to-square"></i>
+				</span>
+			</div>
+			<div class='col-3 table-content-cell ajax-link-action' action="{{path('app_volunteer_provider_getform',{'type':'contact','id':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+				<b>{{provider.commercialContactName}}</b>
+				(Commercial)<br/>
+				{{provider.commercialContactPhone}}<br/>
+				{{provider.commercialContactMail}}<br/>
+				<b>{{provider.removalContactName}}</b>
+				(Enlèvement)<br/>
+				{{provider.removalContactPhone}}<br/>
+				{{provider.removalContactMail}}<br/>
+				<b>{{provider.certificateContactMail}}</b>
+				(Destruction)<br/>
+				<span class='table-content-line-edit justify-content-right'>
+					<i class="fa-solid fa-pen-to-square"></i>
+				</span>
+			</div>
+			<div class='col-3 table-content-cell ajax-link-action' action="{{path('app_volunteer_provider_getform',{'type':'comment','id':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal" style='height:25vh;overflow-y:hidden'>
+				{{provider.comment}}<br/>
+				<span class='table-content-line-edit justify-content-right'>
+					<i class="fa-solid fa-pen-to-square"></i>
+				</span>
+			</div>
+			<div class='col-2'>
+				{% if provider.containersQuantitys|length %}
+					{% for containerQuantity in provider.containersQuantitys %}
+						<div class='row'>
+							<div class='col-10'>
+								<div class='row'>
+									<div class='col-2 p-0 m-0'>
+										{{containerQuantity.quantity}}x
+									</div>
+									<div class='col-8 p-0 m-0'>
+										{{containerQuantity.container.name}}
+									</div>
+								</div>
+							</div>
+							<div class='col-2 my-1'>
+								<div class='btn ajax-link-action btn-danger pt-1' style='height:3vh' action="{{path('app_volunteer_provider_container_quantity_delete',{'id':containerQuantity.id})}}" data-target-spinner='modal-content' data-spinner-type='2'>
+									<i class="fa-solid fa-minus text-2" data-bs-toggle='tooltip' data-bs-title='Supprimer un contenant' data-bs-placement="top"></i>
+								</div>
+							</div>
+						</div>
+						<hr/>
+					{% endfor %}
+				{% else %}
+					<span class='text-danger'>Aucun contenant renseigné</span>
+				{% endif %}<hr/>
+				<div class='row mt-1'>
+					<div class='col-10'></div>
+					<div class='col-2 m-0'>
+						<div class='btn btn-success pt-1 ajax-link-action' action="{{path('app_volunteer_provider_container_quantity_getform',{'id':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+							<i class="fa-solid fa-plus" data-bs-toggle='tooltip' data-bs-title='Ajouter un contenant' data-bs-placement="top"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='col-1 text-center'>
+				<span class="ajax-link-action" action="{{path('app_volunteer_removal_getform',{'providerId':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+					<i class="fa-solid fa-truck-ramp-box text-primary text-3 mt-3" data-bs-toggle='tooltip' data-bs-title='Ajouter un enlèvement' data-bs-placement="left"></i>
+				</span><br/>
+				<i class="fa-solid fa-trash text-danger text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':provider.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle='tooltip' data-bs-title='Supprimer' data-bs-placement="left" data-confirm="Confirmer la suppression du fournisseur ?"></i>
+			</div>
+		</div>
+		<hr/>
+	{% endfor %}
+</div>
+<div class='row table-bottom'>
+	<div class="navigation col-2" style='height:5vh;'>
+		<select class='form-control border border-dark ajax-filter-action'>
+			{% if(pagination.getTotalItemCount/10>1)%}
+				{% for i in 1..((pagination.getTotalItemCount/10)+1) %}
+					<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_provider_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>Page
+						{{i}}</option>
+				{% endfor %}
+			{% endif %}
+		</select>
+	</div>
+	<div class="count col-10 text-3" style='text-align:right'>
+		<b>{{pagination.getTotalItemCount}}
+			résultats</b>
+	</div>
+</div>

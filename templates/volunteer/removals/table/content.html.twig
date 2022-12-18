@@ -1,0 +1,103 @@
+<div class='table-content' style='cursor:pointer'>
+	{% for removal in pagination %}
+		<div class='row table-content-line'>
+			<div class='col-11 p-0'>
+				<div class='row'>
+					<div class='col-9 p-0'>
+						<span class='row table-content-cell'>
+							<div class='col-3 ajax-link-action' action="{{path('app_volunteer_provider_getform',{'type':'info','id':removal.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+								<b>{{removal.dateRequest|date('d/m/Y')}}</b>
+								<span class='table-content-line-edit justify-content-right'>
+									<i class="fa-solid fa-pen-to-square"></i>
+								</span>
+								<br/>
+								{% if removal.state == 0 %}
+									<i class="fa-solid fa-calendar text-danger text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':removal.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
+									Non planifié
+								{% elseif removal.state == 1 %}
+									<i class="fa-solid fa-calendar-plus text-primary text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':removal.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
+									Planifié le 01/01/2020
+								{% elseif removal.state == 2 %}
+									<i class="fa-solid fa-calendar-check text-success text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':removal.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
+									Réalisé le 01/01/2020
+								{% endif %}
+							</div>
+							<div class='col-3 ajax-link-action' style='height:25vh;overflow-y:hidden' action="{{path('app_volunteer_provider_getform',{'type':'contact','id':removal.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+								{{removal.comment}}
+								<span class='table-content-line-edit justify-content-right'>
+									<i class="fa-solid fa-pen-to-square"></i>
+								</span>
+							</div>
+							<div class='col-3 ajax-link-action' action="{{path('app_volunteer_provider_getform',{'type':'comment','id':removal.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#removalModal">
+								<b>{{removal.provider.name}}</b>
+								({{removal.provider.typeStruct}})<br/>
+								{{removal.provider.address}}<br/>{{removal.provider.zipCode}}<br/>
+								<b>{{removal.provider.city}}</b>
+								({{removal.provider.attachment}})<br/>
+								Enlèvements
+								{{removal.provider.isRegular?'réguliers':'ponctuels'}}<br/>
+								<span class='table-content-line-edit justify-content-right'>
+									<i class="fa-solid fa-pen-to-square"></i>
+								</span>
+							</div>
+						</span>
+					</div>
+					<div class='col-3'>
+						{% if removal.removalContainerQuantities|length %}
+							{% for containerQuantity in removal.removalContainerQuantities %}
+								<div class='row'>
+									<div class='col-10'>
+										<div class='row'>
+											<div class='col-2 p-0 m-0'>
+												{{containerQuantity.quantity}}x
+											</div>
+											<div class='col-8 p-0 m-0'>
+												{{containerQuantity.container.name}}
+											</div>
+										</div>
+									</div>
+									<div class='col-2 my-1'>
+										<div class='btn ajax-link-action btn-danger pt-1' style='height:3vh' action="{{path('app_volunteer_removal_container_quantity_delete',{'id':containerQuantity.id})}}" data-target-spinner='modal-content' data-spinner-type='2'>
+											<i class="fa-solid fa-minus text-2"></i>
+										</div>
+									</div>
+								</div>
+								<hr/>
+							{% endfor %}
+						{% else %}
+							<span class='text-danger'>Aucun contenant renseigné</span>
+						{% endif %}<hr/>
+						<div class='row mt-1'>
+							<div class='col-10'></div>
+							<div class='col-2 m-0'>
+								<div class='btn btn-success pt-1 ajax-link-action' action="{{path('app_volunteer_removal_container_quantity_getform',{'id':removal.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+									<i class="fa-solid fa-plus"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='col-1 text-center'>
+				<i class="fa-solid fa-trash text-danger text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_removal_delete',{'id':removal.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2' data-confirm="Confirmer la suppression ?"></i>
+			</div>
+		</div>
+		<hr/>
+	{% endfor %}
+</div>
+<div class='row table-bottom'>
+	<div class="navigation col-2" style='height:5vh;'>
+		<select class='form-control border border-dark ajax-filter-action'>
+			{% if(pagination.getTotalItemCount/10>1)%}
+				{% for i in 1..((pagination.getTotalItemCount/10)+1) %}
+					<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_provider_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>Page
+						{{i}}</option>
+				{% endfor %}
+			{% endif %}
+		</select>
+	</div>
+	<div class="count col-10 text-3" style='text-align:right'>
+		<b>{{pagination.getTotalItemCount}}
+			résultats</b>
+	</div>
+</div>

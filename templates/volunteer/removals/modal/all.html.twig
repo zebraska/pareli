@@ -1,0 +1,35 @@
+{{ form_start(form) }}
+<div class="modal-header">
+	<h5 class="modal-title" id="supplierModalLabel">Ajouter une demande d'enlèvement</h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div id='modal-body' class="modal-body p-0 m-0">
+	<div class='row'>
+        <div class='col-6 mb-3'>Fournisseur<br/><b>{{provider.name}}</b></div>
+		<div class='col-6 mb-3'>
+			{{ form_label(form.dateRequest) }}
+			{{ form_widget(form.dateRequest, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<div class='col-12 mb-3'>
+			{{ form_label(form.comment) }}
+			{{ form_widget(form.comment, { 'attr': {'class': 'form-control border border-primary','rows':10} }) }}
+		</div>
+	</div>
+    <hr/>
+    <i class="fa-solid fa-circle-info mx-4 my-2"></i><i>Validez l'enlèvement pour modifier les contenants</i>
+</div>
+<hr/>
+<div class="row py-2">
+	<div class='col-3'>
+		<div class="d-grid">
+			<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Fermer</button>
+		</div>
+	</div>
+	<div class='col-6'></div>
+	<div class='col-3'>
+		<div class="d-grid">
+			<button type="submit" class="btn btn-success" data-spinner-type='1'>Valider</button>
+		</div>
+	</div>
+</div>
+{{ form_end(form) }}

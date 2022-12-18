@@ -1,0 +1,33 @@
+{{ form_start(form) }}
+<div class="modal-header">
+	<h5 class="modal-title" id="supplierModalLabel">Ajouter un contenant</h5>
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div id='modal-body' class="modal-body p-0 m-0">
+	<div class='row'>
+		<div class='col-6 mb-3'>
+			{{ form_label(form.quantity) }}
+			{{ form_widget(form.quantity, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<div class='col-6 mb-3'>
+			{{ form_label(form.container) }}
+			{{ form_widget(form.container, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<hr/>
+	</div>
+</div>
+<hr/>
+<div class="row py-2">
+	<div class='col-3'>
+		<div class="d-grid">
+			<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Fermer</button>
+		</div>
+	</div>
+	<div class='col-6'></div>
+	<div class='col-3'>
+		<div class="d-grid">
+			<button type="submit" class="btn btn-success" data-spinner-type='1'>Valider</button>
+		</div>
+	</div>
+</div>
+{{ form_end(form) }}

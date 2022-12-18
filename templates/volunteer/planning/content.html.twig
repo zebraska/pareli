@@ -14,7 +14,12 @@
 				<i class="fa-solid fa-arrow-left pt-1" data-bs-toggle='tooltip' data-bs-title='Semaine précédente' style='font-size:3vh'></i>
 				Précédent
 			</div>
-			<div class='col-6 text-center pt-1'>Semaine 11 du lundi 4 avril au vendredi 8 avril</div>
+			<div class='col-6 text-center pt-1'>Semaine
+				{{pWeek.number}}
+				du lundi
+				{{pWeek.mondayDate|date('d/m')}}
+				au vendredi
+				{{pWeek.mondayDate|date('d') + 4}}/{{pWeek.mondayDate|date('m')}}</div>
 			<div class='col-3 text-end'>
 				Suivant
 				<i class="fa-solid fa-arrow-right pt-1" data-bs-toggle='tooltip' data-bs-title='Semaine suivante' style='font-size:3vh'></i>
@@ -23,216 +28,30 @@
 	</div>
 	<hr/>
 	<div class='table-content'>
-		<div class='row'>
-			<div class='col-9'>
-				<b>Lundi matin</b>
-			</div>
-			<div class='col-3 py-2'>
-				<div class="d-grid">
-					<button class='btn btn-secondary' style='font-size:1.2vh'>Ajouter une ligne</button>
+		{% for linePerDay in linesPerDay %}
+			<div class='row'>
+				<div class='col-9'>
+					<b>{{linePerDay.title}}</b>
+				</div>
+				<div class='col-3 py-2'>
+					<div class="d-grid">
+						<button class='btn btn-secondary ajax-link-action' style='font-size:1.2vh' action='{{path('app_volunteer_planning_add_planning_line',{day:loop.index - 1,lineWeekId:pWeek.id})}}' data-target-spinner='body-interface' data-spinner-type='1'>Ajouter une ligne</button>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class='row'>
-			<div class='col-3 border border-rounded bg-secondary text-center' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				<p style='font-size:2vh;padding:1vh'>IVECO 388</p>
-			</div>
-			<div class='col-3 border border-rounded bg-secondary text-center' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				<p style='font-size:2vh;padding:1vh'>Y Maurier</p>
-			</div>
-			<div class='col-3 border border-rounded bg-secondary text-center' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				<p style='font-size:2vh;padding:1vh'>P Figureau</p>
-			</div>
-			<div class='col-3 border border-rounded bg-secondary text-center' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				<p style='font-size:2vh;padding:1vh'>2LM<br>A D M R</p>
-			</div>
-		</div>
-		<hr/>
-		<div class='row'>
-			<div class='col-3 border border-rounded bg-secondary text-center text-danger' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				<i class="fa-solid fa-truck" style='font-size:4vh;padding:1vh'></i>
-				<br/>
-				Aucun véhicule renseigné
-			</div>
-			<div class='col-3 border border-rounded bg-secondary text-center text-danger' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				<i class="fa-solid fa-c" style='font-size:4vh;padding:1vh'></i>
-				<br/>
-				Aucun chauffeur renseigné
-			</div>
-			<div class='col-3 border border-rounded bg-secondary text-center text-danger' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				<i class="fa-solid fa-person" style='font-size:4vh;padding:1vh'></i>
-				<br/>
-				Aucun accompagnant renseigné
-			</div>
-			<div class='col-3 border border-rounded bg-secondary text-center text-danger' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				<i class="fa-solid fa-warehouse" style='font-size:4vh;padding:1vh'></i>
-				<br/>
-				Aucun lieu renseigné
-			</div>
-		</div>
-		<hr/>
-		<div class='row'>
-			<div class='col-9'>
-				<b>Lundi après-midi</b>
-			</div>
-			<div class='col-3 py-2'>
-				<div class="d-grid">
-					<button class='btn btn-secondary' style='font-size:1.2vh'>Ajouter une ligne</button>
-				</div>
-			</div>
-		</div>
-		<div class='row'>
-			<div class='col-3 border border-rounded bg-secondary text-center' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				<p style='font-size:2vh;padding:1vh'>IVECO 388</p>
-			</div>
-			<div class='col-3 border border-rounded bg-secondary text-center' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				<p style='font-size:2vh;padding:1vh'>Y Maurier</p>
-			</div>
-			<div class='col-3 border border-rounded bg-secondary text-center' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				<p style='font-size:2vh;padding:1vh'>P Figureau</p>
-			</div>
-			<div class='col-3 border border-rounded bg-secondary text-center text-danger' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				<i class="fa-solid fa-warehouse" style='font-size:4vh;padding:1vh'></i>
-				<br/>
-				Aucun lieu renseigné
-			</div>
-		</div>
-		<hr/>
-		<div class='row'>
-			<div class='col-9'>
-				<b>Mardi matin</b>
-			</div>
-			<div class='col-3 py-2'>
-				<div class="d-grid">
-					<button class='btn btn-secondary' style='font-size:1.2vh'>Ajouter une ligne</button>
-				</div>
-			</div>
-		</div>
-		<hr/>
-		<div class='row'>
-			<div class='col-9'>
-				<b>Mardi après-midi</b>
-			</div>
-			<div class='col-3 py-2'>
-				<div class="d-grid">
-					<button class='btn btn-secondary' style='font-size:1.2vh'>Ajouter une ligne</button>
-				</div>
-			</div>
-		</div>
-		<hr/>
-		<div class='row'>
-			<div class='col-9'>
-				<b>Mercredi matin</b>
-			</div>
-			<div class='col-3 py-2'>
-				<div class="d-grid">
-					<button class='btn btn-secondary' style='font-size:1.2vh'>Ajouter une ligne</button>
-				</div>
-			</div>
-		</div>
-		<hr/>
-		<div class='row'>
-			<div class='col-9'>
-				<b>Mercredi après-midi</b>
-			</div>
-			<div class='col-3 py-2'>
-				<div class="d-grid">
-					<button class='btn btn-secondary' style='font-size:1.2vh'>Ajouter une ligne</button>
-				</div>
-			</div>
-		</div>
-		<hr/>
-		<div class='row'>
-			<div class='col-9'>
-				<b>Jeudi matin</b>
-			</div>
-			<div class='col-3 py-2'>
-				<div class="d-grid">
-					<button class='btn btn-secondary' style='font-size:1.2vh'>Ajouter une ligne</button>
-				</div>
-			</div>
-		</div>
-		<hr/>
-		<div class='row'>
-			<div class='col-9'>
-				<b>Jeudi après-midi</b>
-			</div>
-			<div class='col-3 py-2'>
-				<div class="d-grid">
-					<button class='btn btn-secondary' style='font-size:1.2vh'>Ajouter une ligne</button>
-				</div>
-			</div>
-		</div>
-		<hr/>
-		<div class='row'>
-			<div class='col-9'>
-				<b>Vendredi matin</b>
-			</div>
-			<div class='col-3 py-2'>
-				<div class="d-grid">
-					<button class='btn btn-secondary' style='font-size:1.2vh'>Ajouter une ligne</button>
-				</div>
-			</div>
-		</div>
-		<hr/>
-		<div class='row'>
-			<div class='col-9'>
-				<b>Vendredi après-midi</b>
-			</div>
-			<div class='col-3 py-2'>
-				<div class="d-grid">
-					<button class='btn btn-secondary' style='font-size:1.2vh'>Ajouter une ligne</button>
-				</div>
-			</div>
-		</div>
+			{% for line in linePerDay.lines %}
+				{% include 'volunteer/planning/line.html.twig' with {pLine:line} only %}
+			{% endfor %}
+			<hr/>
+		{% endfor %}
 	</div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="removalsModal" tabindex="-1" aria-labelledby="removalsModalLabel" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="removalsModal" tabindex="-1" aria-labelledby="removalsModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-xl">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="removalsModalLabel">Définir le véhicule</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div class="mb-3">
-					<input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Rechercher">
-				</div>
-				<div class='row'>
-					<div class='col-3 p-1'>
-						<div class='bg-secondary border border-rounded border-success text-success p-4'>
-							IVECO 388
-						</div>
-					</div>
-					<div class='col-3 p-1'>
-						<div class='bg-secondary border border-rounded p-4'>
-							IVECO 162 H
-						</div>
-					</div>
-					<div class='col-3 p-1'>
-						<div class='bg-secondary border border-rounded p-4'>
-							IVECO 445 H
-						</div>
-					</div>
-					<div class='col-3 p-1'>
-						<div class='bg-secondary border border-rounded p-4'>
-							Volvo
-						</div>
-					</div>
-					<div class='col-3 p-1'>
-						<div class='bg-secondary border border-rounded p-4'>
-							Renault
-						</div>
-					</div>
-					<div class='col-3 p-1'>
-						<div class='bg-secondary border border-rounded p-4'>
-							IVECO 388
-						</div>
-					</div>
-				</div>
-			</div>
+		<div id='modal-content' class="modal-content">
+			
 		</div>
 	</div>
 </div>

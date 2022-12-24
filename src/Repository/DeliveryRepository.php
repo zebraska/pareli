@@ -59,13 +59,21 @@ class DeliveryRepository extends ServiceEntityRepository
         }
 
         if ($filter=='1') {
-            //$qb = $qb->andWhere('p.containersQuantitys is empty');
+            $qb = $qb->andWhere('d.state=0');
+
+        }elseif($filter=='2') {
+                $qb = $qb->andWhere('d.state=1');
+        }elseif($filter=='3'){
+            $qb = $qb->andWhere('d.state=2');
         }
+       
 
         return $qb->orderBy('d.dateCreate', 'DESC')
             ->setMaxResults(10)
             ->getQuery();
     }
+
+
 
     // /**
     //  * @return Delivery[] Returns an array of Delivery objects

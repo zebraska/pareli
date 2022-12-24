@@ -7,21 +7,31 @@
 				</button>
 			</div>
 		</div>
-		<div class='col-8 pt-2'>
-			<div class="input-group">
-				<input type="search" style='height:5vh' class="form-control rounded border border-primary" placeholder="Rechercher par ville ou fournisseur"/>
+
+		<div class='col-6 pt-2'>
+			<div id='input-search' class="input-group">
+				{% include 'volunteer/removals/component/search.html.twig' %}
 			</div>
+		</div>
+
+		<div class='col-2 py-2'>
+			<div id='select-filtersattach' class='col-9'>
+					{% include 'volunteer/removals/component/filterattach.html.twig' %}
+				</div>
 		</div>
 		<div class='col-2 py-2'>
-			<div class="input-group" style='height:5vh'>
-				<select class="form-control rounded border border-primary" style='height:5vh'>
-					<option>Tous</option>
-					<option>A faire</option>
-					<option>Planifié</option>
-					<option>Réalisé</option>
-				</select>
+			<div class='row'>
+				<div id='select-filters' class='col-9'>
+					{% include 'volunteer/removals/component/filter.html.twig' %}
+				</div>
+				<div class='col-3 d-grid'>
+					<button action="{{path('app_volunteer_removal')}}" data-bs-toggle='tooltip' data-bs-title='Réinialiser les filtres' data-bs-placement="top" data-target-spinner='body-interface' data-spinner-type='1' class='btn btn-dark ajax-link-action'>
+						<i class="fa-solid fa-rotate-right text-2 mt-1"></i>
+					</button>
+				</div>
 			</div>
 		</div>
+
 	</div>
 	<hr/>
 	<div class='table-title'>

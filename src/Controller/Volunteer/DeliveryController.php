@@ -8,6 +8,7 @@ use App\Entity\DeliveryContainerQuantity;
 use App\Entity\Recycler;
 use App\Form\DeliveryContainerQuantityType;
 use App\Form\DeliveryType;
+use App\Form\DeliveryCommentType;
 use App\Service\Ajax\AjaxResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 
 class DeliveryController extends AbstractController
 {
@@ -60,8 +62,11 @@ class DeliveryController extends AbstractController
     #[Route('/volunteer/delivery/getform/{id}', defaults: ["id" => null], name: 'app_volunteer_delivery_getform')]
     public function getform(int $id = null, Request $request, ManagerRegistry $doctrine): Response
     {
+        $recycler = new Recycler();
         $recyclerId = $request->query->getInt('recyclerId', 0);
+       
         if ($request->isXmlHttpRequest()) {
+            
             $delivery = new Delivery();
             if (!is_null($id)) {
                 $delivery = $doctrine->getRepository(Delivery::class)->findOneBy(['id' => $id]);
@@ -69,15 +74,19 @@ class DeliveryController extends AbstractController
             if ($recyclerId != 0) {
                 $recycler = $doctrine->getRepository(Recycler::class)->findOneBy(['id' => $recyclerId]);
             }
-            $delivery->setDateRequest(new \DateTime());
+            // $delivery->setDateRequest(new \DateTime());
+           
             $form = $this->createForm(DeliveryType::class, $delivery, [
                 'action' => $this->generateUrl('app_volunteer_delivery_create', ['id' => $id, 'recyclerId' => $recyclerId]),
             ]);
+           
             $ajaxResponse = new AjaxResponse('volunteer/delivery');
 
             $ajaxResponse->addView(
-                $this->render('volunteer/delivery/modal/all.html.twig', ['form' => $form->createView(), 'recycler' => $recycler])->getContent(),
-                'modal-content'
+                $this->render('volunteer/delivery/modal/formEdit.html.twig', ['form' => $form->createView(), 'recycler' => $delivery->getRecycler()])->getContent(),
+                        'modal-content'
+               /*  $this->render('volunteer/delivery/modal/formEdit.html.twig', ['form' => $form->createView(), 'recycler' => $recycler])->getContent(),
+                'modal-content' */
             );
             $ajaxResponse->setRedirectTo(false);
             return $ajaxResponse->generateContent();
@@ -85,6 +94,74 @@ class DeliveryController extends AbstractController
 
         return $this->redirectToRoute("app_volunteer_delivery");
     }
+
+    #[Route('/volunteer/delivery/search/{type}', name: 'app_volunteer_delivery_search')]
+    public function search(String $type, Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
+    {
+        $search = $request->query->get('search', '');
+        $filter = $request->query->get('filter', '');
+        
+        $page = $request->query->getInt('page', 1);
+        $query = $doctrine->getRepository(Delivery::class)->getPaginationMainQuery($search, $filter);
+
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+
+        if ($request->isXmlHttpRequest()) {
+            $ajaxResponse = new AjaxResponse('volunteer/Deliverys');
+            $ajaxResponse->addView(
+                $this->render(
+                    'volunteer/delivery/table/content.html.twig',
+                    [
+                        'pagination' => $pagination,
+                        'search' => $search,
+                        'filter' => $filter,
+                        'page' => $page,
+                       
+                    ]
+                )->getContent(),
+                'table-content'
+            );
+            if ($type == 'search') {
+                $ajaxResponse->addView(
+                    $this->render(
+                        'volunteer/delivery/component/filter.html.twig',
+                        [
+                            'search' => $search,
+                            'filter' => $filter,
+                            'page' => $page,
+                        ]
+                    )->getContent(),
+                    'select-filters'
+                );
+            } else if ($type == 'filter') {
+                $ajaxResponse->addView(
+                    $this->render(
+                        'volunteer/delivery/component/search.html.twig',
+                        [
+                            'search' => $search,
+                            'filter' => $filter,
+                            'page' => $page,
+                        ]
+                    )->getContent(),
+                    'input-search'
+                );
+            }
+            return $ajaxResponse->generateContent();
+        }
+
+        return $this->render('volunteer/delivery/index.html.twig', [
+            'controller_name' => 'Volunteer/deliveryController',
+            'pagination' => $pagination,
+            'search' => '',
+            'filter' => '',
+           
+        ]);
+    }
+
 
     #[Route('/volunteer/delivery/create/{id}', defaults: ["id" => 0], name: 'app_volunteer_delivery_create')]
     public function create(int $id = 0, Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
@@ -149,7 +226,7 @@ class DeliveryController extends AbstractController
                 } catch (\Exception $e) {
                     $ajaxResponse->setCloseModal(false);
                     $ajaxResponse->addView(
-                        $this->render('volunteer/delivery/modal/all.html.twig', ['form' => $form->createView(), 'recycler' => $delivery->getRecycler()])->getContent(),
+                        $this->render('volunteer/delivery/modal/formEdit.html.twig', ['form' => $form->createView(), 'recycler' => $delivery->getRecycler()])->getContent(),
                         'modal-content'
                     );
                     $this->addFlash('danger', 'Veuillez transmettre une capture d\'écran des données saisies dans le formulaire à l\'adresse cyril.contant@zebratero.com');
@@ -157,7 +234,7 @@ class DeliveryController extends AbstractController
             } else {
                 $ajaxResponse->setCloseModal(false);
                 $ajaxResponse->addView(
-                    $this->render('volunteer/delivery/modal/all.html.twig', ['form' => $form->createView(), 'recycler' => $delivery->getRecycler()])->getContent(),
+                    $this->render('volunteer/delivery/modal/formEdit.html.twig', ['form' => $form->createView(), 'recycler' => $delivery->getRecycler()])->getContent(),
                     'modal-content'
                 );
                 $this->addFlash('danger', 'Une erreur est survenue lors de l\'ajout');

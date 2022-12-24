@@ -22,7 +22,7 @@ class RemovalsController extends AbstractController
     #[Route('/volunteer/removal', name: 'app_volunteer_removal')]
     public function index(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
     {
-        $query = $doctrine->getRepository(Removal::class)->getPaginationMainQuery('', '');
+        $query = $doctrine->getRepository(Removal::class)->getPaginationMainQuery('', '','');
 
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
@@ -38,6 +38,7 @@ class RemovalsController extends AbstractController
                     [
                         'pagination' => $pagination,
                         'search' => '',
+                        'filterattach' => '',
                         'filter' => '',
                         'page' => 1,
                     ]
@@ -61,33 +62,35 @@ class RemovalsController extends AbstractController
             'controller_name' => self::CONTROLLER_NAME,
             'pagination' => $pagination,
             'search' => '',
+            'filterattach' => '',
             'filter' => '',
             'page' => 1,
         ]);
     }
 
-    #[Route('/volunteer/removal/getform/{id}', defaults: ["id" => null], name: 'app_volunteer_removal_getform')]
-    public function getform(int $id = null, Request $request, ManagerRegistry $doctrine): Response
+    #[Route('/volunteer/removal/getform/{id}', defaults: ["id" => 0], name: 'app_volunteer_removal_getform')]
+    public function getform(int $id = 0, Request $request, ManagerRegistry $doctrine): Response
     {
+            $provider=new Provider();   
         $providerId = $request->query->getInt('providerId', 0);
         if ($request->isXmlHttpRequest()) {
             $removal = new Removal();
-            if (!is_null($id)) {
+            if ($id!=0) {
                 $removal = $doctrine->getRepository(Removal::class)->findOneBy(['id' => $id]);
             }
             if ($providerId != 0) {
                 $provider = $doctrine->getRepository(Provider::class)->findOneBy(['id' => $providerId]);
                 $removal->setComment($provider->getComment());
             }
-            $removal->setDateRequest(new \DateTime());
+            // $removal->setDateRequest(new \DateTime());
             $form = $this->createForm(RemovalType::class, $removal, [
                 'action' => $this->generateUrl('app_volunteer_removal_create', ['id' => $id, 'providerId' => $providerId]),
             ]);
             $ajaxResponse = new AjaxResponse('volunteer/removal');
 
             $ajaxResponse->addView(
-                $this->render('volunteer/removals/modal/all.html.twig', ['form' => $form->createView(), 'provider' => $provider])->getContent(),
-                'modal-content'
+                $this->render('volunteer/removals/modal/formEdit.html.twig', ['form' => $form->createView(), 'provider' => $removal->getProvider()])->getContent(),
+                        'modal-content'
             );
             $ajaxResponse->setRedirectTo(false);
             return $ajaxResponse->generateContent();
@@ -95,6 +98,134 @@ class RemovalsController extends AbstractController
 
         return $this->redirectToRoute("app_volunteer_removals");
     }
+
+
+    #[Route('/volunteer/removal/search/{type}', name: 'app_volunteer_removal_search')]
+    public function search(String $type, Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
+    {
+        $search = $request->query->get('search', '');
+        $filterattach = $request->query->get('filterattach', '');
+        $filter = $request->query->get('filter', '');
+        $page = $request->query->getInt('page', 1);
+        $query = $doctrine->getRepository(Removal::class)->getPaginationMainQuery($search, $filter,$filterattach);
+
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+
+        if ($request->isXmlHttpRequest()) {
+            $ajaxResponse = new AjaxResponse('volunteer/removals');
+            $ajaxResponse->addView(
+                $this->render(
+                    'volunteer/removals/table/content.html.twig',
+                    [
+                        'pagination' => $pagination,
+                        'search' => $search,
+                        'filterattach' => $filterattach,
+                        'filter' => $filter,
+                        'page' => $page,
+                        'page' => $page,
+                    ]
+                )->getContent(),
+                'table-content'
+            );
+            if ($type == 'search') {
+                $ajaxResponse->addView(
+                    $this->render(
+                        'volunteer/removals/component/filter.html.twig',
+                        [
+                            'search' => $search,
+                            'filterattach' => $filterattach,
+                            'filter' => $filter,
+                            'page' => $page,
+                            
+                        ]
+                    )->getContent(),
+                    'select-filters'
+                );
+                $ajaxResponse->addView(
+                    $this->render(
+                        'volunteer/removals/component/filterattach.html.twig',
+                        [
+                            'search' => $search,
+                            'filterattach' => $filterattach,
+                            'filter' => $filter,
+                            'page' => $page,
+                            
+                        ]
+                    )->getContent(),
+                    'select-filtersattach'
+                );
+            } else if ($type == 'filter') {
+                $ajaxResponse->addView(
+                    $this->render(
+                        'volunteer/removals/component/search.html.twig',
+                        [
+                            'search' => $search,
+                            'filterattach' => $filterattach,
+                            'filter' => $filter,
+                            'page' => $page,
+                        ]
+                    )->getContent(),
+                    'input-search'
+                );
+                $ajaxResponse->addView(
+                    $this->render(
+                        'volunteer/removals/component/filterattach.html.twig',
+                        [
+                            'search' => $search,
+                            'filterattach' => $filterattach,
+                            'filter' => $filter,
+                            'page' => $page,
+                            
+                        ]
+                    )->getContent(),
+                    'select-filtersattach'
+                );
+            }
+            else if ($type == 'filterattach'){
+                $ajaxResponse->addView(
+                    $this->render(
+                        'volunteer/removals/component/search.html.twig',
+                        [
+                            'search' => $search,
+                            'filterattach' => $filterattach,
+                            'filter' => $filter,
+                            'page' => $page,
+                        ]
+                    )->getContent(),
+                    'input-search'
+                );
+                $ajaxResponse->addView(
+                    $this->render(
+                        'volunteer/removals/component/filter.html.twig',
+                        [
+                            'search' => $search,
+                            'filterattach' => $filterattach,
+                            'filter' => $filter,
+                            'page' => $page,
+                            
+                        ]
+                    )->getContent(),
+                    'select-filters'
+                );
+            }
+            return $ajaxResponse->generateContent();
+        }
+
+        return $this->render('volunteer/removals/index.html.twig', [
+            'controller_name' => 'Volunteer/removalsController',
+            'pagination' => $pagination,
+            'search' => '',
+            'filterattach' => '',
+            'filter' => '',
+        ]);
+    }
+
+
+
 
     #[Route('/volunteer/removal/create/{id}', defaults: ["id" => 0], name: 'app_volunteer_removal_create')]
     public function create(int $id = 0, Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
@@ -133,7 +264,7 @@ class RemovalsController extends AbstractController
                     }
                     $em->persist($removal);
                     $em->flush();
-                    $query = $doctrine->getRepository(Removal::class)->getPaginationMainQuery($removal->getProvider()->getName(), '');
+                    $query = $doctrine->getRepository(Removal::class)->getPaginationMainQuery($removal->getProvider()->getName(), '','');
 
                     $pagination = $paginator->paginate(
                         $query, /* query NOT result */
@@ -166,7 +297,7 @@ class RemovalsController extends AbstractController
                 } catch (\Exception $e) {
                     $ajaxResponse->setCloseModal(false);
                     $ajaxResponse->addView(
-                        $this->render('volunteer/removals/modal/all.html.twig', ['form' => $form->createView(), 'provider' => $removal->getProvider()])->getContent(),
+                        $this->render('volunteer/removals/modal/formEdit.html.twig', ['form' => $form->createView(), 'provider' => $removal->getProvider()])->getContent(),
                         'modal-content'
                     );
                     $this->addFlash('danger', 'Veuillez transmettre une capture d\'écran des données saisies dans le formulaire à l\'adresse cyril.contant@zebratero.com');
@@ -174,7 +305,7 @@ class RemovalsController extends AbstractController
             } else {
                 $ajaxResponse->setCloseModal(false);
                 $ajaxResponse->addView(
-                    $this->render('volunteer/removals/modal/all.html.twig', ['form' => $form->createView(), 'provider' => $removal->getProvider()])->getContent(),
+                    $this->render('volunteer/removals/modal/formEdit.html.twig', ['form' => $form->createView(), 'provider' => $removal->getProvider()])->getContent(),
                     'modal-content'
                 );
                 $this->addFlash('danger', 'Une erreur est survenue lors de l\'ajout');
@@ -196,7 +327,7 @@ class RemovalsController extends AbstractController
             $em->remove($removal);
             $em->flush();
 
-            $query = $doctrine->getRepository(Removal::class)->getPaginationMainQuery($removal->getProvider()->getName(), '');
+            $query = $doctrine->getRepository(Removal::class)->getPaginationMainQuery($removal->getProvider()->getName(), '','');
 
             $pagination = $paginator->paginate(
                 $query, /* query NOT result */
@@ -270,7 +401,7 @@ class RemovalsController extends AbstractController
                     $em->persist($cQuantity);
                     $em->flush();
 
-                    $query = $doctrine->getRepository(Removal::class)->getPaginationMainQuery($removal->getProvider()->getName(), '');
+                    $query = $doctrine->getRepository(Removal::class)->getPaginationMainQuery($removal->getProvider()->getName(), '','');
                     $pagination = $paginator->paginate(
                         $query, /* query NOT result */
                         $request->query->getInt('page', 1), /*page number*/
@@ -325,7 +456,7 @@ class RemovalsController extends AbstractController
             $em->remove($cQuantity);
             $em->flush();
 
-            $query = $doctrine->getRepository(Removal::class)->getPaginationMainQuery($cQuantity->getRemoval()->getProvider()->getName(), '');
+            $query = $doctrine->getRepository(Removal::class)->getPaginationMainQuery($cQuantity->getRemoval()->getProvider()->getName(), '','');
 
             $pagination = $paginator->paginate(
                 $query, /* query NOT result */

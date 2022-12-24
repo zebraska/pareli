@@ -17,7 +17,13 @@ class RemovalType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('dateRequest', DateType::class,[
+             ->add('Provider', EntityType::class,[
+            'class' => Provider::class,
+            'choice_label' => 'name',
+            'label' => "fournisseur"
+                                      
+            ])
+             ->add('dateRequest', DateType::class,[
                 'widget' => 'single_text',
                 'label' => "Date de la demande"
             ])
@@ -25,6 +31,7 @@ class RemovalType extends AbstractType
                 'label' => "Instructions d'enlèvements ponctuelles",
                 'required' => false
             ])
+            
         ;
     }
 

@@ -93,7 +93,7 @@ class ProviderController extends AbstractController
                         'search' => $search,
                         'filter' => $filter,
                         'page' => $page,
-                        'page' => $page,
+                        
                     ]
                 )->getContent(),
                 'table-content'
@@ -110,7 +110,7 @@ class ProviderController extends AbstractController
                     )->getContent(),
                     'select-filters'
                 );
-            } else if ($type == 'search') {
+            } else if ($type == 'filter') {
                 $ajaxResponse->addView(
                     $this->render(
                         'volunteer/provider/component/search.html.twig',
@@ -129,8 +129,9 @@ class ProviderController extends AbstractController
         return $this->render('volunteer/provider/index.html.twig', [
             'controller_name' => 'Volunteer/providerController',
             'pagination' => $pagination,
-            'search' => '',
-            'filter' => '',
+            'search' => $search,
+            'filter' => $filter,
+            'page' => $page,
         ]);
     }
 

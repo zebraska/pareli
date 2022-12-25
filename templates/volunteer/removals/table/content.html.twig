@@ -90,7 +90,7 @@
 	{% if(pagination.getTotalItemCount/10>1)%}
 		{% if (page!=1) %}
 			<div class="precedent col-1 text-center" style='height:5vh;'>
-				<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'page':page})}}'>
+				<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'page':page,'className':'removals'})}}'>
 				<i class="fa-solid fa-arrow-left text-4"></i></a>
 			</div>
 		{% endif %}	
@@ -108,7 +108,7 @@
 		
 		{% if (page!=last) %}
 			<div class="suivant col-1 text-center" style='height:5vh;'>
-				<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'page':page,'last':last})}}'>
+				<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'page':page,'className':'removals','last':last})}}'>
 				<i class="fa-solid fa-arrow-right text-4"></i></a>
 			</div>
 		{% endif %}

@@ -71,34 +71,53 @@ class RemovalsController extends AbstractController
     #[Route('/volunteer/removal/getform/{id}', defaults: ["id" => 0], name: 'app_volunteer_removal_getform')]
     public function getform(int $id = 0, Request $request, ManagerRegistry $doctrine): Response
     {
-            $provider=new Provider();   
+        $provider=new Provider();   
         $providerId = $request->query->getInt('providerId', 0);
-        if ($request->isXmlHttpRequest()) {
+        if ($request->isXmlHttpRequest()) { 
             $removal = new Removal();
             if ($id!=0) {
                 $removal = $doctrine->getRepository(Removal::class)->findOneBy(['id' => $id]);
-            }
+            
             if ($providerId != 0) {
                 $provider = $doctrine->getRepository(Provider::class)->findOneBy(['id' => $providerId]);
                 $removal->setComment($provider->getComment());
             }
-            // $removal->setDateRequest(new \DateTime());
+            
             $form = $this->createForm(RemovalType::class, $removal, [
                 'action' => $this->generateUrl('app_volunteer_removal_create', ['id' => $id, 'providerId' => $providerId]),
             ]);
             $ajaxResponse = new AjaxResponse('volunteer/removal');
 
-            $ajaxResponse->addView(
+           $ajaxResponse->addView(
                 $this->render('volunteer/removals/modal/formEdit.html.twig', ['form' => $form->createView(), 'provider' => $removal->getProvider()])->getContent(),
                         'modal-content'
-            );
+            ); 
+                  
             $ajaxResponse->setRedirectTo(false);
             return $ajaxResponse->generateContent();
+            }
+            else {
+                if ($providerId != 0) {
+                    $provider = $doctrine->getRepository(Provider::class)->findOneBy(['id' => $providerId]);
+                    $removal->setComment($provider->getComment());
+                }
+                $removal->setDateRequest(new \DateTime());
+                $form = $this->createForm(RemovalType::class, $removal, [
+                    'action' => $this->generateUrl('app_volunteer_removal_create', ['id' => $id, 'providerId' => $providerId]),
+                ]);
+                $ajaxResponse = new AjaxResponse('volunteer/removal');
+    
+                $ajaxResponse->addView(
+                    $this->render('volunteer/removals/modal/formCreate.html.twig', ['form' => $form->createView(), 'provider' => $provider])->getContent(),
+                    'modal-content'
+                );
+                $ajaxResponse->setRedirectTo(false);
+                return $ajaxResponse->generateContent();
+                
+             }
+        return $this->redirectToRoute("app_volunteer_removals"); 
         }
-
-        return $this->redirectToRoute("app_volunteer_removals");
     }
-
 
     #[Route('/volunteer/removal/search/{type}', name: 'app_volunteer_removal_search')]
     public function search(String $type, Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response

@@ -79,42 +79,38 @@
 	{% endfor %}
 </div>
 <div class='row table-bottom'>
-	{% if(pagination.getTotalItemCount/10>1)%}
+
+
+	<div class="precedent col-1 text-center" style='height:5vh;'>
 		{% if (page!=1) %}
-			<div class="precedent col-1 text-center" style='height:5vh;'>
-				<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'page':page,'className':'provider'})}}'>
-			<i class="fa-solid fa-arrow-left text-4"></i></a>
-			</div>
-		{% endif %}	
-		<div class="navigation col-2" style='height:5vh;'>
-			{% set last = ((pagination.getTotalItemCount/10)+1)|number_format(0) %}
-			<select class='form-control border border-dark ajax-filter-action'>
-				
-				{% for i in 1..last %}
-					<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_provider_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>Page
-						{{i}}
-					</option>
-				{% endfor %}
-			</select>
-		</div>
-		
-		{% if (page!=last) %}
-			<div class="suivant col-1 text-center" style='height:5vh;'>
-				<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'page':page,'className':'provider','last':last})}}'>
-				<i class="fa-solid fa-arrow-right text-4"></i></a>
-			</div>
+			<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'page':page,'className':'provider'})}}'>
+				<i class="fa-solid fa-arrow-left text-4"></i>
+			</a>
 		{% endif %}
-	{% else %}
-		<div class="navigation col-2" style='height:5vh;'>
-			{% set i = 1 %}
-			<select class='form-control border border-dark ajax-filter-action'>
+	</div>
+
+	<div class="navigation col-2" style='height:5vh;'>
+		{% set last = ((pagination.getTotalItemCount/10)+1)|number_format(0) %}
+		<select class='form-control border border-dark ajax-filter-action'>
+
+			{% for i in 1..last %}
 				<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_provider_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>Page
-				{{i}}</option>
-			</select>
-		</div>
-	{% endif %}
-			
-	
+					{{i}}
+				</option>
+			{% endfor %}
+		</select>
+	</div>
+
+
+	<div class="suivant col-1 text-center" style='height:5vh;'>
+		{% if (page!=last) %}
+			<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'page':page,'className':'provider','last':last})}}'>
+				<i class="fa-solid fa-arrow-right text-4"></i>
+			</a>
+		{% endif %}
+	</div>
+
+
 	<div class="count col-8 text-3" style='text-align:right'>
 		<b>{{pagination.getTotalItemCount}}
 			résultats</b>

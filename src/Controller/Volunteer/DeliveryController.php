@@ -66,28 +66,32 @@ class DeliveryController extends AbstractController
         $recyclerId = $request->query->getInt('recyclerId', 0);
        
         if ($request->isXmlHttpRequest()) {
-            
-            $delivery = new Delivery();
+             $delivery = new Delivery();
+            $delivery->setDateRequest(new \DateTime());
             if (!is_null($id)) {
                 $delivery = $doctrine->getRepository(Delivery::class)->findOneBy(['id' => $id]);
             }
             if ($recyclerId != 0) {
                 $recycler = $doctrine->getRepository(Recycler::class)->findOneBy(['id' => $recyclerId]);
             }
-            // $delivery->setDateRequest(new \DateTime());
-           
+                     
             $form = $this->createForm(DeliveryType::class, $delivery, [
                 'action' => $this->generateUrl('app_volunteer_delivery_create', ['id' => $id, 'recyclerId' => $recyclerId]),
             ]);
            
             $ajaxResponse = new AjaxResponse('volunteer/delivery');
-
-            $ajaxResponse->addView(
-                $this->render('volunteer/delivery/modal/formEdit.html.twig', ['form' => $form->createView(), 'recycler' => $delivery->getRecycler()])->getContent(),
-                        'modal-content'
-               /*  $this->render('volunteer/delivery/modal/formEdit.html.twig', ['form' => $form->createView(), 'recycler' => $recycler])->getContent(),
-                'modal-content' */
+            if (!is_null($id)) {
+            
+                 $ajaxResponse->addView(
+                $this->render('volunteer/delivery/modal/formEdit.html.twig', ['form' => $form->createView(), 'recycler' => $delivery->getRecycler(), 'id' => $id])->getContent(),
+                        'modal-content');
+            }else{
+                
+                $ajaxResponse->addView(
+                 $this->render('volunteer/delivery/modal/formEdit.html.twig', ['form' => $form->createView(), 'recycler' => $recycler, 'id' => $id])->getContent(), 
+                'modal-content' 
             );
+        }
             $ajaxResponse->setRedirectTo(false);
             return $ajaxResponse->generateContent();
         }
@@ -212,7 +216,7 @@ class DeliveryController extends AbstractController
                         )->getContent(),
                         'body-interface'
                     );
-                    //Update menu active
+                     //Update menu active
                     $ajaxResponse->addView(
                         $this->render(
                             'volunteer/menu/menu.html.twig',
@@ -221,8 +225,8 @@ class DeliveryController extends AbstractController
                             ]
                         )->getContent(),
                         'menu-interface'
-                    );
-                    $this->addFlash('success', 'Enlèvement pour le fournisseur: ' . $delivery->getRecycler()->getName() . ' [action réalisée]');
+                    ); 
+                    $this->addFlash('success', 'livraison pour le recycleur: ' . $delivery->getRecycler()->getName() . ' [action réalisée]');
                 } catch (\Exception $e) {
                     $ajaxResponse->setCloseModal(false);
                     $ajaxResponse->addView(

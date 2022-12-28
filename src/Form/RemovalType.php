@@ -17,12 +17,12 @@ class RemovalType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-              ->add('Provider', EntityType::class,[
+            /*   ->add('Provider', EntityType::class,[
             'class' => Provider::class,
             'choice_label' => 'name',
             'label' => "fournisseur"
                                       
-            ]) 
+            ]) permet d'avoir la liste déroulante de tous les fournisseurs */
              ->add('dateRequest', DateType::class,[
                 'widget' => 'single_text',
                 'label' => "Date de la demande"

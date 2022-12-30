@@ -47,6 +47,7 @@ class RecyclerController extends AbstractController
                 )->getContent(),
                 'body-interface'
             );
+
             //Update menu active
             $ajaxResponse->addView(
                 $this->render(
@@ -148,7 +149,7 @@ class RecyclerController extends AbstractController
             $ajaxResponse = new AjaxResponse('volunteer/recycler');
 
             $ajaxResponse->addView(
-                $this->render('volunteer/recycler/modal/all.html.twig', ['form' => $form->createView()])->getContent(),
+                $this->render('volunteer/recycler/modal/all.html.twig', ['form' => $form->createView(),'id' => $id])->getContent(),
                 'modal-content'
             );
             $ajaxResponse->setRedirectTo(false);

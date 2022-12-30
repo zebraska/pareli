@@ -51,7 +51,7 @@ class RemovalRepository extends ServiceEntityRepository
     /**
      * @return Removal[] Return dql query for the main vue
      */
-    public function getPaginationMainQuery(String $search = '', String $filter = ''): Query
+    public function getPaginationMainQuery(String $search = '', String $filter = '', string $filterattach =''): Query
     {
         $qb = $this->createQueryBuilder('r')->join('r.provider', 'p');
         if ($search!='') {
@@ -59,9 +59,21 @@ class RemovalRepository extends ServiceEntityRepository
         }
 
         if ($filter=='1') {
-            $qb = $qb->andWhere('p.containersQuantitys is empty');
+            $qb = $qb->andWhere('r.state=0');
+
+        }elseif($filter=='2') {
+                $qb = $qb->andWhere('r.state=1');
+        }elseif($filter=='3'){
+            $qb = $qb->andWhere('r.state=2');
         }
 
+        if ($filterattach=='1') {
+            $qb = $qb->andWhere('p.attachment = :attach')->setParameter('attach', 'Vertou');
+
+        }elseif($filterattach=='2') {
+                $qb = $qb->andWhere('p.attachment=:attach')->setParameter('attach', 'Saint-Nazaire');
+        }
+        
         return $qb->orderBy('r.dateCreate', 'DESC')
             ->setMaxResults(10)
             ->getQuery();

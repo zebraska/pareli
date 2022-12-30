@@ -40,17 +40,39 @@
 	{% endfor %}
 </div>
 <div class='row table-bottom'>
+
+
+	<div class="precedent col-1 text-center" style='height:5vh;'>
+		{% if (page!=1) %}
+			<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'page':page,'className':'recycler'})}}'>
+				<i class="fa-solid fa-arrow-left text-4"></i>
+			</a>
+		{% endif %}
+	</div>
+
 	<div class="navigation col-2" style='height:5vh;'>
+		{% set last = ((pagination.getTotalItemCount/10)+1)|number_format(0) %}
 		<select class='form-control border border-dark ajax-filter-action'>
-			{% if(pagination.getTotalItemCount/10>1)%}
-				{% for i in 1..((pagination.getTotalItemCount/10)+1) %}
-					<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_recycler_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>Page
-						{{i}}</option>
-				{% endfor %}
-			{% endif %}
+
+			{% for i in 1..last %}
+				<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_recycler_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>Page
+					{{i}}</option>
+			{% endfor %}
+
 		</select>
 	</div>
-	<div class="count col-10 text-3" style='text-align:right'>
+
+
+	<div class="suivant col-1 text-center" style='height:5vh;'>
+		{% if (page!=last) %}
+			<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'page':page,'className':'recycler','last':last})}}'>
+				<i class="fa-solid fa-arrow-right text-4"></i>
+			</a>
+		{% endif %}
+	</div>
+
+
+	<div class="count col-8 text-3" style='text-align:right'>
 		<b>{{pagination.getTotalItemCount}}
 			résultats</b>
 	</div>

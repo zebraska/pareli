@@ -5,17 +5,22 @@
 <div class="modal-body">
 	<div class='row'>
 		{% for removal in pLine.removals %}
-			<div class='col-3' id='select-removal-{{removal.id}}'>
+			<div class='col-4' id='select-removal-{{removal.id}}'>
 				{% include 'volunteer/planning/selection/requests/removalCell.html.twig' with {'active':true} %}
 			</div>
 		{% endfor %}
+		{% for delivery in pLine.deliverys %}
+			<div class='col-4' id='select-delivery-{{delivery.id}}'>
+				{% include 'volunteer/planning/selection/requests/deliveryCell.html.twig' with {'active':true} %}
+			</div>
+		{% endfor %}
 		{% for removal in removals %}
-			<div class='col-3 ajax-link-action' action="{{path('app_volunteer_planning_add_removal',{'removalId':removal.id,'pLineId':pLine.id})}}" data-target-spinner='select-removal-{{removal.id}}' data-spinner-type='2' id='select-removal-{{removal.id}}'>
+			<div class='col-4 ajax-link-action' action="{{path('app_volunteer_planning_add_removal',{'type':'removal','demandId':removal.id,'pLineId':pLine.id})}}" data-target-spinner='select-removal-{{removal.id}}' data-spinner-type='2' id='select-removal-{{removal.id}}'>
 				{% include 'volunteer/planning/selection/requests/removalCell.html.twig' with {'active':false} %}
 			</div>
 		{% endfor %}
         {% for delivery in deliverys %}
-			<div class='col-3 ajax-link-action' action="#" data-target-spinner='select-delivery-{{delivery.id}}' data-spinner-type='2' id='select-delivery-{{delivery.id}}'>
+			<div class='col-4 ajax-link-action' action="{{path('app_volunteer_planning_add_removal',{'type':'delivery','demandId':delivery.id,'pLineId':pLine.id})}}" data-target-spinner='select-delivery-{{delivery.id}}' data-spinner-type='2' id='select-delivery-{{delivery.id}}'>
 				{% include 'volunteer/planning/selection/requests/deliveryCell.html.twig' with {'active':false} %}
 			</div>
 		{% endfor %}

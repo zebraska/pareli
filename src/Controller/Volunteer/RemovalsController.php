@@ -18,7 +18,7 @@ use Knp\Component\Pager\PaginatorInterface;
 class RemovalsController extends AbstractController
 {
    
-    const CONTROLLER_NAME = 'Volunteer/RemovalsController';
+    const CONTROLLER_NAME = 'Volunteer/RemovalController';
 
     #[Route('/volunteer/removal', name: 'app_volunteer_removal')]
     public function index(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response

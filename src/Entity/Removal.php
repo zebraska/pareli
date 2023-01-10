@@ -37,9 +37,11 @@ class Removal
     #[ORM\ManyToOne(targetEntity: PlanningLine::class, inversedBy: 'removals')]
     private $planningLine;
 
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private $weight;
+
     public function __construct()
     {
-        $this->containers = new ArrayCollection();
         $this->removalContainerQuantities = new ArrayCollection();
     }
 
@@ -153,5 +155,17 @@ class Removal
     public function getDisplayName(): String
     {
         return $this->provider->getName();
+    }
+
+    public function getWeight(): ?int
+    {
+        return $this->weight;
+    }
+
+    public function setWeight(int $weight): self
+    {
+        $this->weight = $weight;
+
+        return $this;
     }
 }

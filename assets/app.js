@@ -24,7 +24,7 @@ $.fn.selectpicker.Constructor.BootstrapVersion = '5';
 // or you can include specific pieces
 // require('bootstrap/js/dist/tooltip');
 // require('bootstrap/js/dist/popover');
-var publicPath = 'http://localhost:8000/';
+var publicPath = 'http://zebratero.com/public/';
 
 function loadPopovers() {
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
@@ -154,7 +154,9 @@ function executeAjaxFormAction(event) {
             window.history.pushState(publicPath + response.bundleName, '', publicPath + response.bundleName);
             this.btnSubmit.html(this.btnSubmitContent);
             if (response.closeModal) {
-                $('.modal-backdrop').hide();
+                const truck_modal = document.querySelector('#supplierModal');
+                const modal = bootstrap.Modal.getInstance(truck_modal);
+                modal.hide();
             }
             if (response.redirectTo != false) {
                 window.location.href = response.redirectTo;

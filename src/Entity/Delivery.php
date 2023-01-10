@@ -32,6 +32,9 @@ class Delivery
     #[ORM\ManyToOne(targetEntity: PlanningLine::class, inversedBy: 'deliverys')]
     private $planningLine;
 
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private $weight;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -112,5 +115,17 @@ class Delivery
     public function getDisplayName(): String
     {
         return $this->recycler->getName();
+    }
+
+    public function getWeight(): ?int
+    {
+        return $this->weight;
+    }
+
+    public function setWeight(?int $weight): self
+    {
+        $this->weight = $weight;
+
+        return $this;
     }
 }

@@ -1,25 +1,39 @@
-
-
 {% if active %}
-<div class='p-1 table-content-cell ajax-link-action' action="{{path('app_volunteer_planning_remove_removal',{'removalId':removal.id,'pLineId':pLine.id})}}" data-target-spinner='select-removal-{{removal.id}}' data-spinner-type='2' style='cursor:pointer'>
-	<div class='border border-rounded p-4 border-success text-success'>
-		<b>{{removal.provider.name}}</b><hr/>
-		{{removal.provider.address}} {{removal.provider.zipcode}} {{removal.provider.city}}<hr/>
-		Indications: {{removal.provider.comment}}<hr/>
-		{% for container in removal.removalContainerQuantities %}
-			{{container.quantity}}x {{container.container.name}}
-		{% endfor %}
+	<div class='p-1 table-content-cell ajax-link-action' action="{{path('app_volunteer_planning_remove_removal',{'type':'removal','demandId':removal.id,'pLineId':pLine.id})}}" data-target-spinner='select-removal-{{removal.id}}' data-spinner-type='2' style='cursor:pointer'>
+		<div class='border border-rounded p-4 border-success text-success' style='height:20vh;overflow-y:auto'>
+			<b>{{removal.provider.name}}
+				-
+				<i>Enlèvement</i>
+			</b><hr/>
+			{{removal.provider.address}}
+			{{removal.provider.zipcode}}
+			{{removal.provider.city}}<hr/>
+			{% for container in removal.removalContainerQuantities %}
+				{{container.quantity}}x
+				{{container.container.name}}
+				<br/>
+			{% endfor %}<hr/>
+			Indications:
+			{{removal.provider.comment}}
+		</div>
 	</div>
-</div>
 {% else %}
-<div class='p-1 table-content-cell ajax-link-action' action="{{path('app_volunteer_planning_add_removal',{'removalId':removal.id,'pLineId':pLine.id})}}" data-target-spinner='select-removal-{{removal.id}}' data-spinner-type='2' style='cursor:pointer'>
-	<div class='border border-rounded p-4'>
-		<b>{{removal.provider.name}}</b><hr/>
-		{{removal.provider.address}} {{removal.provider.zipcode}} {{removal.provider.city}}<hr/>
-		Indications: {{removal.provider.comment}}<hr/>
-		{% for container in removal.removalContainerQuantities %}
-			{{container.quantity}}x {{container.container.name}}
-		{% endfor %}
+	<div class='p-1 table-content-cell ajax-link-action' action="{{path('app_volunteer_planning_add_removal',{'type':'removal','demandId':removal.id,'pLineId':pLine.id})}}" data-target-spinner='select-removal-{{removal.id}}' data-spinner-type='2' style='cursor:pointer'>
+		<div class='border border-rounded p-4' style='height:20vh;overflow-y:auto'>
+			<b>{{removal.provider.name}}
+				-
+				<i>Enlèvement</i>
+			</b><hr/>
+			{{removal.provider.address}}
+			{{removal.provider.zipcode}}
+			{{removal.provider.city}}<hr/>
+			{% for container in removal.removalContainerQuantities %}
+				{{container.quantity}}x
+				{{container.container.name}}
+				<br/>
+			{% endfor %}<hr/>
+			Indications:
+			{{removal.provider.comment}}
+		</div>
 	</div>
-</div>
 {% endif %}

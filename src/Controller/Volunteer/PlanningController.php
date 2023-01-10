@@ -9,12 +9,16 @@ use App\Entity\Removal;
 use App\Entity\Vehicle;
 use App\Entity\Volunteer;
 use App\Service\Ajax\AjaxResponse;
+use DateInterval;
 use Doctrine\Persistence\ManagerRegistry;
 use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Environment;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class PlanningController extends AbstractController
 {
@@ -92,6 +96,7 @@ class PlanningController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             $pLine->setPlanningWeek($pWeek);
             $pLine->setDay($day);
+            $pLine->setValid(false);
             $ajaxResponse = new AjaxResponse('volunteer/planning');
 
             $em = $doctrine->getManager();
@@ -202,13 +207,13 @@ class PlanningController extends AbstractController
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
             $vehicle = $doctrine->getRepository(Vehicle::class)->findOneBy(['id' => $vehicleId]);
             $lastVehicle = $pLine->getVehicle();
-            if($lastVehicle){
+            if ($lastVehicle) {
                 $ajaxResponse->addView(
                     $this->render('volunteer/planning/selection/vehicles/cell.html.twig', [
                         'vehicle' => $lastVehicle,
                         'active' => false,
                     ])->getContent(),
-                    'select-vehicle-'.$lastVehicle->getId()
+                    'select-vehicle-' . $lastVehicle->getId()
                 );
             }
             $pLine->setVehicle($vehicle);
@@ -221,12 +226,12 @@ class PlanningController extends AbstractController
                     'vehicle' => $vehicle,
                     'active' => true,
                 ])->getContent(),
-                'select-vehicle-'.$vehicle->getId()
+                'select-vehicle-' . $vehicle->getId()
             );
 
             $ajaxResponse->addView(
                 $vehicle->getName(),
-                'selected-vehicle-'.$pLineId
+                'selected-vehicle-' . $pLineId
             );
 
             $this->addFlash('success', 'Vehicule sélectionné');
@@ -263,13 +268,13 @@ class PlanningController extends AbstractController
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
             $driver = $doctrine->getRepository(Volunteer::class)->findOneBy(['id' => $driverId]);
             $lastDriver = $pLine->getDriver();
-            if($lastDriver){
+            if ($lastDriver) {
                 $ajaxResponse->addView(
                     $this->render('volunteer/planning/selection/drivers/cell.html.twig', [
                         'driver' => $lastDriver,
                         'active' => false,
                     ])->getContent(),
-                    'select-driver-'.$lastDriver->getId()
+                    'select-driver-' . $lastDriver->getId()
                 );
             }
             $pLine->setDriver($driver);
@@ -282,12 +287,12 @@ class PlanningController extends AbstractController
                     'driver' => $driver,
                     'active' => true,
                 ])->getContent(),
-                'select-driver-'.$driver->getId()
+                'select-driver-' . $driver->getId()
             );
 
             $ajaxResponse->addView(
                 $driver->getDisplayName(),
-                'selected-driver-'.$pLineId
+                'selected-driver-' . $pLineId
             );
 
             $this->addFlash('success', 'Conducteur sélectionné');
@@ -318,39 +323,58 @@ class PlanningController extends AbstractController
         return $this->redirectToRoute('app_volunteer_planning');
     }
 
-    #[Route('/volunteer/planning/add/removal/{removalId}/{pLineId}', name: 'app_volunteer_planning_add_removal')]
-    public function addRemoval(Request $request, ManagerRegistry $doctrine, int $removalId, int $pLineId): Response
+    #[Route('/volunteer/planning/add/{type}/{demandId}/{pLineId}', name: 'app_volunteer_planning_add_removal')]
+    public function addRemoval(Request $request, ManagerRegistry $doctrine, String $type, int $demandId, int $pLineId): Response
     {
         if ($request->isXmlHttpRequest()) {
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
-            $removal = $doctrine->getRepository(Removal::class)->findOneBy(['id' => $removalId]);
-            $removal->setPlanningLine($pLine);
-            $removal->setState(1);
-            $em = $doctrine->getManager();
-            $em->persist($removal);
-            $em->flush();
-            $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
-
-            $ajaxResponse = new AjaxResponse('volunteer/planning');
-            $ajaxResponse->addView(
-                $this->render('volunteer/planning/selection/requests/removalCell.html.twig', [
-                    'pLine' => $pLine,
-                    'removal' => $removal,
-                    'active' => true,
-                ])->getContent(),
-                'select-removal-'.$removal->getId()
-            );
-
-            $displayRequests='';
-            foreach($pLine->getRemovals() as $request){
-                $displayRequests = $displayRequests.$request->getDisplayName().'<br/>';
+            if ($type == 'removal') {
+                $removal = $doctrine->getRepository(Removal::class)->findOneBy(['id' => $demandId]);
+                $removal->setPlanningLine($pLine);
+                $removal->setState(1);
+                $em = $doctrine->getManager();
+                $em->persist($removal);
+                $em->flush();
+                $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
+                $ajaxResponse = new AjaxResponse('volunteer/planning');
+                $ajaxResponse->addView(
+                    $this->render('volunteer/planning/selection/requests/removalCell.html.twig', [
+                        'pLine' => $pLine,
+                        'removal' => $removal,
+                        'active' => true,
+                    ])->getContent(),
+                    'select-removal-' . $removal->getId()
+                );
+            } else {
+                $delivery = $doctrine->getRepository(Delivery::class)->findOneBy(['id' => $demandId]);
+                $delivery->setPlanningLine($pLine);
+                $delivery->setState(1);
+                $em = $doctrine->getManager();
+                $em->persist($delivery);
+                $em->flush();
+                $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
+                $ajaxResponse = new AjaxResponse('volunteer/planning');
+                $ajaxResponse->addView(
+                    $this->render('volunteer/planning/selection/requests/deliveryCell.html.twig', [
+                        'pLine' => $pLine,
+                        'delivery' => $delivery,
+                        'active' => true,
+                    ])->getContent(),
+                    'select-delivery-' . $delivery->getId()
+                );
             }
-            foreach($pLine->getDeliverys() as $request){
-                $displayRequests = $displayRequests.$request->getDisplayName().'<br/>';
+
+
+            $displayRequests = '';
+            foreach ($pLine->getRemovals() as $request) {
+                $displayRequests = $displayRequests . $request->getDisplayName() . '<br/>';
+            }
+            foreach ($pLine->getDeliverys() as $request) {
+                $displayRequests = $displayRequests . $request->getDisplayName() . '<br/>';
             }
             $ajaxResponse->addView(
                 $displayRequests,
-                'selected-requests-'.$pLineId
+                'selected-requests-' . $pLineId
             );
 
             return $ajaxResponse->generateContent();
@@ -358,41 +382,61 @@ class PlanningController extends AbstractController
         return $this->redirectToRoute('app_volunteer_planning');
     }
 
-    #[Route('/volunteer/planning/remove/removal/{removalId}/{pLineId}', name: 'app_volunteer_planning_remove_removal')]
-    public function removeRemoval(Request $request, ManagerRegistry $doctrine, int $removalId, int $pLineId): Response
+    #[Route('/volunteer/planning/remove/{type}/{demandId}/{pLineId}', name: 'app_volunteer_planning_remove_removal')]
+    public function removeRemoval(Request $request, ManagerRegistry $doctrine, String $type, int $demandId, int $pLineId): Response
     {
         if ($request->isXmlHttpRequest()) {
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
-            $removal = $doctrine->getRepository(Removal::class)->findOneBy(['id' => $removalId]);
-            $removal->setPlanningLine(null);
-            $removal->setState(0);
-            $em = $doctrine->getManager();
-            $em->persist($removal);
-            $em->flush();
-            $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
+            if ($type == 'removal') {
+                $removal = $doctrine->getRepository(Removal::class)->findOneBy(['id' => $demandId]);
+                $removal->setPlanningLine(null);
+                $removal->setState(0);
+                $em = $doctrine->getManager();
+                $em->persist($removal);
+                $em->flush();
+                $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
 
-            $ajaxResponse = new AjaxResponse('volunteer/planning');
-            $ajaxResponse->addView(
-                $this->render('volunteer/planning/selection/requests/removalCell.html.twig', [
-                    'pLine' => $pLine,
-                    'removal' => $removal,
-                    'active' => false,
-                ])->getContent(),
-                'select-removal-'.$removal->getId()
-            );
+                $ajaxResponse = new AjaxResponse('volunteer/planning');
+                $ajaxResponse->addView(
+                    $this->render('volunteer/planning/selection/requests/removalCell.html.twig', [
+                        'pLine' => $pLine,
+                        'removal' => $removal,
+                        'active' => false,
+                    ])->getContent(),
+                    'select-removal-' . $removal->getId()
+                );
+            } else {
+                $delivery = $doctrine->getRepository(Delivery::class)->findOneBy(['id' => $demandId]);
+                $delivery->setPlanningLine(null);
+                $delivery->setState(0);
+                $em = $doctrine->getManager();
+                $em->persist($delivery);
+                $em->flush();
+                $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
 
-            $displayRequests='';
-            foreach($pLine->getRemovals() as $request){
-                $displayRequests = $displayRequests.$request->getDisplayName().'<br/>';
+                $ajaxResponse = new AjaxResponse('volunteer/planning');
+                $ajaxResponse->addView(
+                    $this->render('volunteer/planning/selection/requests/deliveryCell.html.twig', [
+                        'pLine' => $pLine,
+                        'delivery' => $delivery,
+                        'active' => false,
+                    ])->getContent(),
+                    'select-delivery-' . $delivery->getId()
+                );
             }
-            foreach($pLine->getDeliverys() as $request){
-                $displayRequests = $displayRequests.$request->getDisplayName().'<br/>';
+
+            $displayRequests = '';
+            foreach ($pLine->getRemovals() as $request) {
+                $displayRequests = $displayRequests . $request->getDisplayName() . '<br/>';
+            }
+            foreach ($pLine->getDeliverys() as $request) {
+                $displayRequests = $displayRequests . $request->getDisplayName() . '<br/>';
             }
             $ajaxResponse->addView(
                 $displayRequests,
-                'selected-requests-'.$pLineId
+                'selected-requests-' . $pLineId
             );
-            
+
             return $ajaxResponse->generateContent();
         }
         return $this->redirectToRoute('app_volunteer_planning');
@@ -436,19 +480,19 @@ class PlanningController extends AbstractController
                     'companion' => $companion,
                     'active' => true,
                 ])->getContent(),
-                'select-companion-'.$companion->getId()
+                'select-companion-' . $companion->getId()
             );
 
-            $displayRequests='';
-            foreach($pLine->getCompanions() as $request){
-                $displayRequests = $displayRequests.$request->getDisplayName().'<br/>';
+            $displayRequests = '';
+            foreach ($pLine->getCompanions() as $request) {
+                $displayRequests = $displayRequests . $request->getDisplayName() . '<br/>';
             }
-            foreach($pLine->getDeliverys() as $request){
-                $displayRequests = $displayRequests.$request->getDisplayName().'<br/>';
+            foreach ($pLine->getDeliverys() as $request) {
+                $displayRequests = $displayRequests . $request->getDisplayName() . '<br/>';
             }
             $ajaxResponse->addView(
                 $displayRequests,
-                'selected-companions-'.$pLineId
+                'selected-companions-' . $pLineId
             );
 
             return $ajaxResponse->generateContent();
@@ -475,23 +519,123 @@ class PlanningController extends AbstractController
                     'companion' => $companion,
                     'active' => false,
                 ])->getContent(),
-                'select-companion-'.$companion->getId()
+                'select-companion-' . $companion->getId()
             );
 
-            $displayRequests='';
-            foreach($pLine->getCompanions() as $request){
-                $displayRequests = $displayRequests.$request->getDisplayName().'<br/>';
+            $displayRequests = '';
+            foreach ($pLine->getCompanions() as $request) {
+                $displayRequests = $displayRequests . $request->getDisplayName() . '<br/>';
             }
-            foreach($pLine->getDeliverys() as $request){
-                $displayRequests = $displayRequests.$request->getDisplayName().'<br/>';
+            foreach ($pLine->getDeliverys() as $request) {
+                $displayRequests = $displayRequests . $request->getDisplayName() . '<br/>';
             }
             $ajaxResponse->addView(
                 $displayRequests,
-                'selected-companions-'.$pLineId
+                'selected-companions-' . $pLineId
             );
-            
+
             return $ajaxResponse->generateContent();
         }
         return $this->redirectToRoute('app_volunteer_planning');
+    }
+
+    #[Route('/volunteer/planning/line/valid/get/form/{id}', name: 'app_volunteer_planning_line_valid_get_form')]
+    public function lineValidGetForm(Request $request, ManagerRegistry $doctrine, int $id): Response
+    {
+        $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $id]);
+        if ($request->isXmlHttpRequest()) {
+            $ajaxResponse = new AjaxResponse('volunteer/planning');
+
+            $ajaxResponse->addView(
+                $this->render('volunteer/planning/line/formValidate.html.twig', [
+                    'pLine' => $pLine,
+                ])->getContent(),
+                'modal-content'
+            );
+
+            return $ajaxResponse->generateContent();
+        }
+        return $this->redirectToRoute('app_volunteer_planning');
+    }
+
+    #[Route('/volunteer/planning/line/valid/validate/{id}', name: 'app_volunteer_planning_line_valid_validate')]
+    public function lineValidValidate(Request $request, ManagerRegistry $doctrine, int $id): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+            $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $id]);
+            $pLine->setValid(true);
+            $em = $doctrine->getManager();
+            foreach ($pLine->getRemovals() as $removal) {
+                $weight = $request->get('weightRemoval' . $removal->getId());
+                if ($weight > 0) {
+                    $removal->setWeight($weight);
+                    $removal->setState(2);
+                    $em->persist($removal);
+                } else {
+                    $pLine->removeRemoval($removal);
+                    $removal->setState(0);
+                    $removal->setplanningLine(null);
+                    $em->persist($removal);
+                }
+            }
+            foreach ($pLine->getDeliverys() as $delivery) {
+                $weight = $request->get('weightDelivery' . $delivery->getId());
+                if ($weight > 0) {
+                    $delivery->setWeight($weight);
+                    $delivery->setState(2);
+                    $em->persist($delivery);
+                } else {
+                    $pLine->removeDelivery($delivery);
+                    $delivery->setState(0);
+                    $delivery->setplanningLine(null);
+                    $em->persist($delivery);
+                }
+            }
+            $em->persist($pLine);
+            $em->flush();
+
+            $ajaxResponse = new AjaxResponse('volunteer/planning');
+
+            $ajaxResponse->addView(
+                $this->render('volunteer/planning/line.html.twig', [
+                    'pLine' => $pLine,
+                ])->getContent(),
+                'pLine' . $pLine->getId()
+            );
+            $this->addFlash('success', 'Ligne validée');
+            $ajaxResponse->setFlashMessageView($this->renderView('flashMessages.html.twig'));
+            return $ajaxResponse->generateContent();
+        }
+        return $this->redirectToRoute('app_volunteer_planning');
+    }
+
+    #[Route('/volunteer/planning/line/voucher/generate/{id}', name: 'app_volunteer_planning_line_voucher_generate')]
+    public function lineVoucheGenerate(Request $request, ManagerRegistry $doctrine, Environment $twig, int $id)
+    {
+        $options = new Options();
+        $options->set('isRemoteEnabled', true);
+        $dompdf = new Dompdf($options);
+
+        $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $id]);
+
+        $dayDate = $pLine->getPlanningWeek()->getMondayDate();
+        if ($pLine->getDay() > 1) {
+            $dayDate->add(new DateInterval('P' . intdiv($pLine->getDay(), 2) . 'D'));
+        }
+
+        $dompdf->loadHtml($this->renderView('volunteer\planning\voucherPdf.html.twig', [
+            'pLine' => $pLine,
+            'dayDate' => $dayDate,
+        ]));
+
+        $dompdf->render();
+        $dompdf->stream("ligne" . $pLine->getId() . ".pdf", [
+            "Attachment" => true
+        ]);
+        die();
+        return $this->render('volunteer\planning\voucherPdf.html.twig', [
+            'pLine' => $pLine,
+            'dayDate' => $dayDate,
+        ]);
     }
 }

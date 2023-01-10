@@ -38,6 +38,9 @@ class PlanningLine
     #[ORM\ManyToOne(targetEntity: Volunteer::class)]
     private $driver;
 
+    #[ORM\Column(type: 'boolean')]
+    private $valid;
+
     public function __construct()
     {
         $this->deliverys = new ArrayCollection();
@@ -178,6 +181,18 @@ class PlanningLine
     public function setDriver(?Volunteer $driver): self
     {
         $this->driver = $driver;
+
+        return $this;
+    }
+
+    public function getValid(): ?bool
+    {
+        return $this->valid;
+    }
+
+    public function setValid(bool $valid): self
+    {
+        $this->valid = $valid;
 
         return $this;
     }

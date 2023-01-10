@@ -92,6 +92,9 @@
     "doctrine/sql-formatter": {
         "version": "1.1.2"
     },
+    "dompdf/dompdf": {
+        "version": "v2.0.1"
+    },
     "egulias/email-validator": {
         "version": "3.1.2"
     },
@@ -110,11 +113,20 @@
     "laminas/laminas-code": {
         "version": "4.5.1"
     },
+    "masterminds/html5": {
+        "version": "2.7.6"
+    },
     "monolog/monolog": {
         "version": "2.5.0"
     },
     "nikic/php-parser": {
         "version": "v4.13.2"
+    },
+    "phenx/php-font-lib": {
+        "version": "0.5.4"
+    },
+    "phenx/php-svg-lib": {
+        "version": "0.5.0"
     },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
@@ -142,6 +154,9 @@
     },
     "psr/log": {
         "version": "2.0.0"
+    },
+    "sabberworm/php-css-parser": {
+        "version": "8.4.0"
     },
     "sensio/framework-extra-bundle": {
         "version": "6.2",

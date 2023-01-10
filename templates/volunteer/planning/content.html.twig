@@ -40,7 +40,10 @@
 				</div>
 			</div>
 			{% for line in linePerDay.lines %}
-				{% include 'volunteer/planning/line.html.twig' with {pLine:line} only %}
+				<hr/>
+				<div class='row' id='pLine{{line.id}}'>
+					{% include 'volunteer/planning/line.html.twig' with {pLine:line} only %}
+				</div>
 			{% endfor %}
 			<hr/>
 		{% endfor %}
@@ -48,10 +51,8 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="removalsModal" tabindex="-1" aria-labelledby="removalsModalLabel" aria-hidden="true">
+<div class="modal fade" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-xl">
-		<div id='modal-content' class="modal-content">
-			
-		</div>
+		<div id='modal-content' class="modal-content"></div>
 	</div>
 </div>

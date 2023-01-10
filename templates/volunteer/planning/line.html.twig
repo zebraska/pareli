@@ -1,72 +1,80 @@
-<hr/>
-<div class='row'>
-	<div class='col-11 p-0'>
-		<div class='row'>
-			<div class='col-3 border border-rounded table-content-cell text-center ajax-link-action' action="{{path('app_volunteer_planning_get_vehicle_selection',{'pLineId':pLine.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer;height:15vh'>
-				<span id='selected-vehicle-{{pLine.id}}'>
-					{% if pLine.vehicle %}
-						{{pLine.vehicle.name}}
-					{% else %}
-						<span class='text-danger'>
-							<i class="fa-solid fa-truck" style='font-size:4vh;padding:1vh'></i>
-							<br/>
-							Aucun véhicule renseigné
-						</span>
-					{% endif %}
-				</span>
-			</div>
-			<div class='col-3 border border-rounded table-content-cell text-center ajax-link-action' action="{{path('app_volunteer_planning_get_driver_selection',{'pLineId':pLine.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				<span id='selected-driver-{{pLine.id}}'>
-					{% if pLine.driver is not empty %}
-						{{pLine.driver.displayName}}
-					{% else %}
-						<span class='text-danger'>
-							<i class="fa-solid fa-c" style='font-size:4vh;padding:1vh'></i>
-							<br/>
-							Aucun chauffeur renseigné
-						</span>
-					{% endif %}
-				</span>
-			</div>
-			<div id='selected-companions-{{pLine.id}}' class='col-3 border border-rounded table-content-cell text-center ajax-link-action' action="{{path('app_volunteer_planning_get_companions_selection',{'pLineId':pLine.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				{% if pLine.companions is not empty %}
-					{% for companion in  pLine.companions %}
-						{{companion.displayName}}<br/>
-					{% endfor %}
+<div class='col-11 p-0'>
+	<div class='row'>
+		<div class='col-3 border border-rounded table-content-cell text-center {{pLine.valid?"bg-secondary":"ajax-link-action"}}' action="{{path('app_volunteer_planning_get_vehicle_selection',{'pLineId':pLine.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="{{pLine.valid?"#":"#supplierModal"}}" style='cursor:pointer;height:15vh'>
+			<span id='selected-vehicle-{{pLine.id}}'>
+				{% if pLine.vehicle %}
+					{{pLine.vehicle.name}}
 				{% else %}
 					<span class='text-danger'>
-						<i class="fa-solid fa-person" style='font-size:4vh;padding:1vh'></i>
+						<i class="fa-solid fa-truck" style='font-size:4vh;padding:1vh'></i>
 						<br/>
-						Aucun accompagnant renseigné
+						Aucun véhicule renseigné
 					</span>
 				{% endif %}
-			</div>
-			<div id='selected-requests-{{pLine.id}}' class='col-3 border border-rounded table-content-cell text-center ajax-link-action' action="{{path('app_volunteer_planning_get_requests_selection',{'pLineId':pLine.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#removalsModal" style='cursor:pointer'>
-				{% if pLine.deliverys is not empty %}
-					{% for delivery in  pLine.deliverys %}
-						{{delivery.recycler.name}}<br/>
-					{% endfor %}
-				{% endif %}
-
-				{% if pLine.removals is not empty %}
-					{% for removal in  pLine.removals %}
-						{{removal.provider.name}}<br/>
-					{% endfor %}
-				{% endif %}
-
-				{% if pLine.removals is empty and pLine.deliverys is empty %}
+			</span>
+		</div>
+		<div class='col-3 border border-rounded table-content-cell text-center {{pLine.valid?"bg-secondary":"ajax-link-action"}}' action="{{path('app_volunteer_planning_get_driver_selection',{'pLineId':pLine.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="{{pLine.valid?"#":"#supplierModal"}}" style='cursor:pointer'>
+			<span id='selected-driver-{{pLine.id}}'>
+				{% if pLine.driver is not empty %}
+					{{pLine.driver.displayName}}
+				{% else %}
 					<span class='text-danger'>
-						<i class="fa-solid fa-warehouse" style='font-size:4vh;padding:1vh'></i>
+						<i class="fa-solid fa-c" style='font-size:4vh;padding:1vh'></i>
 						<br/>
-						Aucune demande assignée
+						Aucun chauffeur renseigné
 					</span>
 				{% endif %}
-			</div>
+			</span>
+		</div>
+		<div id='selected-companions-{{pLine.id}}' class='col-3 border border-rounded table-content-cell text-center {{pLine.valid?"bg-secondary":"ajax-link-action"}}' action="{{path('app_volunteer_planning_get_companions_selection',{'pLineId':pLine.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="{{pLine.valid?"#":"#supplierModal"}}" style='cursor:pointer'>
+			{% if pLine.companions is not empty %}
+				{% for companion in  pLine.companions %}
+					{{companion.displayName}}<br/>
+				{% endfor %}
+			{% else %}
+				<span class='text-danger'>
+					<i class="fa-solid fa-person" style='font-size:4vh;padding:1vh'></i>
+					<br/>
+					Aucun accompagnant renseigné
+				</span>
+			{% endif %}
+		</div>
+		<div id='selected-requests-{{pLine.id}}' class='col-3 border border-rounded table-content-cell text-center {{pLine.valid?"bg-secondary":"ajax-link-action"}}' action="{{path('app_volunteer_planning_get_requests_selection',{'pLineId':pLine.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="{{pLine.valid?"#":"#supplierModal"}}" style='cursor:pointer'>
+			{% if pLine.deliverys is not empty %}
+				{% for delivery in  pLine.deliverys %}
+					{{delivery.recycler.name}} - {{pLine.valid?delivery.weight:''}} Kg<br/>
+				{% endfor %}
+			{% endif %}
+
+			{% if pLine.removals is not empty %}
+				{% for removal in  pLine.removals %}
+					{{removal.provider.name}} - {{pLine.valid?removal.weight:''}} Kg<br/>
+				{% endfor %}
+			{% endif %}
+
+			{% if pLine.removals is empty and pLine.deliverys is empty %}
+				<span class='text-danger'>
+					<i class="fa-solid fa-warehouse" style='font-size:4vh;padding:1vh'></i>
+					<br/>
+					Aucune demande assignée
+				</span>
+			{% endif %}
 		</div>
 	</div>
+</div>
+{% if pLine.valid %}
+	<div class='col-1 text-center bg-success text-white text-center'>
+		<p class='text-2'><b>Réalisé</b></p>
+		<i class="fa-solid fa-square-check text-6"></i>
+	</div>
+{% else %}
 	<div class='col-1 text-center'>
-		<i class="fa-regular fa-square-check text-primary text-3 mt-3" action="#" data-bs-toggle='tooltip' data-bs-title="Valider la ligne" data-bs-placement="left" style='cursor:pointer'></i><br/>
-		<i class="fa-regular fa-file-pdf text-primary text-3 mt-3" action="#" data-bs-toggle='tooltip' data-bs-title="Générer le bon d'enlèvement" data-bs-placement="left" style='cursor:pointer'></i><br/>
+		<span data-bs-toggle='tooltip' data-bs-title="Valider la ligne" data-bs-placement="left">
+			<i class="fa-regular fa-square-check text-primary text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_planning_line_valid_get_form',{'id':pLine.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal" style='cursor:pointer'></i><br/>
+		</span>
+		<a href='{{path('app_volunteer_planning_line_voucher_generate',{'id':pLine.id})}}'>
+			<i class="fa-regular fa-file-pdf text-primary text-3 mt-3" action="#" data-bs-toggle='tooltip' data-bs-title="Générer le bon d'enlèvement" data-bs-placement="left" style='cursor:pointer'></i><br/>
+		</a>
 		<i class="fa-solid fa-trash text-danger text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_planning_delete_planning_line',{'pLineId':pLine.id})}}" data-target-spinner='body-interface' data-spinner-type='1' data-bs-toggle='tooltip' data-bs-title='Supprimer' data-bs-placement="left" style='cursor:pointer' data-confirm="Confirmer la suppression de la ligne ?"></i>
 	</div>
-</div>
+{% endif %}

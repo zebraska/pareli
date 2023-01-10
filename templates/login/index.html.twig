@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login
+{% endblock %}
+
+{% block menu %}{% endblock %}
+
+{% block body %}
+	{% if error %}
+		<div>Connexion refusée</div>
+	{% endif %}
+	<div class='row mt-4'>
+		<div class='col-3'></div>
+		<div class='col-6'>
+			<div class='row'>
+				<div class='col-12 text-center'>
+					<img src='{{absolute_url(asset('logo/transparent.png'))}}' style='width:20vw;'/>
+                    <h1 class='text-primary'>Gestion des enlèvements et livraisons du papiers</h1>
+				</div>
+			</div>
+			<form action="{{ path('app_login') }}" method="post" class='mt-4'>
+				<label for="username">Identifiant:</label>
+				<input class='form-control' type="text" id="username" name="_username" value="{{ last_username }}">
+
+				<label for="password">Mot de passe:</label>
+				<input class='form-control' type="password" id="password" name="_password">
+
+				<button type="submit" class='btn btn-primary mt-4' style='width:100%'>Connexion</button>
+			</form>
+		</div>
+		<div class='col-3'></div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

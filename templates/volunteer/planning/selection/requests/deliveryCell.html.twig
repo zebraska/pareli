@@ -1,5 +1,18 @@
-<div class='p-1 table-content-cell' style='cursor:pointer'>
-	<div class='border border-rounded p-4 {{active?' border-success text-success':''}}'>
-		{{delivery.recycler.name}}
+
+{% if active %}
+<div class='p-1 table-content-cell ajax-link-action' action="{{path('app_volunteer_planning_remove_removal',{'type':'delivery','demandId':delivery.id,'pLineId':pLine.id})}}" data-target-spinner='select-delivery-{{delivery.id}}' data-spinner-type='2' style='cursor:pointer;'>
+	<div class='border border-rounded p-4 border-success text-success' style='height:20vh;overflow-y:auto'>
+		<b>{{delivery.recycler.name}} - <i>Livraison</i></b><hr/>
+		{{delivery.recycler.address}} {{delivery.recycler.zipcode}} {{delivery.recycler.city}}<hr/>
+		Indications: {{delivery.comment}}
 	</div>
 </div>
+{% else %}
+<div class='p-1 table-content-cell ajax-link-action' action="{{path('app_volunteer_planning_add_removal',{'type':'delivery','demandId':delivery.id,'pLineId':pLine.id})}}" data-target-spinner='select-delivery-{{delivery.id}}' data-spinner-type='2' style='cursor:pointer'>
+	<div class='border border-rounded p-4' style='height:20vh;overflow-y:auto'>
+		<b>{{delivery.recycler.name}} - <i>Livraison</i></b><hr/>
+		{{delivery.recycler.address}} {{delivery.recycler.zipcode}} {{delivery.recycler.city}}<hr/>
+		Indications: {{delivery.comment}}
+	</div>
+</div>
+{% endif %}

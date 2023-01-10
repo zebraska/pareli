@@ -1,0 +1,143 @@
+<html>
+	<head></head>
+	<body style='font-size:12px'>
+		<div style='width:100%;margin-top:7%'>
+			<div style='display:inline-block;width:50%;'>
+				<img src='{{absolute_url(asset('logo/transparent.png'))}}' style='width:170px;'/>
+				<p>16 rue des Entrepreneurs</p>
+				<p>44120 Vertou -
+					<i class="fa-solid fa-phone"></i>
+					06 75 67 98 02</p>
+				<p>N° Réservé bénévoles: 06 78 67 99 22</p>
+			</div>
+			<div style='display:inline-block;width:45%;'>
+				<p>Bon d'enlèvement  Semaine N°39</p>
+				<p>Le: {{dayDate|date('d/m/Y')}}
+				</p>
+				<p>Véhicule:
+					{{pLine.vehicle?pLine.vehicle.name:'<i style="color:red">Non renseigné</i>'}}</p>
+				<p>Chauffeur:
+					{{pLine.driver?pLine.driver.firstName~' '~pLine.driver.lastName:'<i style="color:red">Non renseigné</i>'}}</p>
+				<p>
+					Accompagnateurs:
+					{% if pLine.companions %}
+						{% for companion in pLine.companions %}
+                            {{companion.firstName}} {{companion.lastName}} / 
+                        {% endfor %}
+					{% else %}
+                        <i style="color:red">Non renseigné</i>
+					{% endif %}
+				</p>
+			</div>
+		</div>
+		<table style='width:100vw;border: 1px solid;border-collapse: collapse;'>
+			<tr style='border: 1px solid;'>
+				<td style='width:400px;text-align:center;border: 1px solid;'>
+					Coordonnées
+				</td>
+				<td style='width:200px;text-align:center;border: 1px solid;'>
+					bacs et instructions
+				</td>
+				<td style='width:50%;border: 1px solid;'>
+					Notez le N° des bacs à roulettes
+				</td>
+				<td style='width:50%;border: 1px solid;'>
+					Notez le poids* des bacs
+				</td>
+			</tr>
+			{% for demand in pLine.removals %}
+				<tr style='border: 1px solid;'>
+					<td style='border: 1px solid;width:400px;padding:5px'>
+						<b>{{demand.provider.name}}</b>
+						<br/>
+						{{demand.provider.address}}
+						{{demand.provider.zipCode}}
+						{{demand.provider.city}}
+						<br/>
+                        Contact 1: {{demand.provider.removalContactPhone? demand.provider.removalContactPhone~' '~demand.provider.removalContactName:'Non renseigné'}}<br/>
+                        Contact 2: {{demand.provider.removalContactPhoneTwo?demand.provider.removalContactPhoneTwo~' '~demand.provider.removalContactNameTwo:'Non renseigné'}}<br/>
+                        {{ demand.provider.isExistPlan?'<i style="color:green">Un plan est disponible</i>':'<i style="color:red">Aucun plan disponible</i>' }}
+					</td>
+					<td style='padding:5px;'>
+						{% for containerQuantity in demand.removalContainerQuantities %}
+							{{containerQuantity.quantity}}x
+							{{containerQuantity.container.name}}<br/>
+						{% endfor %}
+						<b>Instructions:</b>
+						<br/>
+						{{demand.comment}}
+					</td>
+					<td style='border: 1px solid;width:50%;'></td>
+					<td style='border: 1px solid;width:50%'></td>
+				</tr>
+			{% endfor %}
+			{% for demand in pLine.deliverys %}
+				<tr style='border: 1px solid;'>
+					<td style='border: 1px solid;width:400px;padding:5px'>
+						<b>{{demand.provider.name}}</b>
+						<br/>
+						{{demand.provider.address}}
+						{{demand.provider.zipCode}}
+						{{demand.provider.city}}
+						<br/>
+                        Contact 1: {{demand.provider.removalContactPhone? demand.provider.removalContactPhone~' '~demand.provider.removalContactName:'Non renseigné'}}<br/>
+                        Contact 2: {{demand.provider.removalContactPhoneTwo?demand.provider.removalContactPhoneTwo~' '~demand.provider.removalContactNameTwo:'Non renseigné'}}<br/>
+                        {{ demand.provider.isExistPlan?'<i style="color:green">Un plan est disponible</i>':'<i style="color:red">Aucun plan disponible</i>' }}
+					</td>
+					<td style='padding:5px;'>
+						{% for containerQuantity in demand.removalContainerQuantities %}
+							{{containerQuantity.quantity}}x
+							{{containerQuantity.container.name}}<br/>
+						{% endfor %}
+						<b>Instructions:</b>
+						<br/>
+						{{demand.comment}}
+					</td>
+					<td style='border: 1px solid;width:50%;'></td>
+					<td style='border: 1px solid;width:50%'></td>
+				</tr>
+			{% endfor %}
+		</table>
+		<i>* en Kg pour vous aider une estimation 1 bac de brochure : 300 kg – autres 200 kg</i>
+		<p>Vos observations sur l’accès et la qualité de la collecte : </p>
+		<br/><br/><br/>
+		<table style='width:100vw;border: 1px solid;border-collapse: collapse;'>
+			<tr style='border: 1px solid;'>
+				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td style='border: 1px solid;width:400px;padding:5px'>Votre disponibilité pour la semaine prochaine</td>
+				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td style='border: 1px solid;width:100%;padding:5px'>Vos absences pour les prochaines semaines</td>
+			</tr>
+			<tr style='border: 1px solid;'>
+				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td style='border: 1px solid;width:400px;padding:5px'>lundi</td>
+				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td></td>
+			</tr>
+			<tr style='border: 1px solid;'>
+				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td style='border: 1px solid;width:400px;padding:5px'>mardi</td>
+				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td></td>
+			</tr>
+			<tr style='border: 1px solid;'>
+				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td style='border: 1px solid;width:400px;padding:5px'>mercredi</td>
+				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td></td>
+			</tr>
+			<tr style='border: 1px solid;'>
+				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td style='border: 1px solid;width:400px;padding:5px'>jeudi</td>
+				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td></td>
+			</tr>
+			<tr style='border: 1px solid;'>
+				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td style='border: 1px solid;width:400px;padding:5px'>vendredi</td>
+				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td></td>
+			</tr>
+		</table>
+	</body>
+</html>

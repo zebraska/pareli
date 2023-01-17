@@ -27,9 +27,17 @@ class PlanningController extends AbstractController
     #[Route('/volunteer/planning', name: 'app_volunteer_planning')]
     public function index(Request $request, ManagerRegistry $doctrine): Response
     {
+        $data = json_decode($request->getContent(), true);
+        $numWeek = $request->query->getInt('numWeek',0);
+        dump($numWeek);
+        dump($data);
+        //echo '$numWeek = '.$numWeek;
         $today = new \DateTime();
+        //echo '$today = '. $today->format("r");
+        //echo '$today + 7j = '. $today->modify('+7 day')->format("r");
         $year = $today->format("Y");
         $week = $today->format("W");
+        //echo '$week = '.$week;
         $week_start = $today;
         $pWeek = $doctrine->getRepository(PlanningWeek::class)->findOneBy(['year' => $year, 'number' => $week]);
         if (is_null($pWeek)) {
@@ -58,6 +66,7 @@ class PlanningController extends AbstractController
         $linesPerDay[9] = ['title' => 'Vendredi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 9])];
 
         if ($request->isXmlHttpRequest()) {
+            dump($request);
             $ajaxResponse = new AjaxResponse('volunteer/planning');
 
             $ajaxResponse->addView(
@@ -637,5 +646,24 @@ class PlanningController extends AbstractController
             'pLine' => $pLine,
             'dayDate' => $dayDate,
         ]);
+    }
+    
+    #[Route('/volunteer/planning/week/change/{pWeek}/{action', name: 'app_volunteer_planning_week_change')]
+    public function weekChange(Request $request, ManagerRegistry $doctrine, string $nWeek, string $action): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+            if ($action == "previous") {
+                $nWeek = intval($nWeek) - 1;
+                $response = new Response(
+                    'Content',
+                    Response::HTTP_OK,
+                    ['content-type' => 'text/html']
+                );
+            }
+            
+            return $ajaxResponse->generateContent();
+            
+        }
+        return $this->redirectToRoute('app_volunteer_planning');
     }
 }

@@ -99,10 +99,11 @@ function executeAjaxAction(element, action = null) {
                     console.log(response.views[rank].target);
                     document.getElementById(response.views[rank].target).innerHTML = response.views[rank].view;
                 }
-                /*if (response.redirectTo != false) {
+                //a enlever si pb redirection
+                if (response.redirectTo != false) {
                     console.log('redirect');
                     window.location.href = response.redirectTo;
-                }*/
+                }
                 document.getElementById('flash-message').innerHTML = response.flashMessage;
                 $(".alert-success").fadeTo(2500, 500).slideUp(500, function () {
                     $(".alert-success").slideUp(500);

@@ -5,14 +5,17 @@
 				<h1 class='m-0 p-2 text-center'>
 					<i class="fa-solid fa-calendar-days pr-2"></i>Planning</h1>
 			</div>
-		</div>
+                </div>
+                {# if date('w') != pWeek.number #}
+                {# include 'volunteer/planning/currentWeekButton.html.twig' #}
+                {# endif #}
 	</div>
 	<hr/>
 	<div class='table-title'>
-		<div class='row row-cols-3'>
-			<div class='col-3 position-relative'>
-                                <button class='btn btn-secondary h-100 position-absolute start-0 ajax-link-action pt-1 my-2' style="--bs-btn-font-size: 1.5vh;" action='{{path('app_volunteer_week_previous',{numWeek:pWeek.number - 1,year:pWeek.year,oldMonday:pWeek.mondayDate|date('m-d-Y')})}}' data-target-spinner='body-interface'>
-				<i class="fa-solid fa-arrow-left" data-bs-toggle='tooltip' data-bs-title='Semaine précédente'></i>
+		<div class='row row-cols-3 h-100'>
+			<div class='col-3 position-relative h-100'>
+                                <button class='btn btn-secondary h-75 position-absolute top-50 start-0 translate-middle-y ajax-link-action pt-1' style="--bs-btn-font-size: 1.5vh;" data-bs-toggle='tooltip' data-bs-title='Semaine précédente' action='{{path('app_volunteer_week_change',{oldMonday:pWeek.mondayDate|date('m-d-Y'),action:'previous'})}}' data-target-spinner='body-interface'>
+				<i class="fa-solid fa-arrow-left"></i>
 				Précédent
                                 </button>
 			</div>
@@ -21,11 +24,11 @@
 				du lundi
 				{{pWeek.mondayDate|date('d/m')}}
 				au vendredi
-				{{pWeek.mondayDate|date('d') + 4}}/{{pWeek.mondayDate|date('m')}}</div>
+				{{pWeek.mondayDate|date_modify('+4 day')|date('d')}}/{{pWeek.mondayDate|date_modify('+4 day')|date('m')}}</div>
 			<div class='col-3 position-relative'>
-                            <button class='btn btn-secondary h-100 position-absolute top-25 end-0 ajax-link-action pt-1 my-2' style="--bs-btn-font-size: 1.5vh;" action='/2emeAnnee/AP/Stage/pareli/public/volunteer/planning/change/week/+1'' data-target-spinner='body-interface'>
+                            <button class='btn btn-secondary h-75 position-absolute top-50 end-0 translate-middle-y ajax-link-action pt-1' style="--bs-btn-font-size: 1.5vh;" data-bs-toggle='tooltip' data-bs-title='Semaine suivante' action='{{path('app_volunteer_week_change',{oldMonday:pWeek.mondayDate|date('m-d-Y'),action:'next'})}}'' data-target-spinner='body-interface'>
 				Suivant
-				<i class="fa-solid fa-arrow-right" data-bs-toggle='tooltip' data-bs-title='Semaine suivante' ></i>
+				<i class="fa-solid fa-arrow-right"></i>
                             </button>
 			</div>
 		</div>

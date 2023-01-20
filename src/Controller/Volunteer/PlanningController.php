@@ -35,7 +35,6 @@ class PlanningController extends AbstractController
         }
         $year = $today->format("Y");
         $week = $today->format("W");
-        //echo '$week = '.$week;
         $week_start = $today;
         $pWeek = $doctrine->getRepository(PlanningWeek::class)->findOneBy(['year' => $year, 'number' => $week]);
         if (is_null($pWeek)) {

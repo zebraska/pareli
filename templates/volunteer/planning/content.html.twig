@@ -6,9 +6,9 @@
 					<i class="fa-solid fa-calendar-days pr-2"></i>Planning</h1>
 			</div>
                 </div>
-                {# if date('w') != pWeek.number #}
-                {# include 'volunteer/planning/currentWeekButton.html.twig' #}
-                {# endif #}
+                {% if 'now' | date('W') != (pWeek.number) or 'now' | date('Y') != pWeek.year %}
+                {% include 'volunteer/planning/currentWeekButton.html.twig' %}
+                {% endif %}
 	</div>
 	<hr/>
 	<div class='table-title'>

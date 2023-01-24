@@ -506,26 +506,5 @@ class RemovalsController extends AbstractController
             'controller_name' => 'Volunteer/RemovalsController',
         ]);
     }
-    
-    #[Route('/volunteer/removal/provider/view/{id}', name: 'app_volunteer_removal_provider_view')]
-    public function viewRemovalByProvider(int $id, Request $request, ManagerRegistry $doctrine): Response
-    {
-        if ($request->isXmlHttpRequest()) {
-            
-            $provider = $doctrine->getRepository(Provider::class)->findOneBy(['id' => $id]);
-            $query = $doctrine->getRepository(Removal::class)->getLastRemovalByProvider($id,3);
-            $lastRemovals = $query->getResult();
-            $ajaxResponse = new AjaxResponse('volunteer/removal');
-            $ajaxResponse->addView(
-                $this->render('volunteer/removals/modal/removalHistory.html.twig', ['provider' => $provider, 'lastRemovals' => $lastRemovals])->getContent(),
-                'modal-content'
-                );
-            $ajaxResponse->setRedirectTo(false);
-            return $ajaxResponse->generateContent();
-            
-        }
-        
-        return $this->redirectToRoute("app_volunteer_removal");
-        
-    }
+
 }

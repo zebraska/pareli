@@ -73,10 +73,7 @@
 					<i class="fa-solid fa-truck-ramp-box text-primary text-3 mt-3" data-bs-toggle='tooltip' data-bs-title='Ajouter un enlèvement' data-bs-placement="left"></i>
 				</span><br/>
 				<i class="fa-solid fa-trash text-danger text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':provider.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle='tooltip' data-bs-title='Supprimer' data-bs-placement="left" data-confirm="Confirmer la suppression du fournisseur ?"></i>
-                                {#<br/>
-                                <span class="ajax-link-action" action="{{ path('app_volunteer_removal_provider_view',{'id':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
-                                    <i class="fa-solid fa-sheet-plastic text-3 mt-3 " data-bs-toggle='tooltip' data-bs-title="Consulter l'historique" data-bs-placement="left"></i>
-                                </span>#}
+                                
 			</div>
 		</div>
 		<hr/>

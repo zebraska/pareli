@@ -74,11 +74,20 @@ class RemovalRepository extends ServiceEntityRepository
                 $qb = $qb->andWhere('p.attachment=:attach')->setParameter('attach', 'Saint-Nazaire');
         }
         
-        return $qb->orderBy('r.dateCreate', 'DESC')
+        return $qb->orderBy('r.dateRequest', 'ASC')
             ->setMaxResults(10)
             ->getQuery();
     }
-
+    
+    public function getLastRemovalByProvider(int $providerId, int $nbremoval): Query
+    {
+        $qb = $this->createQueryBuilder('r')->join('r.provider', 'p')
+                ->where('p.id = :providerId')->setParameter('providerId', $providerId)
+                ->orderBy('r.dateRequest', 'DESC')
+                ->setMaxResults($nbremoval);
+        
+        return $qb->getQuery();
+    }
     // /**
     //  * @return Removal[] Returns an array of Removal objects
     //  */

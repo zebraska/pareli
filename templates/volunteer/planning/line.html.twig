@@ -40,15 +40,14 @@
 			{% endif %}
 		</div>
 		<div id='selected-requests-{{pLine.id}}' class='col-3 border border-rounded table-content-cell text-center {{pLine.valid?"bg-secondary":"ajax-link-action"}}' action="{{path('app_volunteer_planning_get_requests_selection',{'pLineId':pLine.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="{{pLine.valid?"#":"#supplierModal"}}" style='cursor:pointer'>
-			{% if pLine.deliverys is not empty %}
-				{% for delivery in  pLine.deliverys %}
-					{{delivery.recycler.name}} - {{pLine.valid?delivery.weight:''}} Kg<br/>
-				{% endfor %}
-			{% endif %}
-
 			{% if pLine.removals is not empty %}
 				{% for removal in  pLine.removals %}
-					{{removal.provider.name}} - {{pLine.valid?removal.weight:''}} Kg<br/>
+					{{removal.provider.name}} (Enlèvement) - {{pLine.valid?removal.weight:''}} Kg<br/>
+				{% endfor %}
+			{% endif %}
+			{% if pLine.deliverys is not empty %}
+				{% for delivery in  pLine.deliverys %}
+					{{delivery.recycler.name}} (Livraison) - {{pLine.valid?delivery.weight:''}} Kg<br/>
 				{% endfor %}
 			{% endif %}
 

@@ -16,10 +16,11 @@
 									Non planifié
 								{% elseif removal.state == 1 %}
 									<i class="fa-solid fa-calendar-plus text-primary text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':removal.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
-									Planifié le 01/01/2020
+									Planifié semaine {{removal.planningLine.planningWeek.number}}
 								{% elseif removal.state == 2 %}
 									<i class="fa-solid fa-calendar-check text-success text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':removal.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
-									Réalisé le 01/01/2020
+									Réalisé semaine {{removal.planningLine.planningWeek.number}}</br>
+									Poids: {{removal.weight}} Kg
 								{% endif %}
 							</div>
 							<div class='col-3 ajax-link-action' style='height:25vh;overflow-y:hidden' action="{{path('app_volunteer_removal_getform',{'id':removal.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">

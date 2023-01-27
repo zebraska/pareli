@@ -9,13 +9,13 @@
 			<div class='col-12 mb-3'>
 				{% for removal in pLine.removals %}
 					<div class="form-group">
-						<label for="weightRemoval{{removal.id}}">{{removal.provider.name}}</label>
+						<label for="weightRemoval{{removal.id}}">{{removal.provider.name}} (Enlèvement)</label>
 						<input type="number" name='weightRemoval{{removal.id}}' class="form-control" id="weight" aria-describedby="poids" value="0">
 					</div>
 				{% endfor %}
 				{% for delivery in pLine.deliverys %}
 					<div class="form-group">
-						<label for="weightDelivery{{delivery.id}}">{{delivery.recycler.name}}</label>
+						<label for="weightDelivery{{delivery.id}}">{{delivery.recycler.name}} (Livraison)</label>
 						<input type="number" name='weightDelivery{{delivery.id}}' class="form-control" id="weight" aria-describedby="poids" value="0">
 					</div>
 				{% endfor %}

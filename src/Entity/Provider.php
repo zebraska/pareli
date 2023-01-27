@@ -151,7 +151,7 @@ class Provider
         return $this->commercialContactName;
     }
 
-    public function setCommercialContactName(string $commercialContactName): self
+    public function setCommercialContactName(?string $commercialContactName): self
     {
         $this->commercialContactName = $commercialContactName;
 
@@ -163,7 +163,7 @@ class Provider
         return $this->commercialContactPhone;
     }
 
-    public function setCommercialContactPhone(string $commercialContactPhone): self
+    public function setCommercialContactPhone(?string $commercialContactPhone): self
     {
         $this->commercialContactPhone = $commercialContactPhone;
 
@@ -175,7 +175,7 @@ class Provider
         return $this->commercialContactMail;
     }
 
-    public function setCommercialContactMail(string $commercialContactMail): self
+    public function setCommercialContactMail(?string $commercialContactMail): self
     {
         $this->commercialContactMail = $commercialContactMail;
 
@@ -187,7 +187,7 @@ class Provider
         return $this->removalContactName;
     }
 
-    public function setRemovalContactName(string $removalContactName): self
+    public function setRemovalContactName(?string $removalContactName): self
     {
         $this->removalContactName = $removalContactName;
 
@@ -199,7 +199,7 @@ class Provider
         return $this->removalContactPhone;
     }
 
-    public function setRemovalContactPhone(string $removalContactPhone): self
+    public function setRemovalContactPhone(?string $removalContactPhone): self
     {
         $this->removalContactPhone = $removalContactPhone;
 
@@ -211,7 +211,7 @@ class Provider
         return $this->removalContactMail;
     }
 
-    public function setRemovalContactMail(string $removalContactMail): self
+    public function setRemovalContactMail(?string $removalContactMail): self
     {
         $this->removalContactMail = $removalContactMail;
 
@@ -223,7 +223,7 @@ class Provider
         return $this->certificateContactMail;
     }
 
-    public function setCertificateContactMail(string $certificateContactMail): self
+    public function setCertificateContactMail(?string $certificateContactMail): self
     {
         $this->certificateContactMail = $certificateContactMail;
 

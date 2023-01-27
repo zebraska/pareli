@@ -24,7 +24,7 @@ $.fn.selectpicker.Constructor.BootstrapVersion = '5';
 // or you can include specific pieces
 // require('bootstrap/js/dist/tooltip');
 // require('bootstrap/js/dist/popover');
-var publicPath = 'http://zebratero.com/public/';
+var publicPath = 'http://localhost/pareli/public/';
 
 function loadPopovers() {
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))

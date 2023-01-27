@@ -1,58 +1,53 @@
-<div>
+<div class='row'>
+	<div class='col-2 py-2'>
+		<div class='border border-dark rounded p-0' style='height:5vh'>
+			<h1 class='m-0 p-2 text-center'>
+				<i class="fa-solid fa-calendar-days pr-2"></i>Planning
+			</h1>
+		</div>
+	</div>
+</div>
+<hr/>
+<div class='table-title'>
 	<div class='row'>
-		<div class='col-2 py-2'>
-			<div class='border border-dark rounded p-0' style='height:5vh'>
-				<h1 class='m-0 p-2 text-center'>
-					<i class="fa-solid fa-calendar-days pr-2"></i>Planning</h1>
-			</div>
+		<div class='col-3'>
+			<i class="fa-solid fa-arrow-left pt-1" data-bs-toggle='tooltip' data-bs-title='Semaine précédente' style='font-size:3vh'></i>
+			Précédent
+		</div>
+		<div class='col-6 text-center pt-1'>Semaine
+			{{pWeek.number}}
+			du lundi
+			{{pWeek.mondayDate|date('d/m')}}
+			au vendredi
+			{{pWeek.mondayDate|date('d') + 4}}/{{pWeek.mondayDate|date('m')}}</div>
+		<div class='col-3 text-end'>
+			Suivant
+			<i class="fa-solid fa-arrow-right pt-1" data-bs-toggle='tooltip' data-bs-title='Semaine suivante' style='font-size:3vh'></i>
 		</div>
 	</div>
-	<hr/>
-	<div class='table-title'>
+</div>
+<hr/>
+<div class='table-content'>
+	{% for linePerDay in linesPerDay %}
 		<div class='row'>
-			<div class='col-3'>
-				<i class="fa-solid fa-arrow-left pt-1" data-bs-toggle='tooltip' data-bs-title='Semaine précédente' style='font-size:3vh'></i>
-				Précédent
+			<div class='col-9'>
+				<b>{{linePerDay.title}}</b>
 			</div>
-			<div class='col-6 text-center pt-1'>Semaine
-				{{pWeek.number}}
-				du lundi
-				{{pWeek.mondayDate|date('d/m')}}
-				au vendredi
-				{{pWeek.mondayDate|date('d') + 4}}/{{pWeek.mondayDate|date('m')}}</div>
-			<div class='col-3 text-end'>
-				Suivant
-				<i class="fa-solid fa-arrow-right pt-1" data-bs-toggle='tooltip' data-bs-title='Semaine suivante' style='font-size:3vh'></i>
+			<div class='col-3 py-2'>
+				<div class="d-grid">
+					<button class='btn btn-secondary ajax-link-action' style='font-size:1.2vh' action='{{path('app_volunteer_planning_add_planning_line',{day:loop.index - 1,lineWeekId:pWeek.id})}}' data-target-spinner='body-interface' data-spinner-type='1'>Ajouter une ligne</button>
+				</div>
 			</div>
 		</div>
-	</div>
-	<hr/>
-	<div class='table-content'>
-		{% for linePerDay in linesPerDay %}
-			<div class='row'>
-				<div class='col-9'>
-					<b>{{linePerDay.title}}</b>
-				</div>
-				<div class='col-3 py-2'>
-					<div class="d-grid">
-						<button class='btn btn-secondary ajax-link-action' style='font-size:1.2vh' action='{{path('app_volunteer_planning_add_planning_line',{day:loop.index - 1,lineWeekId:pWeek.id})}}' data-target-spinner='body-interface' data-spinner-type='1'>Ajouter une ligne</button>
-					</div>
-				</div>
-			</div>
-			{% for line in linePerDay.lines %}
-				<hr/>
-				<div class='row' id='pLine{{line.id}}'>
-					{% include 'volunteer/planning/line.html.twig' with {pLine:line} only %}
-				</div>
-			{% endfor %}
+		{% for line in linePerDay.lines %}
 			<hr/>
+			<div class='row' id='pLine{{line.id}}'>
+				{% include 'volunteer/planning/line.html.twig' with {pLine:line} only %}
+			</div>
 		{% endfor %}
-	</div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered modal-xl">
-		<div id='modal-content' class="modal-content"></div>
-	</div>
-</div>
+		<hr/>
+	{% endfor %}
+</div></div><!-- Modal --><div class="modal fade" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered modal-xl">
+	<div id='modal-content' class="modal-content"></div>
+</div></div>

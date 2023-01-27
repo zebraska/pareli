@@ -60,11 +60,9 @@ class ProviderInfoType extends AbstractType
             ->add('isExistPlan', ChoiceType::class,[
                 'label' => "Plan disponible ?",
                 'choices'  => [
-                    'Non renseigné' => null,
-                    'Non' => 0,
+                    'Non' => null,
                     'Oui' => 1,
                 ],
-                'required' => false,
             ])
         ;
     }

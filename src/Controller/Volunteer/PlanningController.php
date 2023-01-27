@@ -323,7 +323,7 @@ class PlanningController extends AbstractController
         return $this->redirectToRoute('app_volunteer_planning');
     }
 
-    #[Route('/volunteer/planning/add/{type}/{demandId}/{pLineId}', name: 'app_volunteer_planning_add_removal')]
+    #[Route('/volunteer/planning/add/demand/{type}/{demandId}/{pLineId}', name: 'app_volunteer_planning_add_removal')]
     public function addRemoval(Request $request, ManagerRegistry $doctrine, String $type, int $demandId, int $pLineId): Response
     {
         if ($request->isXmlHttpRequest()) {
@@ -382,7 +382,7 @@ class PlanningController extends AbstractController
         return $this->redirectToRoute('app_volunteer_planning');
     }
 
-    #[Route('/volunteer/planning/remove/{type}/{demandId}/{pLineId}', name: 'app_volunteer_planning_remove_removal')]
+    #[Route('/volunteer/planning/remove/demand/{type}/{demandId}/{pLineId}', name: 'app_volunteer_planning_remove_removal')]
     public function removeRemoval(Request $request, ManagerRegistry $doctrine, String $type, int $demandId, int $pLineId): Response
     {
         if ($request->isXmlHttpRequest()) {

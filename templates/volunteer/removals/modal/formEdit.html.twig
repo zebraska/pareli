@@ -24,6 +24,10 @@
 	</div>
     <hr/>
     
+    {% if lastRemovals is defined %}
+    {% include 'volunteer/removals/modal/removalHistory.html.twig' %}
+    {% endif %}
+    
 </div>
 <hr/>
 <div class="row py-2">

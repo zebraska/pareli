@@ -27,7 +27,12 @@ class PlanningController extends AbstractController
     #[Route('/volunteer/planning', name: 'app_volunteer_planning')]
     public function index(Request $request, ManagerRegistry $doctrine): Response
     {
-        $today = new \DateTime();
+        //Parses a time string according to a specified format
+        if (isset($_GET['m']) && \DateTime::createFromFormat('Y-m-d', $_GET['m'])){
+            $today = \DateTime::createFromFormat('Y-m-d', $_GET['m']);
+        } else {
+            $today = new \DateTime();
+        }
         $year = $today->format("Y");
         $week = $today->format("W");
         $week_start = $today;
@@ -637,5 +642,23 @@ class PlanningController extends AbstractController
             'pLine' => $pLine,
             'dayDate' => $dayDate,
         ]);
+    }
+    
+    #[Route('/volunteer/planning/week/change/{oldMonday}/{action}', name: 'app_volunteer_week_change')]
+    public function weekChange(Request $request, ManagerRegistry $doctrine, string $oldMonday, string $action): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+            $oldMonday = str_replace("-", "/", $oldMonday);
+            $oldMonday = new \DateTime($oldMonday);
+            if ($action == "previous"){
+                $monday = $oldMonday->modify('-1 week');
+            } else {
+                $monday = $oldMonday->modify('+1 week');
+            }
+            $ajaxResponse = new AjaxResponse('volunteer/planning');
+            $ajaxResponse->setRedirectTo($this->generateUrl('app_volunteer_planning', array( 'm' => $monday->format('Y-m-d'))));
+            return $ajaxResponse->generateContent();
+            }
+        return $this->redirectToRoute('app_volunteer_planning');
     }
 }

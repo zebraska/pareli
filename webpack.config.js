@@ -12,7 +12,7 @@ Encore
     // public path used by the web server to access the output path
     .setPublicPath('/pareli/public/build/')
     // only needed for CDN's or sub-directory deploy
-    //.setManifestKeyPrefix('build/')
+    .setManifestKeyPrefix('http://127.0.0.1:80/2emeAnnee/AP/Stage/pareli/public/build/')
 
     /*
      * ENTRY CONFIG

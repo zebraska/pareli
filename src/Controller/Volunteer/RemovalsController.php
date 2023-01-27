@@ -81,9 +81,11 @@ class RemovalsController extends AbstractController
             if (!is_null($id)) {
                 $removal = $doctrine->getRepository(Removal::class)->findOneBy(['id' => $id]);
             } 
-            
             if ($providerId != 0) {
                 $provider = $doctrine->getRepository(Provider::class)->findOneBy(['id' => $providerId]);
+                $query = $doctrine->getRepository(Removal::class)->getLastRemovalByProvider($providerId,3);
+                $lastRemovals = $query->getResult();
+                $ajaxResponse = new AjaxResponse('volunteer/removal');
                 // $removal->setComment($provider->getComment());
             }
          
@@ -94,10 +96,10 @@ class RemovalsController extends AbstractController
             if (!is_null($id)) {
                 $ajaxResponse->addView(
                 $this->render('volunteer/removals/modal/formEdit.html.twig', ['form' => $form->createView(), 'provider' => $removal -> getProvider(),'id' => $id])->getContent(),
-                'modal-content'); 
+                'modal-content');
             } else {
-                 $ajaxResponse->addView(
-                $this->render('volunteer/removals/modal/formEdit.html.twig', ['form' => $form->createView(), 'provider' => $provider ,'id' => $id])->getContent(),
+                $ajaxResponse->addView(
+                $this->render('volunteer/removals/modal/formEdit.html.twig', ['form' => $form->createView(), 'provider' => $provider ,'id' => $id,  'lastRemovals' => $lastRemovals])->getContent(),
                 'modal-content'
                 );
             }
@@ -504,4 +506,5 @@ class RemovalsController extends AbstractController
             'controller_name' => 'Volunteer/RemovalsController',
         ]);
     }
+
 }

@@ -257,6 +257,7 @@ class PlanningController extends AbstractController
                 $this->render('volunteer/planning/selection/drivers/drivers.html.twig', [
                     'pLine' => $pLine,
                     'drivers' => $drivers,
+                    'search' => ''
                 ])->getContent(),
                 'modal-content'
             );
@@ -328,7 +329,7 @@ class PlanningController extends AbstractController
         return $this->redirectToRoute('app_volunteer_planning');
     }
 
-    #[Route('/volunteer/planning/add/{type}/{demandId}/{pLineId}', name: 'app_volunteer_planning_add_removal')]
+    #[Route('/volunteer/planning/add/demand/{type}/{demandId}/{pLineId}', name: 'app_volunteer_planning_add_removal')]
     public function addRemoval(Request $request, ManagerRegistry $doctrine, String $type, int $demandId, int $pLineId): Response
     {
         if ($request->isXmlHttpRequest()) {
@@ -458,6 +459,7 @@ class PlanningController extends AbstractController
                 $this->render('volunteer/planning/selection/companions/companions.html.twig', [
                     'pLine' => $pLine,
                     'companions' => $companions,
+                    'search' => ''
                 ])->getContent(),
                 'modal-content'
             );
@@ -466,17 +468,20 @@ class PlanningController extends AbstractController
         return $this->redirectToRoute('app_volunteer_planning');
     }
 
-    #[Route('/volunteer/planning/add/companion/{companionId}/{pLineId}', name: 'app_volunteer_planning_add_companion')]
+    #[Route('/volunteer/planning/companion/add/{companionId}/{pLineId}', name: 'app_volunteer_planning_companion_add')]
     public function addCompanion(Request $request, ManagerRegistry $doctrine, int $companionId, int $pLineId): Response
     {
         if ($request->isXmlHttpRequest()) {
+            dump($pLineId);
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
+            dump($pLine);
             $companion = $doctrine->getRepository(Volunteer::class)->findOneBy(['id' => $companionId]);
             $pLine->addCompanion($companion);
             $em = $doctrine->getManager();
             $em->persist($pLine);
             $em->flush();
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
+            dump($pLine);
 
             $ajaxResponse = new AjaxResponse('volunteer/planning');
             $ajaxResponse->addView(
@@ -505,7 +510,7 @@ class PlanningController extends AbstractController
         return $this->redirectToRoute('app_volunteer_planning');
     }
 
-    #[Route('/volunteer/planning/remove/companion/{companionId}/{pLineId}', name: 'app_volunteer_planning_remove_companion')]
+    #[Route('/volunteer/planning/companion/remove/{companionId}/{pLineId}', name: 'app_volunteer_planning_companion_remove')]
     public function removeCompanion(Request $request, ManagerRegistry $doctrine, int $companionId, int $pLineId): Response
     {
         if ($request->isXmlHttpRequest()) {
@@ -659,6 +664,35 @@ class PlanningController extends AbstractController
             $ajaxResponse->setRedirectTo($this->generateUrl('app_volunteer_planning', array( 'm' => $monday->format('Y-m-d'))));
             return $ajaxResponse->generateContent();
             }
+        return $this->redirectToRoute('app_volunteer_planning');
+    }
+    
+    //type = driver or ac
+    #[Route('/volunteer/planning/search/companion/{pLineId}', name: 'app_volunteer_planning_search_companion')]
+    public function searchCompanion(Request $request, ManagerRegistry $doctrine, int $pLineId): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+            
+            $search = $request->query->get('search', '');
+            $type = $request->query->get('type', '');
+            $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
+            $query = $doctrine->getRepository(Volunteer::class)->getVolunteerByName($search,$type);
+            $companions = $query->getResult();
+            dump($pLine, $search);
+            
+            $ajaxResponse = new AjaxResponse('volunteer/provider');
+            $ajaxResponse->addView(
+                $this->render('volunteer/planning/selection/companions/companions.html.twig', [
+                    'pLine' => $pLine,
+                    'companions' => $companions,
+                    'search' => $search
+                ])->getContent(),
+                'modal-body'
+            );
+            return $ajaxResponse->generateContent();
+            
+            }
+            
         return $this->redirectToRoute('app_volunteer_planning');
     }
 }

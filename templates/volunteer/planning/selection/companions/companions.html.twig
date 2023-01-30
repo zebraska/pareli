@@ -7,7 +7,8 @@
             <button type="button" class="btn-close col-3 mt-1" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 </div>
-<div class="modal-body" id="modal-body">
+                {% include 'volunteer/planning/component/volunteerGrid.html.twig' %}
+{#<div class="modal-body" id="modal-body">
 	<div class='row'>
 		{% for companion in companions %}
             {% set active = false %}
@@ -21,4 +22,4 @@
 			</div>
 		{% endfor %}
 	</div>
-</div>
+</div>#}

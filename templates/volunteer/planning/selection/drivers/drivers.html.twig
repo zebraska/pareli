@@ -7,7 +7,8 @@
             <button type="button" class="btn-close col-3 mt-1" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 </div>
-<div class="modal-body" id="modal-body">
+                {% include 'volunteer/planning/component/volunteerGrid.html.twig' %}
+{#<div class="modal-body" id="modal-body">
 	<div class='row'>
 		{% for driver in drivers %}
 			<div class='col-3 ajax-link-action' action="{{path('app_volunteer_planning_select_driver',{'driverId':driver.id,'pLineId':pLine.id})}}" data-target-spinner='select-driver-{{driver.id}}' data-spinner-type='2' id='select-driver-{{driver.id}}'>
@@ -15,4 +16,4 @@
 			</div>
 		{% endfor %}
 	</div>
-</div>
+</div>#}

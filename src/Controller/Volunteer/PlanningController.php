@@ -82,6 +82,7 @@ class PlanningController extends AbstractController
                 )->getContent(),
                 'menu-interface'
             );
+            dump($pWeek->getPlanningLines()[0]);
             $ajaxResponse->setRedirectTo(false);
             return $ajaxResponse->generateContent();
         }
@@ -211,6 +212,7 @@ class PlanningController extends AbstractController
             $ajaxResponse = new AjaxResponse('volunteer/planning');
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
             $vehicle = $doctrine->getRepository(Vehicle::class)->findOneBy(['id' => $vehicleId]);
+            dump($vehicle);
             $lastVehicle = $pLine->getVehicle();
             if ($lastVehicle) {
                 $ajaxResponse->addView(
@@ -233,9 +235,9 @@ class PlanningController extends AbstractController
                 ])->getContent(),
                 'select-vehicle-' . $vehicle->getId()
             );
-
+            $hgv = $vehicle->getHgv() ? 'PL ' : ''; 
             $ajaxResponse->addView(
-                $vehicle->getName(),
+                $hgv . $vehicle->getName(),
                 'selected-vehicle-' . $pLineId
             );
 
@@ -251,7 +253,11 @@ class PlanningController extends AbstractController
     {
         if ($request->isXmlHttpRequest()) {
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
-            $drivers = $doctrine->getRepository(Volunteer::class)->findDriversForSelection();
+            if($pLine->getVehicle()?->getHgv()) {
+                $drivers = $doctrine->getRepository(Volunteer::class)->findHgvDriversForSelection();
+            } else {
+                $drivers = $doctrine->getRepository(Volunteer::class)->findDriversForSelection();
+            }
             $ajaxResponse = new AjaxResponse('volunteer/planning');
             $ajaxResponse->addView(
                 $this->render('volunteer/planning/selection/drivers/drivers.html.twig', [
@@ -681,14 +687,25 @@ class PlanningController extends AbstractController
             dump($pLine, $search);
             
             $ajaxResponse = new AjaxResponse('volunteer/provider');
+            if ($type === 'driver') {
+                $ajaxResponse->addView(
+                $this->render('volunteer/planning/component/volunteerGrid.html.twig', [
+                    'pLine' => $pLine,
+                    'drivers' => $companions,
+                    'search' => $search,
+                ])->getContent(),
+                'modal-body'
+            );
+            } else {
             $ajaxResponse->addView(
-                $this->render('volunteer/planning/selection/companions/companions.html.twig', [
+                $this->render('volunteer/planning/component/volunteerGrid.html.twig', [
                     'pLine' => $pLine,
                     'companions' => $companions,
                     'search' => $search
                 ])->getContent(),
                 'modal-body'
             );
+            }
             return $ajaxResponse->generateContent();
             
             }

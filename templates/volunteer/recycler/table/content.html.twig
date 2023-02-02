@@ -10,19 +10,28 @@
 						</span>
 					</div>
 					<div class='col-3 ajax-link-action' action="{{path('app_volunteer_recycler_getform',{'type':'contact','id':recycler.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
-						{{recycler.address}}
+						{{recycler.address}}<br/>
+                                                {{recycler.zipCode}}<br/>
+                                                <b>{{recycler.city}}</b>
 						<span class='table-content-line-edit justify-content-right'>
 							<i class="fa-solid fa-pen-to-square"></i>
 						</span>
 					</div>
 					<div class='col-3 ajax-link-action' action="{{path('app_volunteer_recycler_getform',{'type':'contact','id':recycler.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
-						{{recycler.zipCode}}
+						<b>{{recycler.commercialContactName}}</b>
+                                                (Commercial)<br/>
+                                                {{recycler.commercialContactPhone}}<br/>
+                                                {{recycler.commercialContactMail}}<br/>
 						<span class='table-content-line-edit justify-content-right'>
 							<i class="fa-solid fa-pen-to-square"></i>
 						</span>
 					</div>
 					<div class='col-3 ajax-link-action' action="{{path('app_volunteer_recycler_getform',{'type':'comment','id':recycler.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal" style='height:25vh;overflow-y:hidden'>
-						{{recycler.city}}
+                                                <b>{{recycler.contactName}}</b>
+                                                (Autre)<br/>
+                                                Tel 1 : {{ recycler.contactTelOne }}<br/>
+                                                Tel 2 : {{ recycler.contactTelTwo }}<br/>
+                                                {{ recycler.contactMail }}
 						<span class='table-content-line-edit justify-content-right'>
 							<i class="fa-solid fa-pen-to-square"></i>
 						</span>

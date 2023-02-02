@@ -6,6 +6,7 @@ use App\Repository\DeliveryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DeliveryRepository::class)]
+//#[ORM\HasLifecycleCallbacks]
 class Delivery
 {
     #[ORM\Id]
@@ -30,6 +31,7 @@ class Delivery
     private $state;
 
     #[ORM\ManyToOne(targetEntity: PlanningLine::class, inversedBy: 'deliverys')]
+    //#[ORM\JoinColumn(onDelete:"SET NULL")]
     private $planningLine;
 
     #[ORM\Column(type: 'integer', nullable: true)]
@@ -128,4 +130,14 @@ class Delivery
 
         return $this;
     }
+    
+//    #[ORM\PostLoad]
+//    public function onUpdate(\Doctrine\ORM\Event\LifecycleEventArgs $event)
+//    {
+//        dump($event->getObject());
+//        if ($this->planningLine === null){
+//            $this->state = 0;
+//            //dump($this);
+//        }
+//    }
 }

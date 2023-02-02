@@ -6,8 +6,10 @@ use App\Repository\RemovalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+//use Doctrine\ORM\Event;
 
 #[ORM\Entity(repositoryClass: RemovalRepository::class)]
+//#[ORM\HasLifecycleCallbacks]
 class Removal
 {
     #[ORM\Id]
@@ -35,6 +37,7 @@ class Removal
     private $state;
 
     #[ORM\ManyToOne(targetEntity: PlanningLine::class, inversedBy: 'removals')]
+    //#[ORM\JoinColumn(onDelete:"SET NULL")]
     private $planningLine;
 
     #[ORM\Column(type: 'integer', nullable: true)]
@@ -168,4 +171,14 @@ class Removal
 
         return $this;
     }
+    
+//    #[ORM\PostLoad]
+//    public function onUpdate(\Doctrine\ORM\Event\LifecycleEventArgs $event)
+//    {
+//        dump($event->getObject());
+//        if ($this->planningLine === null){
+//            $this->state = 0;
+//            //dump($this);
+//        }
+//    }
 }

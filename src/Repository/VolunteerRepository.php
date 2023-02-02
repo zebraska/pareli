@@ -79,6 +79,10 @@ class VolunteerRepository extends ServiceEntityRepository
                       ->setParameter('valPL', 'PL')
                       ->setParameter('valVL', 'VL');
             }
+        if ($type === 'hgvDriver'){
+                $qb = $qb->andWhere('v.type = :valPL')
+                      ->setParameter('valPL', 'PL'); 
+            }
         if ($search!='') {
             $searchArray = explode(' ', $search);
             foreach ($searchArray as $searchElement){

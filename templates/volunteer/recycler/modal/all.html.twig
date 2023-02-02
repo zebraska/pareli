@@ -29,6 +29,47 @@
 			{{ form_widget(form.city, { 'attr': {'class': 'form-control border border-primary'} }) }}
 		</div>
 	</div>
+        <hr/>
+        <div class='row'>
+                <p>
+			<b>Interlocuteur commercial</b>
+		</p>
+		<div class='col-4 mb-3'>
+			{{ form_label(form.commercialContactName) }}
+			{{ form_widget(form.commercialContactName, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<div class='col-4 mb-3'>
+			{{ form_label(form.commercialContactPhone) }}
+			{{ form_widget(form.commercialContactPhone, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<div class='col-4 mb-3'>
+			{{ form_label(form.commercialContactMail) }}
+			{{ form_widget(form.commercialContactMail, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+        </div>
+        <hr/>
+        <div class='row'>
+                <p>
+			<b>Autre interlocuteur</b>
+		</p>
+		<div class='col-3 mb-3'>
+			{{ form_label(form.contactName) }}
+			{{ form_widget(form.contactName, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<div class='col-3 mb-3'>
+			{{ form_label(form.contactTelOne) }}
+			{{ form_widget(form.contactTelOne, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+                <div class='col-3 mb-3'>
+			{{ form_label(form.contactTelTwo) }}
+			{{ form_widget(form.contactTelTwo, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<div class='col-3 mb-3'>
+			{{ form_label(form.contactMail) }}
+			{{ form_widget(form.contactMail, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+        </div>
+        
 </div>
 <hr/>
 <div class="row py-2">

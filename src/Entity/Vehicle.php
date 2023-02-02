@@ -47,4 +47,9 @@ class Vehicle
 
         return $this;
     }
+    
+    public function getDisplayName(): ?string
+    {
+        return ($this->hgv) ? 'PL '.$this->name : $this->name;
+    }
 }

@@ -82,7 +82,6 @@ class PlanningController extends AbstractController
                 )->getContent(),
                 'menu-interface'
             );
-            dump($pWeek->getPlanningLines()[0]);
             $ajaxResponse->setRedirectTo(false);
             return $ajaxResponse->generateContent();
         }
@@ -153,6 +152,7 @@ class PlanningController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             $ajaxResponse = new AjaxResponse('volunteer/planning');
             $em = $doctrine->getManager();
+            //$doctrine->getRepository(PlanningLine::class)->remove($pLine);
             $em->remove($pLine);
             $em->flush();
 
@@ -212,7 +212,6 @@ class PlanningController extends AbstractController
             $ajaxResponse = new AjaxResponse('volunteer/planning');
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
             $vehicle = $doctrine->getRepository(Vehicle::class)->findOneBy(['id' => $vehicleId]);
-            dump($vehicle);
             $lastVehicle = $pLine->getVehicle();
             if ($lastVehicle) {
                 $ajaxResponse->addView(
@@ -235,9 +234,9 @@ class PlanningController extends AbstractController
                 ])->getContent(),
                 'select-vehicle-' . $vehicle->getId()
             );
-            $hgv = $vehicle->getHgv() ? 'PL ' : ''; 
+            
             $ajaxResponse->addView(
-                $hgv . $vehicle->getName(),
+                $vehicle->getDisplayName(),
                 'selected-vehicle-' . $pLineId
             );
 
@@ -478,16 +477,13 @@ class PlanningController extends AbstractController
     public function addCompanion(Request $request, ManagerRegistry $doctrine, int $companionId, int $pLineId): Response
     {
         if ($request->isXmlHttpRequest()) {
-            dump($pLineId);
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
-            dump($pLine);
             $companion = $doctrine->getRepository(Volunteer::class)->findOneBy(['id' => $companionId]);
             $pLine->addCompanion($companion);
             $em = $doctrine->getManager();
             $em->persist($pLine);
             $em->flush();
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
-            dump($pLine);
 
             $ajaxResponse = new AjaxResponse('volunteer/planning');
             $ajaxResponse->addView(
@@ -682,9 +678,11 @@ class PlanningController extends AbstractController
             $search = $request->query->get('search', '');
             $type = $request->query->get('type', '');
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
+            if ($type === 'driver' && $pLine->getVehicle()?->getHgv()){
+                 $type = 'hgvDriver';
+            }
             $query = $doctrine->getRepository(Volunteer::class)->getVolunteerByName($search,$type);
             $companions = $query->getResult();
-            dump($pLine, $search);
             
             $ajaxResponse = new AjaxResponse('volunteer/provider');
             if ($type === 'driver') {

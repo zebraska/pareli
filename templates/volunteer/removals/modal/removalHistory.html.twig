@@ -23,10 +23,14 @@
                     </button>
                 </h2>
                 <div id="collapse{{otherRemoval.id}}" class="accordion-collapse collapse" aria-labelledby="heading{{otherRemoval.id}}" >
-                    <div class="accordion-body">
+                    <div class="table-content-cell ajax-link-action accordion-body" action="{{path('app_volunteer_removal_getform',{'id':otherRemoval.id, 'withReturn':true})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle='modal-content' style="cursor: pointer">
                 {% if otherRemoval.comment is not empty %}
 {#                <p class='row col-11 border-start border-end border-bottom border-secondary border-2 mb-2 text-center justify-content-center pb-1 rounded-bottom accordion-body'>{{ otherRemoval.comment }}</p>#}
-                        <p class="text-center my-0">{{ otherRemoval.comment }}</p>
+                        <p class="text-center my-0">{{ otherRemoval.comment }}
+                        <span class="table-content-line-edit">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </span>
+                        </p>
                 {% else %}
 {#                <div class='row col-11 border-start border-end border-bottom border-secondary border-2 mb-2 justify-content-center pb-1 rounded-bottom accordion-body' style='color: darkgray'>Pas de commentaires</div>#}
                         <p class="text-center my-0" style='color: darkgray'>Pas de commentaires</p>

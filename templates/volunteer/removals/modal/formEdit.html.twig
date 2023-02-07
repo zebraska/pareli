@@ -33,14 +33,20 @@
 <div class="row py-2">
 	<div class='col-3'>
 		<div class="d-grid">
+                    {% if returnButton %}
+                        <button class="btn btn-dark ajax-link-action" action="{{path('app_volunteer_removal_getform',{'providerId':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle='modal-content'><i class="fa-solid fa-arrow-left px-2"></i>Retour</button>
+                    {% else %}
 			<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Fermer</button>
+                    {% endif %}
 		</div>
 	</div>
 	<div class='col-6'></div>
 	<div class='col-3'>
-		<div class="d-grid">
-			<button type="submit" class="btn btn-success" data-spinner-type='1'>Valider</button>
-		</div>
-	</div>
+            <div class="d-grid">
+			<button type="submit" class="btn btn-success container" data-spinner-type='1'>Valider</button>
+                        {#{% if returnButton %}<div class="btn ajax-link-action" action="{{path('app_volunteer_removal_getform',{'providerId':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle='modal-content'>valider</div>{% endif %}#}
+            </div>                                    
+        </div>
 </div>
+                    
 {{ form_end(form) }}

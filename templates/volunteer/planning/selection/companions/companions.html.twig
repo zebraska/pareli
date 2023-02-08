@@ -8,18 +8,3 @@
         </div>
 </div>
                 {% include 'volunteer/planning/component/volunteerGrid.html.twig' %}
-{#<div class="modal-body" id="modal-body">
-	<div class='row'>
-		{% for companion in companions %}
-            {% set active = false %}
-            {% for sCompanion in pLine.companions %}
-                {% if sCompanion == companion %}
-                    {% set active = true %}
-                {% endif %}
-            {% endfor %}
-			<div class='col-3 ajax-link-action' action="#" data-target-spinner='select-companion-{{companion.id}}' data-spinner-type='2' id='select-companion-{{companion.id}}'>
-				{% include 'volunteer/planning/selection/companions/cell.html.twig' %}
-			</div>
-		{% endfor %}
-	</div>
-</div>#}

@@ -80,7 +80,6 @@ class RemovalsController extends AbstractController
             $removal->setDateRequest(new \DateTime());
             //if true show a return button instead of close
             $returnButton = $request->query->getBoolean('withReturn', false);
-            dump($request->getUri());
             if (!is_null($id)) {
                 $removal = $doctrine->getRepository(Removal::class)->findOneBy(['id' => $id]);
             } 

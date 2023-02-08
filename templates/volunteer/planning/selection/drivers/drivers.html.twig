@@ -8,12 +8,3 @@
         </div>
 </div>
                 {% include 'volunteer/planning/component/volunteerGrid.html.twig' %}
-{#<div class="modal-body" id="modal-body">
-	<div class='row'>
-		{% for driver in drivers %}
-			<div class='col-3 ajax-link-action' action="{{path('app_volunteer_planning_select_driver',{'driverId':driver.id,'pLineId':pLine.id})}}" data-target-spinner='select-driver-{{driver.id}}' data-spinner-type='2' id='select-driver-{{driver.id}}'>
-				{% include 'volunteer/planning/selection/drivers/cell.html.twig' with {'active':(driver == pLine.driver)?true:false} %}
-			</div>
-		{% endfor %}
-	</div>
-</div>#}

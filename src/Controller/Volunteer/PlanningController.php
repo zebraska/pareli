@@ -632,7 +632,7 @@ class PlanningController extends AbstractController
                 $pWeek = (new PlanningWeek())
                     ->setYear($year)
                     ->setnumber($week)
-                    ->setMondayDate($week_start->setISODate($today->format("Y"), $today->format("W")));
+                    ->setMondayDate($week_start->setISODate($monday->format("Y"), $monday->format("W")));
                 $em = $doctrine->getManager();
                 $em->persist($pWeek);
                 $em->flush();

@@ -107,9 +107,9 @@
 			{% endfor %}
 
 		</select>
-	</div>
+	</div>        
 
-
+                        
 	<div class="suivant col-1 text-center" style='height:5vh;'>
 		{% if (page!=last) %}
 			<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'page':page,'className':'removals','last':last})}}'>
@@ -118,8 +118,9 @@
 		{% endif %}
 	</div>
 
-	<div class="count col-8 text-3" style='text-align:right'>
-		<b>{{pagination.getTotalItemCount}}
-			résultats</b>
-	</div>
+	<div class="count col-4"></div>
+        <button type="button" class="btn btn-primary col-2 ajax-link-action" action="{{ path('app_volunteer_removal_spreadsheet_generate')}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+            Générer une feuille de tableur
+        </button>
+        <div class="d-flex col-1 offset-1 text-3"><b class="position-absolute end-0 pt-1">{{pagination.getTotalItemCount}} résultats</b></div>
 </div>

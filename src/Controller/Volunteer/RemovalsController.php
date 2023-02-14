@@ -4,16 +4,25 @@ namespace App\Controller\Volunteer;
 
 use App\Entity\Provider;
 use App\Entity\Removal;
+use App\Entity\PlanningWeek;
 use App\Entity\RemovalContainerQuantity;
 use App\Form\RemovalContainerQuantityType;
 use App\Form\RemovalType;
 use App\Service\Ajax\AjaxResponse;
+use App\Service\Planning\Manager;
+use App\Service\Spreadsheet\RemovalDeliveryModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class RemovalsController extends AbstractController
 {
@@ -30,6 +39,18 @@ class RemovalsController extends AbstractController
             $request->query->getInt('page', 1), /*page number*/
             10 /*limit per page*/
         );
+        if (null !== $request->query->get('date1') && null !== $request->query->get('date2')){
+            $dateStart = new \Datetime($request->query->get('date1'));
+            $dateEnd = new \Datetime($request->query->get('date2'));
+            dump($dateStart, $dateEnd);            
+            $spreadsheetModel = new RemovalDeliveryModel($doctrine, $dateStart, $dateEnd);
+            $spreadsheet = $spreadsheetModel->getSpreadsheet();
+            $writer = new Xlsx($spreadsheet);
+            $fileName = 'demandes_export.xlsx';
+            $temp_file = tempnam(sys_get_temp_dir(), $fileName);
+            $writer->save($temp_file);            
+            return $this->file($temp_file, $fileName, ResponseHeaderBag::DISPOSITION_INLINE);
+        }
 
         if ($request->isXmlHttpRequest()) {
             $ajaxResponse = new AjaxResponse('volunteer/removal');
@@ -543,6 +564,67 @@ class RemovalsController extends AbstractController
         
         return $this->redirectToRoute("app_volunteer_removal");
         
+    }
+    
+    #[Route('/volunteer/removal/spreadsheet/generate', name: 'app_volunteer_removal_spreadsheet_generate')]
+    public function spreadsheetGenerate(Request $request, ManagerRegistry $doctrine): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+            
+            $ajaxResponse = new AjaxResponse('volunteer/removal');
+            $dateStart = new \DateTime();
+            $dateEnd = new \DateTime();
+            $dateEnd->modify('+1 week');
+            $defaultData = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+            $form = $this->createFormBuilder($defaultData, [
+                'action' => $this->generateUrl('app_volunteer_removal_spreadsheet_generate'),
+            ])
+                ->add('dateStart', \Symfony\Component\Form\Extension\Core\Type\DateType::class, ['label' => 'Début de la feuille', 'widget' => 'single_text'])
+                ->add('dateEnd', \Symfony\Component\Form\Extension\Core\Type\DateType::class, ['label' => 'Fin de la feuille', 'widget' => 'single_text'])
+                ->getForm();
+            $ajaxResponse->addView(
+                $this->render('volunteer/removals/modal/spreadsheet.html.twig', ['form' => $form->createView()])->getContent(),
+                'modal-content'
+                );
+            
+            $form->handleRequest($request);
+            if ($form->isSubmitted() and $form->isValid()) {
+                dump($form->getData());
+                $dateStart = $form->getData()['dateStart'];
+                $dateEnd = $form->getData()['dateEnd'];
+                $ajaxResponse->setRedirectTo($this->generateUrl('app_volunteer_removal', ['date1' => $dateStart->format('Y-m-d'), 'date2' => $dateEnd->format('Y-m-d')]));
+//                $query = $doctrine->getRepository(PlanningWeek::class)->getAllByDateInterval($dateStart, $dateEnd);
+//                $pWeeks = $query->getResult();
+//                dump($pWeeks);
+//                $spreadsheet = new Spreadsheet();
+//                $sheet = $spreadsheet->getActiveSheet();
+//                $sheet->setCellValue('A1', 'Hello World !');
+//                $writer = new Xlsx($spreadsheet);
+//                $fileName = 'utilisateurs_export.xlsx';
+                //$temp_file = tempnam(sys_get_temp_dir(), $fileName);
+                //$writer->save($temp_file);
+         
+                
+                
+//                return $response;
+//                return $this->file($temp_file, $fileName, ResponseHeaderBag::DISPOSITION_INLINE);
+                
+               
+            }
+            return $ajaxResponse->generateContent();
+            
+            
+        }
+        
+        
+        
+        return $this->redirectToRoute("app_volunteer_removal");
+    }
+    
+    #[Route('/volunteer/removal/spreadsheet/generate/redirect/{date1}/{date2}', name: 'app_volunteer_removal_spreadsheet_generate_redirect')]
+    public function spreadsheetGenerateRedirect(Request $request, ManagerRegistry $doctrine): Response
+    {
+        return $this->redirectToRoute("app_volunteer_removal");
     }
 
 }

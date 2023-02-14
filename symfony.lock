@@ -98,6 +98,9 @@
     "egulias/email-validator": {
         "version": "3.1.2"
     },
+    "ezyang/htmlpurifier": {
+        "version": "v4.16.0"
+    },
     "fakerphp/faker": {
         "version": "v1.20.0"
     },
@@ -113,11 +116,23 @@
     "laminas/laminas-code": {
         "version": "4.5.1"
     },
+    "maennchen/zipstream-php": {
+        "version": "v2.4.0"
+    },
+    "markbaker/complex": {
+        "version": "3.0.2"
+    },
+    "markbaker/matrix": {
+        "version": "3.0.1"
+    },
     "masterminds/html5": {
         "version": "2.7.6"
     },
     "monolog/monolog": {
         "version": "2.5.0"
+    },
+    "myclabs/php-enum": {
+        "version": "1.8.4"
     },
     "nikic/php-parser": {
         "version": "v4.13.2"
@@ -137,6 +152,9 @@
     "phpdocumentor/type-resolver": {
         "version": "1.6.1"
     },
+    "phpoffice/phpspreadsheet": {
+        "version": "1.27.1"
+    },
     "phpstan/phpdoc-parser": {
         "version": "1.4.5"
     },
@@ -149,11 +167,23 @@
     "psr/event-dispatcher": {
         "version": "1.0.0"
     },
+    "psr/http-client": {
+        "version": "1.0.1"
+    },
+    "psr/http-factory": {
+        "version": "1.0.1"
+    },
+    "psr/http-message": {
+        "version": "1.0.1"
+    },
     "psr/link": {
         "version": "1.1.1"
     },
     "psr/log": {
         "version": "2.0.0"
+    },
+    "psr/simple-cache": {
+        "version": "3.0.0"
     },
     "sabberworm/php-css-parser": {
         "version": "8.4.0"

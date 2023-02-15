@@ -1,8 +1,5 @@
-        <div class="modal-header mb-3">
-            <h5 class="modal-title" id="supplierModalLabel">Derniers enlèvements</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
         {% if lastRemovals is not empty %}
+        <h5 class='mb-3 mt-2 px-3 text-start'>Derniers enlèvements</h5>
         <div class="accordion row justify-content-center" id="accordionRemovalHistory">
             {% for otherRemoval in lastRemovals %}
             <div class="accordion-item col-11 px-0">
@@ -22,9 +19,13 @@
                     </button>
                 </h2>
                 <div id="collapse{{otherRemoval.id}}" class="accordion-collapse collapse" aria-labelledby="heading{{otherRemoval.id}}" >
-                    <div class="table-content-cell accordion-body"> 
+                    <div class="table-content-cell accordion-body ajax-link-action" action="{{path('app_volunteer_removal_getform',{'id':otherRemoval.id, 'withReturn':true})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle='modal-content' style="cursor: pointer">
                 {% if otherRemoval.comment is not empty %}
-                        <p class="text-center my-0">{{ otherRemoval.comment }}</p>
+                        <p class="text-center my-0">{{ otherRemoval.comment }}
+                        <span class="table-content-line-edit">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </span>
+                        </p>
                 {% else %}
                         <p class="text-center my-0" style='color: darkgray'>Pas de commentaires</p>
                 {% endif %}
@@ -37,4 +38,3 @@
         <h6 class='mb-1 mt-3 text-center' style='color: darkgray'>Aucun enlèvement enregistré pour ce fournisseur</h6>
         {% endif %}
         <div class='py-2'></div>
-    

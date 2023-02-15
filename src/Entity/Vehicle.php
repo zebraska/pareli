@@ -16,6 +16,9 @@ class Vehicle
     #[ORM\Column(type: 'string', length: 100)]
     private $name;
 
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private $hgv;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -31,5 +34,22 @@ class Vehicle
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getHgv(): ?bool
+    {
+        return $this->hgv;
+    }
+
+    public function setHgv(?bool $hgv): self
+    {
+        $this->hgv = $hgv;
+
+        return $this;
+    }
+    
+    public function getDisplayName(): ?string
+    {
+        return ($this->hgv) ? 'PL '.$this->name : $this->name;
     }
 }

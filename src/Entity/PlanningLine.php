@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PlanningLineRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class PlanningLine
 {
     #[ORM\Id]
@@ -195,5 +196,17 @@ class PlanningLine
         $this->valid = $valid;
 
         return $this;
+    }
+    
+    //listener: onRemove set children removals and deliverys to state 0 - unplannified
+    #[ORM\PreRemove]
+    public function onRemove()
+    {
+        foreach($this->removals as $removal){
+            $removal->setState(0);
+        }
+        foreach($this->deliverys as $delivery){
+            $delivery->setState(0);
+        }
     }
 }

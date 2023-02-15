@@ -3,7 +3,7 @@
 		<div class='col-3 border border-rounded table-content-cell text-center {{pLine.valid?"bg-secondary":"ajax-link-action"}}' action="{{path('app_volunteer_planning_get_vehicle_selection',{'pLineId':pLine.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="{{pLine.valid?"#":"#supplierModal"}}" style='cursor:pointer;height:15vh'>
 			<span id='selected-vehicle-{{pLine.id}}'>
 				{% if pLine.vehicle %}
-					{{pLine.vehicle.name}}
+					{{pLine.vehicle.displayName}}
 				{% else %}
 					<span class='text-danger'>
 						<i class="fa-solid fa-truck" style='font-size:4vh;padding:1vh'></i>

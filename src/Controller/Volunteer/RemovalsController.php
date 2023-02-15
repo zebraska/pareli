@@ -78,6 +78,8 @@ class RemovalsController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             $removal = new Removal();
             $removal->setDateRequest(new \DateTime());
+            //if true show a return button instead of close
+            $returnButton = $request->query->getBoolean('withReturn', false);
             if (!is_null($id)) {
                 $removal = $doctrine->getRepository(Removal::class)->findOneBy(['id' => $id]);
             } 
@@ -88,18 +90,17 @@ class RemovalsController extends AbstractController
                 $ajaxResponse = new AjaxResponse('volunteer/removal');
                 $removal->setComment($provider->getComment());
             }
-         
             $form = $this->createForm(RemovalType::class, $removal, [
-                'action' => $this->generateUrl('app_volunteer_removal_create', ['id' => $id, 'providerId' => $providerId]),
+                'action' => $this->generateUrl('app_volunteer_removal_create', ['id' => $id, 'providerId' => $providerId, 'returnButton' => $returnButton]),
             ]);
             $ajaxResponse = new AjaxResponse('volunteer/removal');
             if (!is_null($id)) {
                 $ajaxResponse->addView(
-                $this->render('volunteer/removals/modal/formEdit.html.twig', ['form' => $form->createView(), 'provider' => $removal -> getProvider(),'id' => $id])->getContent(),
+                $this->render('volunteer/removals/modal/formEdit.html.twig', ['form' => $form->createView(), 'provider' => $removal -> getProvider(), 'id' => $id, 'returnButton' => $returnButton])->getContent(),
                 'modal-content');
             } else {
                 $ajaxResponse->addView(
-                $this->render('volunteer/removals/modal/formEdit.html.twig', ['form' => $form->createView(), 'provider' => $provider ,'id' => $id,  'lastRemovals' => $lastRemovals])->getContent(),
+                $this->render('volunteer/removals/modal/formEdit.html.twig', ['form' => $form->createView(), 'provider' => $provider ,'id' => $id,  'lastRemovals' => $lastRemovals, 'returnButton' => $returnButton])->getContent(),
                 'modal-content'
                 );
             }
@@ -244,6 +245,7 @@ class RemovalsController extends AbstractController
     public function create(int $id = 0, Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
     {
         $providerId = $request->query->getInt('providerId', 0);
+        $returnButton = $request->query->getBoolean('returnButton', false);
         $removal = new Removal();
         if ($request->isXmlHttpRequest()) {
             $ajaxResponse = new AjaxResponse('volunteer/removal');
@@ -288,6 +290,7 @@ class RemovalsController extends AbstractController
                         10 /*limit per page*/
                     );
 
+                    if (!$returnButton){
                     $ajaxResponse->addView(
                         $this->render(
                             'volunteer/removals/content.html.twig',
@@ -310,6 +313,19 @@ class RemovalsController extends AbstractController
                         )->getContent(),
                         'menu-interface'
                     );
+                    } else {
+                        $nextRemoval = new Removal();
+                        $nextRemoval->setDateRequest(new \DateTime());
+                        $form = $this->createForm(RemovalType::class, $nextRemoval, [
+                        'action' => $this->generateUrl('app_volunteer_removal_create', ['id' => null, 'providerId' => $removal->getProvider()->getId()]),
+                        ]);                        
+                        $query = $doctrine->getRepository(Removal::class)->getLastRemovalByProvider($removal->getProvider()->getId(),3);
+                        $lastRemovals = $query->getResult();
+                        $ajaxResponse->setCloseModal(false);
+                        $ajaxResponse->addView(
+                        $this->render('volunteer/removals/modal/formEdit.html.twig', ['form' => $form->createView(), 'provider' => $removal -> getProvider(), 'id' => null,  'lastRemovals' => $lastRemovals, 'returnButton' => false])->getContent(),
+                        'modal-content');                    
+                    }
                     $this->addFlash('success', 'Enlèvement pour le fournisseur: ' . $removal->getProvider()->getName() . ' [action réalisée]');
                 } catch (\Exception $e) {
                     $ajaxResponse->setCloseModal(false);
@@ -505,6 +521,28 @@ class RemovalsController extends AbstractController
         return $this->render('volunteer/removal/index.html.twig', [
             'controller_name' => 'Volunteer/RemovalsController',
         ]);
+    }
+    
+    #[Route('/volunteer/removal/provider/view/{id}', name: 'app_volunteer_removal_provider_view')]
+    public function viewRemovalByProvider(int $id, Request $request, ManagerRegistry $doctrine): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+            
+            $provider = $doctrine->getRepository(Provider::class)->findOneBy(['id' => $id]);
+            $query = $doctrine->getRepository(Removal::class)->getLastRemovalByProvider($id,10);
+            $lastRemovals = $query->getResult();
+            $ajaxResponse = new AjaxResponse('volunteer/removal');
+            $ajaxResponse->addView(
+                $this->render('volunteer/removals/modal/removalHistory.html.twig', ['provider' => $provider, 'lastRemovals' => $lastRemovals])->getContent(),
+                'modal-content'
+                );
+            $ajaxResponse->setRedirectTo(false);
+            return $ajaxResponse->generateContent();
+            
+        }
+        
+        return $this->redirectToRoute("app_volunteer_removal");
+        
     }
 
 }

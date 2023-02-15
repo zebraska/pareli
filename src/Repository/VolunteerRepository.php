@@ -67,6 +67,41 @@ class VolunteerRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+    
+    public function findHgvDriversForSelection()
+    {
+        return $this->createQueryBuilder('v')
+            ->andWhere('v.type = :valPL')
+            ->setParameter('valPL', 'PL')
+            ->orderBy('v.firstname', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    
+    
+    public function getVolunteerByName(String $search = '', String $type = '')
+    {
+        $qb = $this->createQueryBuilder('v');
+        if ($type === 'driver'){
+                $qb = $qb->andWhere('v.type = :valPL OR v.type = :valVL')
+                      ->setParameter('valPL', 'PL')
+                      ->setParameter('valVL', 'VL');
+            }
+        if ($type === 'hgvDriver'){
+                $qb = $qb->andWhere('v.type = :valPL')
+                      ->setParameter('valPL', 'PL'); 
+            }
+        if ($search!='') {
+            $searchArray = explode(' ', $search);
+            foreach ($searchArray as $searchElement){
+                if ($searchElement !== ' '){
+                    $qb = $qb->andWhere('v.firstname LIKE :search OR v.lastname LIKE :search')->setParameter('search', '%'.$searchElement.'%');
+                }
+            }
+        }
+        return $qb->getQuery();
+    }
 
     /*
     public function findOneBySomeField($value): ?Volunteer

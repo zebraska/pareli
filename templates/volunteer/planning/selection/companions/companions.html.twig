@@ -1,19 +1,10 @@
 <div class="modal-header">
-	<h5 class="modal-title" id="removalsModalLabel">Assigner des accompagnateurs</h5>
-	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class='row col-12 gap-3'>
+            <h5 class="modal-title col-4" id="removalsModalLabel">Assigner des accompagnateurs</h5>
+            <div id='input-search' class="col-4">
+                {% include 'volunteer/planning/component/search.html.twig' %}
+            </div>    
+            <button type="button" class="btn-close col-3 mt-1" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
 </div>
-<div class="modal-body">
-	<div class='row'>
-		{% for companion in companions %}
-            {% set active = false %}
-            {% for sCompanion in pLine.companions %}
-                {% if sCompanion == companion %}
-                    {% set active = true %}
-                {% endif %}
-            {% endfor %}
-			<div class='col-3 ajax-link-action' action="#" data-target-spinner='select-companion-{{companion.id}}' data-spinner-type='2' id='select-companion-{{companion.id}}'>
-				{% include 'volunteer/planning/selection/companions/cell.html.twig' %}
-			</div>
-		{% endfor %}
-	</div>
-</div>
+                {% include 'volunteer/planning/component/volunteerGrid.html.twig' %}

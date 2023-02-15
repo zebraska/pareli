@@ -9,6 +9,7 @@ use App\Entity\Removal;
 use App\Entity\Vehicle;
 use App\Entity\Volunteer;
 use App\Service\Ajax\AjaxResponse;
+use App\Service\Planning\Manager;
 use DateInterval;
 use Doctrine\Persistence\ManagerRegistry;
 use phpDocumentor\Reflection\Types\Integer;
@@ -28,7 +29,7 @@ class PlanningController extends AbstractController
     public function index(Request $request, ManagerRegistry $doctrine): Response
     {
         //Parses a time string according to a specified format
-        if (isset($_GET['m']) && \DateTime::createFromFormat('Y-m-d', $_GET['m'])){
+        if (isset($_GET['m']) && \DateTime::createFromFormat('Y-m-d', $_GET['m'])) {
             $today = \DateTime::createFromFormat('Y-m-d', $_GET['m']);
         } else {
             $today = new \DateTime();
@@ -47,20 +48,7 @@ class PlanningController extends AbstractController
             $em->flush();
         }
 
-        $linesPerDay[0] = ['title' => 'Lundi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 0])];
-        $linesPerDay[1] = ['title' => 'Lundi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 1])];
-
-        $linesPerDay[2] = ['title' => 'Mardi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 2])];
-        $linesPerDay[3] = ['title' => 'Mardi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 3])];
-
-        $linesPerDay[4] = ['title' => 'Mercredi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 4])];
-        $linesPerDay[5] = ['title' => 'Mercredi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 5])];
-
-        $linesPerDay[6] = ['title' => 'Jeudi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 6])];
-        $linesPerDay[7] = ['title' => 'Jeudi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 7])];
-
-        $linesPerDay[8] = ['title' => 'Vendredi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 8])];
-        $linesPerDay[9] = ['title' => 'Vendredi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 9])];
+        $planningManager = new Manager($doctrine, $pWeek);
 
         if ($request->isXmlHttpRequest()) {
             $ajaxResponse = new AjaxResponse('volunteer/planning');
@@ -68,7 +56,7 @@ class PlanningController extends AbstractController
             $ajaxResponse->addView(
                 $this->render('volunteer/planning/content.html.twig', [
                     'pWeek' => $pWeek,
-                    'linesPerDay' => $linesPerDay
+                    'linesPerDay' => $planningManager->getLinesPerDay()
                 ])->getContent(),
                 'body-interface'
             );
@@ -89,7 +77,7 @@ class PlanningController extends AbstractController
         return $this->render('volunteer/planning/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'pWeek' => $pWeek,
-            'linesPerDay' => $linesPerDay
+            'linesPerDay' => $planningManager->getLinesPerDay()
         ]);
     }
 
@@ -108,28 +96,14 @@ class PlanningController extends AbstractController
             $em->persist($pLine);
             $em->flush();
 
-            $linesPerDay[0] = ['title' => 'Lundi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 0])];
-            $linesPerDay[1] = ['title' => 'Lundi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 1])];
-
-            $linesPerDay[2] = ['title' => 'Mardi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 2])];
-            $linesPerDay[3] = ['title' => 'Mardi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 3])];
-
-            $linesPerDay[4] = ['title' => 'Mercredi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 4])];
-            $linesPerDay[5] = ['title' => 'Mercredi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 5])];
-
-            $linesPerDay[6] = ['title' => 'Jeudi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 6])];
-            $linesPerDay[7] = ['title' => 'Jeudi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 7])];
-
-            $linesPerDay[8] = ['title' => 'Vendredi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 8])];
-            $linesPerDay[9] = ['title' => 'Vendredi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 9])];
+            $planningManager = new Manager($doctrine, $pWeek);
 
             $ajaxResponse->addView(
                 $this->render('volunteer/planning/dayLines.html.twig', [
                     'pWeek' => $pWeek,
-                    'linePerDay' => $linesPerDay[$day],
-                    'key' => $day
+                    'linesPerDay' => $planningManager->getLinesPerDay()
                 ])->getContent(),
-                'dayLines'.$day
+                'dayLines' . $day
             );
             $this->addFlash('success', 'Ligne ajoutée');
             $ajaxResponse->setFlashMessageView($this->renderView('flashMessages.html.twig'));
@@ -153,31 +127,18 @@ class PlanningController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             $ajaxResponse = new AjaxResponse('volunteer/planning');
             $em = $doctrine->getManager();
+            //$doctrine->getRepository(PlanningLine::class)->remove($pLine);
             $em->remove($pLine);
             $em->flush();
 
-            $linesPerDay[0] = ['title' => 'Lundi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 0])];
-            $linesPerDay[1] = ['title' => 'Lundi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 1])];
-
-            $linesPerDay[2] = ['title' => 'Mardi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 2])];
-            $linesPerDay[3] = ['title' => 'Mardi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 3])];
-
-            $linesPerDay[4] = ['title' => 'Mercredi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 4])];
-            $linesPerDay[5] = ['title' => 'Mercredi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 5])];
-
-            $linesPerDay[6] = ['title' => 'Jeudi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 6])];
-            $linesPerDay[7] = ['title' => 'Jeudi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 7])];
-
-            $linesPerDay[8] = ['title' => 'Vendredi matin', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 8])];
-            $linesPerDay[9] = ['title' => 'Vendredi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 9])];
+            $planningManager = new Manager($doctrine, $pWeek);
 
             $ajaxResponse->addView(
                 $this->render('volunteer/planning/dayLines.html.twig', [
                     'pWeek' => $pWeek,
-                    'linePerDay' => $linesPerDay[$day],
-                    'key' => $day
+                    'linesPerDay' => $planningManager->getLinesPerDay()
                 ])->getContent(),
-                'dayLines'.$day
+                'dayLines' . $day
             );
             $this->addFlash('success', 'Ligne supprimée');
             $ajaxResponse->setFlashMessageView($this->renderView('flashMessages.html.twig'));
@@ -237,7 +198,7 @@ class PlanningController extends AbstractController
             );
 
             $ajaxResponse->addView(
-                $vehicle->getName(),
+                $vehicle->getDisplayName(),
                 'selected-vehicle-' . $pLineId
             );
 
@@ -253,12 +214,17 @@ class PlanningController extends AbstractController
     {
         if ($request->isXmlHttpRequest()) {
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
-            $drivers = $doctrine->getRepository(Volunteer::class)->findDriversForSelection();
+            if ($pLine->getVehicle()?->getHgv()) {
+                $drivers = $doctrine->getRepository(Volunteer::class)->findHgvDriversForSelection();
+            } else {
+                $drivers = $doctrine->getRepository(Volunteer::class)->findDriversForSelection();
+            }
             $ajaxResponse = new AjaxResponse('volunteer/planning');
             $ajaxResponse->addView(
                 $this->render('volunteer/planning/selection/drivers/drivers.html.twig', [
                     'pLine' => $pLine,
                     'drivers' => $drivers,
+                    'search' => ''
                 ])->getContent(),
                 'modal-content'
             );
@@ -460,6 +426,7 @@ class PlanningController extends AbstractController
                 $this->render('volunteer/planning/selection/companions/companions.html.twig', [
                     'pLine' => $pLine,
                     'companions' => $companions,
+                    'search' => ''
                 ])->getContent(),
                 'modal-content'
             );
@@ -468,7 +435,7 @@ class PlanningController extends AbstractController
         return $this->redirectToRoute('app_volunteer_planning');
     }
 
-    #[Route('/volunteer/planning/add/companion/{companionId}/{pLineId}', name: 'app_volunteer_planning_add_companion')]
+    #[Route('/volunteer/planning/companion/add/{companionId}/{pLineId}', name: 'app_volunteer_planning_companion_add')]
     public function addCompanion(Request $request, ManagerRegistry $doctrine, int $companionId, int $pLineId): Response
     {
         if ($request->isXmlHttpRequest()) {
@@ -507,7 +474,7 @@ class PlanningController extends AbstractController
         return $this->redirectToRoute('app_volunteer_planning');
     }
 
-    #[Route('/volunteer/planning/remove/companion/{companionId}/{pLineId}', name: 'app_volunteer_planning_remove_companion')]
+    #[Route('/volunteer/planning/companion/remove/{companionId}/{pLineId}', name: 'app_volunteer_planning_companion_remove')]
     public function removeCompanion(Request $request, ManagerRegistry $doctrine, int $companionId, int $pLineId): Response
     {
         if ($request->isXmlHttpRequest()) {
@@ -645,22 +612,96 @@ class PlanningController extends AbstractController
             'dayDate' => $dayDate,
         ]);
     }
-    
+
     #[Route('/volunteer/planning/week/change/{oldMonday}/{action}', name: 'app_volunteer_week_change')]
     public function weekChange(Request $request, ManagerRegistry $doctrine, string $oldMonday, string $action): Response
     {
         if ($request->isXmlHttpRequest()) {
             $oldMonday = str_replace("-", "/", $oldMonday);
             $oldMonday = new \DateTime($oldMonday);
-            if ($action == "previous"){
+            if ($action == "previous") {
                 $monday = $oldMonday->modify('-1 week');
             } else {
                 $monday = $oldMonday->modify('+1 week');
             }
-            $ajaxResponse = new AjaxResponse('volunteer/planning');
-            $ajaxResponse->setRedirectTo($this->generateUrl('app_volunteer_planning', array( 'm' => $monday->format('Y-m-d'))));
-            return $ajaxResponse->generateContent();
+            $year = $monday->format("Y");
+            $week = $monday->format("W");
+            $week_start = $monday;
+            $pWeek = $doctrine->getRepository(PlanningWeek::class)->findOneBy(['year' => $year, 'number' => $week]);
+            if (is_null($pWeek)) {
+                $pWeek = (new PlanningWeek())
+                    ->setYear($year)
+                    ->setnumber($week)
+                    ->setMondayDate($week_start->setISODate($monday->format("Y"), $monday->format("W")));
+                $em = $doctrine->getManager();
+                $em->persist($pWeek);
+                $em->flush();
             }
+
+            $planningManager = new Manager($doctrine, $pWeek);
+
+            $ajaxResponse = new AjaxResponse('volunteer/planning');
+            $ajaxResponse->addView(
+                $this->render('volunteer/planning/content.html.twig', [
+                    'pWeek' => $pWeek,
+                    'linesPerDay' => $planningManager->getLinesPerDay()
+                ])->getContent(),
+                'body-interface'
+            );
+            //Update menu active
+            $ajaxResponse->addView(
+                $this->render(
+                    'volunteer/menu/menu.html.twig',
+                    [
+                        'controller_name' => self::CONTROLLER_NAME,
+                    ]
+                )->getContent(),
+                'menu-interface'
+            );
+            $ajaxResponse->setRedirectTo(false);
+            return $ajaxResponse->generateContent();
+        }
+        return $this->redirectToRoute('app_volunteer_planning');
+    }
+
+    //type = driver or ac
+    #[Route('/volunteer/planning/search/companion/{pLineId}', name: 'app_volunteer_planning_search_companion')]
+    public function searchCompanion(Request $request, ManagerRegistry $doctrine, int $pLineId): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+
+            $search = $request->query->get('search', '');
+            $type = $request->query->get('type', '');
+            $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
+            if ($type === 'driver' && $pLine->getVehicle()?->getHgv()) {
+                $type = 'hgvDriver';
+            }
+            $query = $doctrine->getRepository(Volunteer::class)->getVolunteerByName($search, $type);
+            $companions = $query->getResult();
+
+            $ajaxResponse = new AjaxResponse('volunteer/provider');
+            if ($type === 'driver' || $type === 'hgvDriver') {
+                $ajaxResponse->addView(
+                    $this->render('volunteer/planning/component/volunteerGrid.html.twig', [
+                        'pLine' => $pLine,
+                        'drivers' => $companions,
+                        'search' => $search,
+                    ])->getContent(),
+                    'modal-body'
+                );
+            } else {
+                $ajaxResponse->addView(
+                    $this->render('volunteer/planning/component/volunteerGrid.html.twig', [
+                        'pLine' => $pLine,
+                        'companions' => $companions,
+                        'search' => $search
+                    ])->getContent(),
+                    'modal-body'
+                );
+            }
+            return $ajaxResponse->generateContent();
+        }
+
         return $this->redirectToRoute('app_volunteer_planning');
     }
 }

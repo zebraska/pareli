@@ -63,7 +63,7 @@ class ProviderRepository extends ServiceEntityRepository
         }
 
         return $qb->orderBy('p.id', 'DESC')
-            ->setMaxResults(10)
+            ->setMaxResults(50)
             ->getQuery();
     }
 }

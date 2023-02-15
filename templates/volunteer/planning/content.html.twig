@@ -35,24 +35,21 @@
 	</div>
 	<hr/>
 	<div class='table-content'>
-		{% for linePerDay in linesPerDay %}
+		{% for key, linePerDay in linesPerDay %}
 			<div class='row'>
 				<div class='col-9'>
 					<b>{{linePerDay.title}}</b>
 				</div>
 				<div class='col-3 py-2'>
 					<div class="d-grid">
-						<button class='btn btn-secondary ajax-link-action' style='font-size:1.2vh' action='{{path('app_volunteer_planning_add_planning_line',{day:loop.index - 1,lineWeekId:pWeek.id})}}' data-target-spinner='body-interface' data-spinner-type='1'>Ajouter une ligne</button>
+						<button class='btn btn-secondary ajax-link-action' style='font-size:1.2vh' action='{{path('app_volunteer_planning_add_planning_line',{day:key,lineWeekId:pWeek.id})}}' data-target-spinner='dayLines{{key}}' data-spinner-type='2'>Ajouter une ligne</button>
 					</div>
 				</div>
 			</div>
-			{% for line in linePerDay.lines %}
-				<hr/>
-				<div class='row' id='pLine{{line.id}}'>
-					{% include 'volunteer/planning/line.html.twig' with {pLine:line} only %}
-				</div>
-			{% endfor %}
 			<hr/>
+			<span id='dayLines{{key}}'>
+				{% include 'volunteer/planning/dayLines.html.twig' with {linePerDay:linePerDay,key:key,pWeek:pWeek} only %}
+			</span>
 		{% endfor %}
 	</div>
 </div>

@@ -65,6 +65,6 @@ class Volunteer
 
     public function getDisplayName(): String
     {
-        return $this->firstname.' '.$this->lastname.' '.$this->type;
+        return $this->lastname.' '.$this->firstname.' '.$this->type;
     }
 }

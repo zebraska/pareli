@@ -86,7 +86,7 @@ class RemovalsController extends AbstractController
                 $query = $doctrine->getRepository(Removal::class)->getLastRemovalByProvider($providerId,3);
                 $lastRemovals = $query->getResult();
                 $ajaxResponse = new AjaxResponse('volunteer/removal');
-                // $removal->setComment($provider->getComment());
+                $removal->setComment($provider->getComment());
             }
          
             $form = $this->createForm(RemovalType::class, $removal, [

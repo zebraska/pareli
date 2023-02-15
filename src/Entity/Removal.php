@@ -35,6 +35,7 @@ class Removal
     private $state;
 
     #[ORM\ManyToOne(targetEntity: PlanningLine::class, inversedBy: 'removals')]
+    #[ORM\JoinColumn(onDelete:"SET NULL")]
     private $planningLine;
 
     #[ORM\Column(type: 'integer', nullable: true)]

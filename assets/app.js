@@ -101,7 +101,6 @@ function executeAjaxAction(element, action = null) {
                 }
                 //a enlever si pb redirection
                 if (response.redirectTo != false) {
-                    console.log('redirect');
                     window.location.href = response.redirectTo;
                 }
                 document.getElementById('flash-message').innerHTML = response.flashMessage;

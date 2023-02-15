@@ -30,6 +30,7 @@ class Delivery
     private $state;
 
     #[ORM\ManyToOne(targetEntity: PlanningLine::class, inversedBy: 'deliverys')]
+    #[ORM\JoinColumn(onDelete:"SET NULL")]
     private $planningLine;
 
     #[ORM\Column(type: 'integer', nullable: true)]

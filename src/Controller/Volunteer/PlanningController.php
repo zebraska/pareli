@@ -124,11 +124,12 @@ class PlanningController extends AbstractController
             $linesPerDay[9] = ['title' => 'Vendredi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 9])];
 
             $ajaxResponse->addView(
-                $this->render('volunteer/planning/content.html.twig', [
+                $this->render('volunteer/planning/dayLines.html.twig', [
                     'pWeek' => $pWeek,
-                    'linesPerDay' => $linesPerDay
+                    'linePerDay' => $linesPerDay[$day],
+                    'key' => $day
                 ])->getContent(),
-                'body-interface'
+                'dayLines'.$day
             );
             $this->addFlash('success', 'Ligne ajoutée');
             $ajaxResponse->setFlashMessageView($this->renderView('flashMessages.html.twig'));
@@ -148,7 +149,7 @@ class PlanningController extends AbstractController
         $week = $today->format("W");
         $week_start = $today;
         $pWeek = $doctrine->getRepository(PlanningWeek::class)->findOneBy(['year' => $year, 'number' => $week]);
-
+        $day = $pLine->getDay();
         if ($request->isXmlHttpRequest()) {
             $ajaxResponse = new AjaxResponse('volunteer/planning');
             $em = $doctrine->getManager();
@@ -171,11 +172,12 @@ class PlanningController extends AbstractController
             $linesPerDay[9] = ['title' => 'Vendredi après-midi', 'lines' => $doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $pWeek, 'day' => 9])];
 
             $ajaxResponse->addView(
-                $this->render('volunteer/planning/content.html.twig', [
+                $this->render('volunteer/planning/dayLines.html.twig', [
                     'pWeek' => $pWeek,
-                    'linesPerDay' => $linesPerDay
+                    'linePerDay' => $linesPerDay[$day],
+                    'key' => $day
                 ])->getContent(),
-                'body-interface'
+                'dayLines'.$day
             );
             $this->addFlash('success', 'Ligne supprimée');
             $ajaxResponse->setFlashMessageView($this->renderView('flashMessages.html.twig'));
@@ -452,7 +454,7 @@ class PlanningController extends AbstractController
     {
         if ($request->isXmlHttpRequest()) {
             $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
-            $companions = $doctrine->getRepository(Volunteer::class)->findAll();
+            $companions = $doctrine->getRepository(Volunteer::class)->findVolunteersForSelection();
             $ajaxResponse = new AjaxResponse('volunteer/planning');
             $ajaxResponse->addView(
                 $this->render('volunteer/planning/selection/companions/companions.html.twig', [

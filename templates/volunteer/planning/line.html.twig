@@ -74,6 +74,6 @@
 		<a href='{{path('app_volunteer_planning_line_voucher_generate',{'id':pLine.id})}}'>
 			<i class="fa-regular fa-file-pdf text-primary text-3 mt-3" action="#" data-bs-toggle='tooltip' data-bs-title="Générer le bon d'enlèvement" data-bs-placement="left" style='cursor:pointer'></i><br/>
 		</a>
-		<i class="fa-solid fa-trash text-danger text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_planning_delete_planning_line',{'pLineId':pLine.id})}}" data-target-spinner='body-interface' data-spinner-type='1' data-bs-toggle='tooltip' data-bs-title='Supprimer' data-bs-placement="left" style='cursor:pointer' data-confirm="Confirmer la suppression de la ligne ?"></i>
+		<i class="fa-solid fa-trash text-danger text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_planning_delete_planning_line',{'pLineId':pLine.id})}}" data-target-spinner='dayLines{{pLine.day}}' data-spinner-type='2' data-bs-toggle='tooltip' data-bs-title='Supprimer' data-bs-placement="left" style='cursor:pointer' data-confirm="Confirmer la suppression de la ligne ?"></i>
 	</div>
 {% endif %}

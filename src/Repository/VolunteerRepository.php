@@ -47,13 +47,22 @@ class VolunteerRepository extends ServiceEntityRepository
         }
     }
 
+    public function findVolunteersForSelection()
+    {
+        return $this->createQueryBuilder('v')
+            ->orderBy('v.lastname', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function findDriversForSelection()
     {
         return $this->createQueryBuilder('v')
             ->andWhere('v.type = :valPL OR v.type = :valVL')
             ->setParameter('valPL', 'PL')
             ->setParameter('valVL', 'VL')
-            ->orderBy('v.firstname', 'ASC')
+            ->orderBy('v.lastname', 'ASC')
             ->getQuery()
             ->getResult()
         ;

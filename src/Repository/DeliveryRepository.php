@@ -81,7 +81,7 @@ class DeliveryRepository extends ServiceEntityRepository
                 ->setParameter('dateEnd', $dateEnd)
                 ->orderBy('d.dateCreate', 'DESC');
         
-        return $qb->getQuery()->getResult();
+        return $qb->getQuery();
     }
 
     // /**

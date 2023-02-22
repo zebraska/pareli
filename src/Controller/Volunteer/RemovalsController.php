@@ -17,12 +17,11 @@ use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+
 
 class RemovalsController extends AbstractController
 {
@@ -39,12 +38,14 @@ class RemovalsController extends AbstractController
             $request->query->getInt('page', 1), /*page number*/
             10 /*limit per page*/
         );
-        if (null !== $request->query->get('date1') && null !== $request->query->get('date2')){
+        if (null !== $request->query->get('date1') && null !== $request->query->get('date2') && null !== $request->query->get('completeSwitch')){
             $dateStart = new \Datetime($request->query->get('date1'));
-            $dateEnd = new \Datetime($request->query->get('date2'));
-            dump($dateStart, $dateEnd);            
+            $dateEnd = new \Datetime($request->query->get('date2'));                 
             $spreadsheetModel = new RemovalDeliveryModel($doctrine, $dateStart, $dateEnd);
-            $spreadsheet = $spreadsheetModel->getSpreadsheet();
+            if($request->query->get('completeSwitch')) {
+                $spreadsheetModel->completeSpreadsheet();
+            }
+            $spreadsheet = $spreadsheetModel->getSpreadsheet();                       
             $writer = new Xlsx($spreadsheet);
             $fileName = 'demandes_export.xlsx';
             $temp_file = tempnam(sys_get_temp_dir(), $fileName);
@@ -575,12 +576,17 @@ class RemovalsController extends AbstractController
             $dateStart = new \DateTime();
             $dateEnd = new \DateTime();
             $dateEnd->modify('+1 week');
-            $defaultData = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+            $defaultData = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'completeSwitch' => false];
             $form = $this->createFormBuilder($defaultData, [
                 'action' => $this->generateUrl('app_volunteer_removal_spreadsheet_generate'),
+                'attr' => ['class' => 'form-check form-switch', 'style' => 'padding-left: 0']
             ])
                 ->add('dateStart', \Symfony\Component\Form\Extension\Core\Type\DateType::class, ['label' => 'Début de la feuille', 'widget' => 'single_text'])
                 ->add('dateEnd', \Symfony\Component\Form\Extension\Core\Type\DateType::class, ['label' => 'Fin de la feuille', 'widget' => 'single_text'])
+                ->add('completeSwitch', \Symfony\Component\Form\Extension\Core\Type\CheckboxType::class, ['label' => 'Informations complètes',
+                                                                                                          'label_attr' => ['class' => 'form-check-label ms-2'],                                                                                                            
+                                                                                                          'required' => false
+                                                                                                         ])
                 ->getForm();
             $ajaxResponse->addView(
                 $this->render('volunteer/removals/modal/spreadsheet.html.twig', ['form' => $form->createView()])->getContent(),
@@ -589,26 +595,10 @@ class RemovalsController extends AbstractController
             
             $form->handleRequest($request);
             if ($form->isSubmitted() and $form->isValid()) {
-                dump($form->getData());
                 $dateStart = $form->getData()['dateStart'];
                 $dateEnd = $form->getData()['dateEnd'];
-                $ajaxResponse->setRedirectTo($this->generateUrl('app_volunteer_removal', ['date1' => $dateStart->format('Y-m-d'), 'date2' => $dateEnd->format('Y-m-d')]));
-//                $query = $doctrine->getRepository(PlanningWeek::class)->getAllByDateInterval($dateStart, $dateEnd);
-//                $pWeeks = $query->getResult();
-//                dump($pWeeks);
-//                $spreadsheet = new Spreadsheet();
-//                $sheet = $spreadsheet->getActiveSheet();
-//                $sheet->setCellValue('A1', 'Hello World !');
-//                $writer = new Xlsx($spreadsheet);
-//                $fileName = 'utilisateurs_export.xlsx';
-                //$temp_file = tempnam(sys_get_temp_dir(), $fileName);
-                //$writer->save($temp_file);
-         
-                
-                
-//                return $response;
-//                return $this->file($temp_file, $fileName, ResponseHeaderBag::DISPOSITION_INLINE);
-                
+                $completeSwitch = $form->getData()['completeSwitch'];
+                $ajaxResponse->setRedirectTo($this->generateUrl('app_volunteer_removal', ['date1' => $dateStart->format('Y-m-d'), 'date2' => $dateEnd->format('Y-m-d'), 'completeSwitch' => $completeSwitch]));                
                
             }
             return $ajaxResponse->generateContent();

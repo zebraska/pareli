@@ -1,6 +1,8 @@
 {{ form_start(form) }}
-<div class="modal-header mb-3">
-            <h5 class="modal-title" id="supplierModalLabel">Entrez les dates d'intervalle de la feuille</h5>
+<div class="modal-header mb-3">            
+                <h5 class="modal-title me-5" id="supplierModalLabel">Entrez les dates d'intervalle de la feuille</h5>                
+                {{ form_widget(form.completeSwitch, {'attr': {'class': 'form-check-input custom-control-input ms-5', 'type': 'checkbox'}})}}
+                {{ form_label(form.completeSwitch) }}                        
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <div id='modal-body' class="modal-body p-0 m-0">

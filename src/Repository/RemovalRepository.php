@@ -96,7 +96,7 @@ class RemovalRepository extends ServiceEntityRepository
                 ->setParameter('dateEnd', $dateEnd)
                 ->orderBy('r.dateCreate', 'DESC');
         
-        return $qb->getQuery()->getResult();
+        return $qb->getQuery();
     }
     // /**
     //  * @return Removal[] Returns an array of Removal objects

@@ -182,4 +182,9 @@ class Recycler
 
         return $this;
     }
+    
+    public function getDisplayAddress(): string
+    {
+        return $this->address."\n".$this->city.' '.$this->zipCode;
+    }
 }

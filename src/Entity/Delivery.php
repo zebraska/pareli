@@ -100,6 +100,23 @@ class Delivery
 
         return $this;
     }
+    
+    public function getStateString(): String
+    {
+        switch ($this->state){
+                case 0:
+                    $stateString = 'À Planifier';
+                    break;
+                case 1:
+                    $stateString = 'Planifiée';
+                    break;
+                case 2:
+                    $stateString = 'Réalisée';                    
+                    break;
+            }
+            
+            return $stateString;
+    }
 
     public function getPlanningLine(): ?PlanningLine
     {

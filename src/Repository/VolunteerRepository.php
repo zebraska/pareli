@@ -73,7 +73,7 @@ class VolunteerRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('v')
             ->andWhere('v.type = :valPL')
             ->setParameter('valPL', 'PL')
-            ->orderBy('v.firstname', 'ASC')
+            ->orderBy('v.lastname', 'ASC')
             ->getQuery()
             ->getResult()
         ;
@@ -100,7 +100,7 @@ class VolunteerRepository extends ServiceEntityRepository
                 }
             }
         }
-        return $qb->getQuery();
+        return $qb->orderBy('v.lastname', 'ASC')->getQuery();
     }
 
     /*

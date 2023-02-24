@@ -11,27 +11,28 @@
 					</div>
 					<div class='col-3 ajax-link-action' action="{{path('app_volunteer_recycler_getform',{'type':'contact','id':recycler.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
 						{{recycler.address}}<br/>
-                                                {{recycler.zipCode}}<br/>
-                                                <b>{{recycler.city}}</b>
+						{{recycler.zipCode}} <b>{{recycler.city}}</b>
 						<span class='table-content-line-edit justify-content-right'>
 							<i class="fa-solid fa-pen-to-square"></i>
 						</span>
 					</div>
 					<div class='col-3 ajax-link-action' action="{{path('app_volunteer_recycler_getform',{'type':'contact','id':recycler.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
 						<b>{{recycler.commercialContactName}}</b>
-                                                (Commercial)<br/>
-                                                {{recycler.commercialContactPhone}}<br/>
-                                                {{recycler.commercialContactMail}}<br/>
+						(Commercial)<br/>
+						{{recycler.commercialContactPhone}}<br/>
+						{{recycler.commercialContactMail}}<br/>
 						<span class='table-content-line-edit justify-content-right'>
 							<i class="fa-solid fa-pen-to-square"></i>
 						</span>
 					</div>
 					<div class='col-3 ajax-link-action' action="{{path('app_volunteer_recycler_getform',{'type':'comment','id':recycler.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal" style='height:25vh;overflow-y:hidden'>
-                                                <b>{{recycler.contactName}}</b>
-                                                (Autre)<br/>
-                                                Tel 1 : {{ recycler.contactTelOne }}<br/>
-                                                Tel 2 : {{ recycler.contactTelTwo }}<br/>
-                                                {{ recycler.contactMail }}
+						<b>{{recycler.contactName}}</b>
+						(Autre)<br/>
+						Tel 1 :
+						{{ recycler.contactTelOne }}<br/>
+						Tel 2 :
+						{{ recycler.contactTelTwo }}<br/>
+						{{ recycler.contactMail }}
 						<span class='table-content-line-edit justify-content-right'>
 							<i class="fa-solid fa-pen-to-square"></i>
 						</span>
@@ -48,9 +49,7 @@
 		<hr/>
 	{% endfor %}
 </div>
-<div class='row table-bottom'>
-
-
+<div class='row table-bottom pt-1'>
 	<div class="precedent col-1 text-center" style='height:5vh;'>
 		{% if (page!=1) %}
 			<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'page':page,'className':'recycler'})}}'>
@@ -58,20 +57,21 @@
 			</a>
 		{% endif %}
 	</div>
-
 	<div class="navigation col-2" style='height:5vh;'>
 		{% set last = ((pagination.getTotalItemCount/10)+1)|number_format(0) %}
+		{% if pagination.getTotalItemCount <= 50 %}
+			{% set last = 1 %}
+		{% endif %}
 		<select class='form-control border border-dark ajax-filter-action'>
-
 			{% for i in 1..last %}
-				<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_recycler_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>Page
-					{{i}}</option>
+				<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_recycler_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>
+					Page
+					{{i}}/
+					{{last}}
+				</option>
 			{% endfor %}
-
 		</select>
 	</div>
-
-
 	<div class="suivant col-1 text-center" style='height:5vh;'>
 		{% if (page!=last) %}
 			<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'page':page,'className':'recycler','last':last})}}'>
@@ -79,8 +79,6 @@
 			</a>
 		{% endif %}
 	</div>
-
-
 	<div class="count col-8 text-3" style='text-align:right'>
 		<b>{{pagination.getTotalItemCount}}
 			résultats</b>

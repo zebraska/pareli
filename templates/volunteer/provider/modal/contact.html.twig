@@ -22,19 +22,27 @@
 		</div>
 		<hr/>
 		<p>
-			<b>Interlocuteur pour l'enlèvement</b>
+			<b>Interlocuteurs pour l'enlèvement</b>
 		</p>
-		<div class='col-4 mb-3'>
+		<div class='col-12 mb-3'>
+			{{ form_label(form.removalContactMail) }}
+			{{ form_widget(form.removalContactMail, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<div class='col-6 mb-3'>
 			{{ form_label(form.removalContactName) }}
 			{{ form_widget(form.removalContactName, { 'attr': {'class': 'form-control border border-primary'} }) }}
 		</div>
-		<div class='col-4 mb-3'>
+		<div class='col-6 mb-3'>
 			{{ form_label(form.removalContactPhone) }}
 			{{ form_widget(form.removalContactPhone, { 'attr': {'class': 'form-control border border-primary'} }) }}
 		</div>
-		<div class='col-4 mb-3'>
-			{{ form_label(form.removalContactMail) }}
-			{{ form_widget(form.removalContactMail, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		<div class='col-6 mb-3'>
+			{{ form_label(form.removalContactNameTwo) }}
+			{{ form_widget(form.removalContactNameTwo, { 'attr': {'class': 'form-control border border-primary'} }) }}
+		</div>
+		<div class='col-6 mb-3'>
+			{{ form_label(form.removalContactPhoneTwo) }}
+			{{ form_widget(form.removalContactPhoneTwo, { 'attr': {'class': 'form-control border border-primary'} }) }}
 		</div>
 		<hr/>
 		<p>

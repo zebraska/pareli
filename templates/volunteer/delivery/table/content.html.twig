@@ -4,7 +4,7 @@
 			<div class='col-11'>
 				<div class='row table-content-cell'>
 					<div class='col-3 ajax-link-action' action="{{path('app_volunteer_delivery_getform',{'id':delivery.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
-					
+
 						<b>{{delivery.dateRequest|date('d/m/Y')}}</b>
 						<span class='table-content-line-edit justify-content-right'>
 							<i class="fa-solid fa-pen-to-square"></i>
@@ -21,7 +21,7 @@
 							Réalisé le 01/01/2020
 						{% endif %}
 					</div>
-					<div class='col-3 ajax-link-action' style='height:25vh;overflow-y:hidden' action="{{path('app_volunteer_delivery_getform',{'id':delivery.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+					<div class='col-3 ajax-link-action' style='height:30vh;overflow-y:hidden' action="{{path('app_volunteer_delivery_getform',{'id':delivery.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
 						{{delivery.comment}}
 						<span class='table-content-line-edit justify-content-right'>
 							<i class="fa-solid fa-pen-to-square"></i>
@@ -40,38 +40,36 @@
 		<hr/>
 	{% endfor %}
 </div>
-<div class='row table-bottom'>
-	
-	
-			<div class="precedent col-1 text-center" style='height:5vh;'>
-				{% if (page!=1) %}
-				<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'page':page,'className':'delivery'})}}'>
-			<i class="fa-solid fa-arrow-left text-4"></i></a>
-			{% endif %}	
-			</div>
-		
-		<div class="navigation col-2" style='height:5vh;'>
-			{% set last = ((pagination.getTotalItemCount/10)+1)|number_format(0) %}
-			<select class='form-control border border-dark ajax-filter-action'>
-					
-					{% for i in 1..last %}
-						<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>Page
-							{{i}}</option>
-					{% endfor %}
-						
-			</select>
-		</div>
-		
-		
-			<div class="suivant col-1 text-center" style='height:5vh;'>
-			{% if (page!=last) %}
-				<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'page':page,'className':'delivery','last':last})}}'>
-				<i class="fa-solid fa-arrow-right text-4"></i></a>
-				{% endif %}
-			</div>
-		
-	
-			
+
+<div class='row table-bottom pt-1'>
+	<div class="precedent col-1 text-center" style='height:5vh;'>
+		{% if (page!=1) %}
+			<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'page':page,'className':'delivery'})}}'>
+				<i class="fa-solid fa-arrow-left text-4"></i>
+			</a>
+		{% endif %}
+	</div>
+	<div class="navigation col-2" style='height:5vh;'>
+		{% set last = ((pagination.getTotalItemCount/10)+1)|number_format(0) %}
+		{% if pagination.getTotalItemCount <= 10 %}
+			{% set last = 1 %}
+		{% endif %}
+		<select class='form-control border border-dark ajax-filter-action'>
+			{% for i in 1..last %}
+				<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>
+					Page
+					{{i}}/{{last}}
+				</option>
+			{% endfor %}
+		</select>
+	</div>
+	<div class="suivant col-1 text-center" style='height:5vh;'>
+		{% if (page!=last) %}
+			<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'page':page,'className':'delivery','last':last})}}'>
+				<i class="fa-solid fa-arrow-right text-4"></i>
+			</a>
+		{% endif %}
+	</div>
 	<div class="count col-8 text-3" style='text-align:right'>
 		<b>{{pagination.getTotalItemCount}}
 			résultats</b>

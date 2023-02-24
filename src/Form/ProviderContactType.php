@@ -30,7 +30,7 @@ class ProviderContactType extends AbstractType
                 'required' => false,
             ])
             ->add('removalContactName', TextType::class, [
-                'label' => 'Nom',
+                'label' => '1. Nom',
                 'required' => false,
             ])
             ->add('removalContactPhone', TextType::class, [
@@ -39,6 +39,14 @@ class ProviderContactType extends AbstractType
             ])
             ->add('removalContactMail', TextType::class, [
                 'label' => 'Email',
+                'required' => false,
+            ])
+            ->add('removalContactNameTwo', TextType::class, [
+                'label' => '2. Nom',
+                'required' => false,
+            ])
+            ->add('removalContactPhoneTwo', TextType::class, [
+                'label' => 'Téléphone',
                 'required' => false,
             ])
             ->add('certificateContactMail', TextType::class, [

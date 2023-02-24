@@ -59,10 +59,14 @@ class ProviderRepository extends ServiceEntityRepository
         }
 
         if ($filter=='1') {
-            $qb = $qb->andWhere('p.containersQuantitys is empty');
+            $qb = $qb->andWhere('p.attachment = :attachment')->setParameter('attachment', 'Vertou');
         }
 
-        return $qb->orderBy('p.id', 'DESC')
+        if ($filter=='2') {
+            $qb = $qb->andWhere('p.attachment = :attachment')->setParameter('attachment', 'Saint-Nazaire');
+        }
+
+        return $qb->orderBy('p.name', 'ASC')
             ->setMaxResults(50)
             ->getQuery();
     }

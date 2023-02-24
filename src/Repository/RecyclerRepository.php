@@ -58,7 +58,7 @@ class RecyclerRepository extends ServiceEntityRepository
             $qb = $qb->andWhere('r.name LIKE :search OR r.city LIKE :search')->setParameter('search', '%'.$search.'%');
         }
 
-        return $qb->orderBy('r.id', 'ASC')
+        return $qb->orderBy('r.name', 'ASC')
             ->setMaxResults(10)
             ->getQuery();
     }

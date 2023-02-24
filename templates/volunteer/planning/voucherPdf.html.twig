@@ -12,7 +12,8 @@
 			</div>
 			<div style='display:inline-block;width:45%;'>
 				<p>Bon d'enlèvement / Livraison Semaine N°39</p>
-				<p>Le: {{dayDate|date('d/m/Y')}}
+				<p>Le:
+					{{dayDate|date('d/m/Y')}}
 				</p>
 				<p>Véhicule:
 					{{pLine.vehicle?pLine.vehicle.name:'<i style="color:red">Non renseigné</i>'}}</p>
@@ -22,10 +23,12 @@
 					Accompagnateurs:
 					{% if pLine.companions %}
 						{% for companion in pLine.companions %}
-                            {{companion.firstName}} {{companion.lastName}} / 
-                        {% endfor %}
+							{{companion.firstName}}
+							{{companion.lastName}}
+							/
+						{% endfor %}
 					{% else %}
-                        <i style="color:red">Non renseigné</i>
+						<i style="color:red">Non renseigné</i>
 					{% endif %}
 				</p>
 			</div>
@@ -48,18 +51,29 @@
 			{% for demand in pLine.removals %}
 				<tr style='border: 1px solid;'>
 					<td style='border: 1px solid;width:400px;padding:5px'>
-						<b>{{demand.provider.name}} (Enlèvement)</b>
+						<b>{{demand.provider.name}}
+							(Enlèvement)</b>
 						<br/>
 						{{demand.provider.address}}
+						<br/>
 						{{demand.provider.zipCode}}
-						{{demand.provider.city}}
+						<b>{{demand.provider.city}}</b>
 						{% if demand.provider.removalContactPhone %}
 							<br/>
-							Contact 1: {{demand.provider.removalContactPhone}} {{demand.provider.removalContactName}}
+							Contact 1:
+							{{demand.provider.removalContactPhone}}
+							{{demand.provider.removalContactName}}
 						{% endif %}
 						{% if demand.provider.removalContactPhoneTwo %}
 							<br/>
-							Contact 2: {{demand.provider.removalContactPhoneTwo}} {{demand.provider.removalContactNameTwo}}
+							Contact 2:
+							{{demand.provider.removalContactPhoneTwo}}
+							{{demand.provider.removalContactNameTwo}}
+						{% endif %}
+						{% if demand.provider.certificateContactMail %}
+							<br/>
+							Destruction:
+							{{demand.provider.certificateContactMail}}
 						{% endif %}
 						{% if demand.provider.isExistPlan %}
 							<br/>
@@ -82,18 +96,21 @@
 			{% for demand in pLine.deliverys %}
 				<tr style='border: 1px solid;'>
 					<td style='border: 1px solid;width:400px;padding:5px'>
-						<b>{{demand.recycler.name}} (Livraison)</b>
+						<b>{{demand.recycler.name}}
+							(Livraison)</b>
 						<br/>
 						{{demand.recycler.address}}
 						{{demand.recycler.zipCode}}
 						{{demand.recycler.city}}
 						{% if demand.recycler.contactTelOne %}
 							<br/>
-							Contact 1: {{demand.recycler.contactTelOne}}
+							Contact 1:
+							{{demand.recycler.contactTelOne}}
 						{% endif %}
 						{% if demand.recycler.contactTelTwo %}
 							<br/>
-							Contact 2: {{demand.recycler.contactTelTwo}}
+							Contact 2:
+							{{demand.recycler.contactTelTwo}}
 						{% endif %}
 					</td>
 					<td style='padding:5px;'>
@@ -107,7 +124,8 @@
 			{% endfor %}
 		</table>
 		<i>* en Kg pour vous aider une estimation 1 bac de brochure : 300 kg – autres 200 kg</i>
-		<p>Vos observations sur l’accès et la qualité de la collecte : </p>
+		<p>Vos observations sur l’accès et la qualité de la collecte :
+		</p>
 		<br/><br/><br/>
 		<table style='width:100vw;border: 1px solid;border-collapse: collapse;'>
 			<tr style='border: 1px solid;'>

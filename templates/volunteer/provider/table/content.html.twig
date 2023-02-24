@@ -2,33 +2,34 @@
 	{% for provider in pagination %}
 		<div class='row table-content-line' style='cursor:pointer'>
 			<div class='col-3 table-content-cell ajax-link-action' action="{{path('app_volunteer_provider_getform',{'type':'info','id':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
-				<b>{{provider.name}}</b>
-				({{provider.typeStruct}})<br/>
-				{{provider.address}}<br/>{{provider.zipCode}}<br/>
-				<b>{{provider.city}}</b>
-				({{provider.attachment}})<br/>
-				Enlèvements
-				{{provider.isRegular?'réguliers':'ponctuels'}}<br/>
+				<b>{{provider.name}}</b><br/>
+				{{provider.address}}<br/>
+				{{provider.zipCode}} <b>{{provider.city}}</b><br/>
+				{{provider.isRegular?'Enlèvements réguliers<br/>':''}}
+				Rattachement:
+				{{provider.attachment}}
 				<span class='table-content-line-edit justify-content-right'>
 					<i class="fa-solid fa-pen-to-square"></i>
 				</span>
 			</div>
 			<div class='col-3 table-content-cell ajax-link-action' action="{{path('app_volunteer_provider_getform',{'type':'contact','id':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+				Commercial:<br/>
 				<b>{{provider.commercialContactName}}</b>
-				(Commercial)<br/>
 				{{provider.commercialContactPhone}}<br/>
-				{{provider.commercialContactMail}}<br/>
+				{{provider.commercialContactMail}}<br/><br/>
+				Enlèvement:<br/>
 				<b>{{provider.removalContactName}}</b>
-				(Enlèvement)<br/>
 				{{provider.removalContactPhone}}<br/>
-				{{provider.removalContactMail}}<br/>
+				<b>{{provider.removalContactNameTwo}}</b>
+				{{provider.removalContactPhoneTwo}}<br/>
+				{{provider.removalContactMail}}<br/><br/>
+				Destruction:<br/>
 				<b>{{provider.certificateContactMail}}</b>
-				(Destruction)<br/>
 				<span class='table-content-line-edit justify-content-right'>
 					<i class="fa-solid fa-pen-to-square"></i>
 				</span>
 			</div>
-			<div class='col-3 table-content-cell ajax-link-action' action="{{path('app_volunteer_provider_getform',{'type':'comment','id':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal" style='height:25vh;overflow-y:hidden'>
+			<div class='col-3 table-content-cell ajax-link-action' action="{{path('app_volunteer_provider_getform',{'type':'comment','id':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal" style='overflow-y:hidden'>
 				{{provider.comment}}<br/>
 				<span class='table-content-line-edit justify-content-right'>
 					<i class="fa-solid fa-pen-to-square"></i>
@@ -73,18 +74,16 @@
 					<i class="fa-solid fa-truck-ramp-box text-primary text-3 mt-3" data-bs-toggle='tooltip' data-bs-title='Ajouter un enlèvement' data-bs-placement="left"></i>
 				</span><br/>
 				<i class="fa-solid fa-trash text-danger text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':provider.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle='tooltip' data-bs-title='Supprimer' data-bs-placement="left" data-confirm="Confirmer la suppression du fournisseur ?"></i>
-                                <br/>
-                                <span class="ajax-link-action" action="{{ path('app_volunteer_removal_provider_view',{'id':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
-                                    <i class="fa-solid fa-sheet-plastic text-3 mt-3 " data-bs-toggle='tooltip' data-bs-title="Consulter l'historique" data-bs-placement="left"></i>
-                                </span>
+				<br/>
+				<span class="ajax-link-action" action="{{ path('app_volunteer_removal_provider_view',{'id':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+					<i class="fa-solid fa-sheet-plastic text-3 mt-3 " data-bs-toggle='tooltip' data-bs-title="Consulter l'historique" data-bs-placement="left"></i>
+				</span>
 			</div>
 		</div>
 		<hr/>
 	{% endfor %}
 </div>
-<div class='row table-bottom'>
-
-
+<div class='row table-bottom pt-1'>
 	<div class="precedent col-1 text-center" style='height:5vh;'>
 		{% if (page!=1) %}
 			<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'page':page,'className':'provider'})}}'>
@@ -92,20 +91,20 @@
 			</a>
 		{% endif %}
 	</div>
-
 	<div class="navigation col-2" style='height:5vh;'>
-		{% set last = ((pagination.getTotalItemCount/10)+1)|number_format(0) %}
+		{% set last = ((pagination.getTotalItemCount/50)+1)|number_format(0) %}
+		{% if pagination.getTotalItemCount <= 50 %}
+			{% set last = 1 %}
+		{% endif %}
 		<select class='form-control border border-dark ajax-filter-action'>
-
 			{% for i in 1..last %}
-				<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_provider_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>Page
-					{{i}}
+				<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_provider_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>
+					Page
+					{{i}}/{{last}}
 				</option>
 			{% endfor %}
 		</select>
 	</div>
-
-
 	<div class="suivant col-1 text-center" style='height:5vh;'>
 		{% if (page!=last) %}
 			<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'page':page,'className':'provider','last':last})}}'>
@@ -113,8 +112,6 @@
 			</a>
 		{% endif %}
 	</div>
-
-
 	<div class="count col-8 text-3" style='text-align:right'>
 		<b>{{pagination.getTotalItemCount}}
 			résultats</b>

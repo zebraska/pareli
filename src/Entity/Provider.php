@@ -313,7 +313,7 @@ class Provider
         return $this->removalContactNameTwo;
     }
 
-    public function setRemovalContactNameTwo(string $removalContactNameTwo): self
+    public function setRemovalContactNameTwo(?string $removalContactNameTwo): self
     {
         $this->removalContactNameTwo = $removalContactNameTwo;
 
@@ -325,7 +325,7 @@ class Provider
         return $this->removalContactPhoneTwo;
     }
 
-    public function setRemovalContactPhoneTwo(string $removalContactPhoneTwo): self
+    public function setRemovalContactPhoneTwo(?string $removalContactPhoneTwo): self
     {
         $this->removalContactPhoneTwo = $removalContactPhoneTwo;
 

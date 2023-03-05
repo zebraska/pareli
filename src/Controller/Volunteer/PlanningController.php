@@ -101,7 +101,7 @@ class PlanningController extends AbstractController
             $ajaxResponse->addView(
                 $this->render('volunteer/planning/dayLines.html.twig', [
                     'pWeek' => $pWeek,
-                    'linesPerDay' => $planningManager->getLinesPerDay()
+                    'linePerDay' => $planningManager->getLinesPerDay()[$day]
                 ])->getContent(),
                 'dayLines' . $day
             );
@@ -113,8 +113,8 @@ class PlanningController extends AbstractController
         return $this->redirectToRoute('app_volunteer_planning');
     }
 
-    #[Route('/volunteer/planning/delete/planning/line/{pLineId}', name: 'app_volunteer_planning_delete_planning_line')]
-    public function deletePlanningLine(Request $request, ManagerRegistry $doctrine, int $pLineId): Response
+    #[Route('/volunteer/planning/delete/planning/line/{lineWeekId}/{pLineId}', name: 'app_volunteer_planning_delete_planning_line')]
+    public function deletePlanningLine(Request $request, ManagerRegistry $doctrine, int $lineWeekId, int $pLineId): Response
     {
         $pLine = $doctrine->getRepository(PlanningLine::class)->findOneBy(['id' => $pLineId]);
 
@@ -122,7 +122,7 @@ class PlanningController extends AbstractController
         $year = $today->format("Y");
         $week = $today->format("W");
         $week_start = $today;
-        $pWeek = $doctrine->getRepository(PlanningWeek::class)->findOneBy(['year' => $year, 'number' => $week]);
+        $pWeek = $doctrine->getRepository(PlanningWeek::class)->findOneBy(['id' => $lineWeekId]);
         $day = $pLine->getDay();
         if ($request->isXmlHttpRequest()) {
             $ajaxResponse = new AjaxResponse('volunteer/planning');
@@ -136,7 +136,7 @@ class PlanningController extends AbstractController
             $ajaxResponse->addView(
                 $this->render('volunteer/planning/dayLines.html.twig', [
                     'pWeek' => $pWeek,
-                    'linesPerDay' => $planningManager->getLinesPerDay()
+                    'linePerDay' => $planningManager->getLinesPerDay()[$day]
                 ])->getContent(),
                 'dayLines' . $day
             );

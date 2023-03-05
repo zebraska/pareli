@@ -102,4 +102,9 @@ class PlanningWeek
 
         return $this;
     }
+    
+    public function setPlanningLines($planningLines): void {
+        $this->planningLines = $planningLines;
+    }
+
 }

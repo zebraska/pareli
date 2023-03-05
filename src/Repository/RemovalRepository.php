@@ -88,6 +88,16 @@ class RemovalRepository extends ServiceEntityRepository
         
         return $qb->getQuery();
     }
+    
+    public function getAllRemovalsByInterval(\DateTime $dateStart, \DateTime $dateEnd){        
+        $qb = $this->createQueryBuilder('r')
+                ->where('r.dateCreate BETWEEN :dateStart AND :dateEnd')
+                ->setParameter('dateStart', $dateStart)
+                ->setParameter('dateEnd', $dateEnd)
+                ->orderBy('r.dateCreate', 'DESC');
+        
+        return $qb->getQuery();
+    }
     // /**
     //  * @return Removal[] Returns an array of Removal objects
     //  */

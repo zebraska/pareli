@@ -74,6 +74,15 @@ class DeliveryRepository extends ServiceEntityRepository
     }
 
 
+    public function getAllDeliverysByInterval(\DateTime $dateStart, \DateTime $dateEnd){        
+        $qb = $this->createQueryBuilder('d')
+                ->where('d.dateCreate BETWEEN :dateStart AND :dateEnd')
+                ->setParameter('dateStart', $dateStart)
+                ->setParameter('dateEnd', $dateEnd)
+                ->orderBy('d.dateCreate', 'DESC');
+        
+        return $qb->getQuery();
+    }
 
     // /**
     //  * @return Delivery[] Returns an array of Delivery objects

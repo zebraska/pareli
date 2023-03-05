@@ -1,34 +1,31 @@
 <html>
 	<head></head>
 	<body style='font-size:15px'>
-		<div style='width:100%;margin-top:7%'>
-			<div style='display:inline-block;width:50%;'>
-				<img src='{{absolute_url(asset('logo/transparent.png'))}}' style='width:170px;'/>
+		<div style='width:100%;'>
+			<div style='display:inline-block;width:50%;margin-top:7%'>
+				<img src='{{absolute_url(asset('logo/transparent.png'))}}' style='height:80px'/>
 				<p>16 rue des Entrepreneurs</p>
-				<p>44120 Vertou -
-					<i class="fa-solid fa-phone"></i>
-					06 75 67 98 02</p>
+				<p>44120 Vertou - 06 75 67 98 02</p>
 				<p>N° Réservé bénévoles: 06 78 67 99 22</p>
+				<p>Mail: logistiquevertou@lespapiersdelespoir.fr</p>
+				<p>Bon d'enlèvement / Livraison Semaine
+					{{pLine.planningWeek.number}}</p>
 			</div>
 			<div style='display:inline-block;width:45%;'>
-				<p>Bon d'enlèvement / Livraison</p>
 				<p>Le:
 					{{dayDate|date('d/m/Y')}}
 				</p>
 				<p>Véhicule:
 					{{pLine.vehicle?pLine.vehicle.name:'<i style="color:red">Non renseigné</i>'}}</p>
-				<p>Chauffeur:
-					{{pLine.driver?pLine.driver.firstName~' '~pLine.driver.lastName:'<i style="color:red">Non renseigné</i>'}}</p>
 				<p>
-					Accompagnateurs:
+					Equipe de Bénévoles:<br/>
+					{{pLine.driver?pLine.driver.firstName~' '~pLine.driver.lastName:'<i style="color:red">Conducteur non renseigné</i>'}}<br/>
 					{% if pLine.companions %}
 						{% for companion in pLine.companions %}
 							{{companion.firstName}}
 							{{companion.lastName}}
-							/
+							<br/>
 						{% endfor %}
-					{% else %}
-						<i style="color:red">Non renseigné</i>
 					{% endif %}
 				</p>
 			</div>
@@ -81,12 +78,6 @@
 						{% endif %}
 					</td>
 					<td style='padding:5px;'>
-						{% for containerQuantity in demand.removalContainerQuantities %}
-							{{containerQuantity.quantity}}x
-							{{containerQuantity.container.name}}<br/>
-						{% endfor %}
-						<b>Instructions:</b>
-						<br/>
 						{{demand.comment}}
 					</td>
 					<td style='border: 1px solid;width:50%;'></td>
@@ -114,8 +105,6 @@
 						{% endif %}
 					</td>
 					<td style='padding:5px;'>
-						<b>Instructions:</b>
-						<br/>
 						{{demand.comment}}
 					</td>
 					<td style='border: 1px solid;width:50%;'></td>

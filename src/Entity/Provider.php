@@ -133,7 +133,7 @@ class Provider
 
         return $this;
     }
-
+        
     public function getAttachment(): ?string
     {
         return $this->attachment;
@@ -343,4 +343,10 @@ class Provider
 
         return $this;
     }
+    
+    public function getDisplayAddress(): string
+    {
+        return $this->address."\n".$this->city.' '.$this->zipCode;
+    }
+
 }

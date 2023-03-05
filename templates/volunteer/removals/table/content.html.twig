@@ -92,20 +92,20 @@
 	{% endfor %}
 </div>
 
-<div class='row table-bottom pt-1'>
-	<div class="precedent col-1 text-center" style='height:5vh;'>
+<div class='row table-bottom pt-1' style='height:5vh'>
+	<div class="precedent col-1 text-center">
 		{% if (page!=1) %}
 			<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'page':page,'className':'removals'})}}'>
 				<i class="fa-solid fa-arrow-left text-4"></i>
 			</a>
 		{% endif %}
 	</div>
-	<div class="navigation col-2" style='height:5vh;'>
+	<div class="navigation col-2">
 		{% set last = ((pagination.getTotalItemCount/10)+1)|number_format(0) %}
 		{% if pagination.getTotalItemCount <= 10 %}
 			{% set last = 1 %}
 		{% endif %}
-		<select class='form-control border border-dark ajax-filter-action'>
+		<select style='height:3vh' class='form-control border border-dark ajax-filter-action'>
 			{% for i in 1..last %}
 				<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_removal_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>
 					Page
@@ -114,15 +114,28 @@
 			{% endfor %}
 		</select>
 	</div>
-	<div class="suivant col-1 text-center" style='height:5vh;'>
+
+
+	<div class="suivant col-1 text-center">
 		{% if (page!=last) %}
 			<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'page':page,'className':'removals','last':last})}}'>
 				<i class="fa-solid fa-arrow-right text-4"></i>
 			</a>
 		{% endif %}
 	</div>
-	<div class="count col-8 text-3" style='text-align:right'>
-		<b>{{pagination.getTotalItemCount}}
-			résultats</b>
+
+	<div class="col-4"></div>
+
+	<div class="col-2">
+		<button style='height:4vh;width:100%' type="button" class="btn btn-primary ajax-link-action" action="{{ path('app_volunteer_removal_spreadsheet_generate')}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+			Exporter des demandes
+		</button>
+	</div>
+
+	<div class="col-2">
+		<div class="d-flex col-1 offset-1 text-2">
+			<b class="position-absolute end-0 pt-1">{{pagination.getTotalItemCount}}
+				résultats</b>
+		</div>
 	</div>
 </div>

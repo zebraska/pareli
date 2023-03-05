@@ -9,7 +9,6 @@ use App\Entity\RemovalContainerQuantity;
 use App\Form\RemovalContainerQuantityType;
 use App\Form\RemovalType;
 use App\Service\Ajax\AjaxResponse;
-use App\Service\Planning\Manager;
 use App\Service\Spreadsheet\RemovalDeliveryModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -110,7 +109,11 @@ class RemovalsController extends AbstractController
                 $query = $doctrine->getRepository(Removal::class)->getLastRemovalByProvider($providerId,3);
                 $lastRemovals = $query->getResult();
                 $ajaxResponse = new AjaxResponse('volunteer/removal');
-                $removal->setComment($provider->getComment());
+                $comment = $provider->getComment();
+                foreach($provider->getContainersQuantitys() as $containerQ){
+                    $comment = $comment."\n".$containerQ->getDisplayName();
+                }
+                $removal->setComment($comment);
             }
             $form = $this->createForm(RemovalType::class, $removal, [
                 'action' => $this->generateUrl('app_volunteer_removal_create', ['id' => $id, 'providerId' => $providerId, 'returnButton' => $returnButton]),

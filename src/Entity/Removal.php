@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\RemovalRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -185,6 +186,11 @@ class Removal
         $this->weight = $weight;
 
         return $this;
+    }
+
+    public function getPlanifiedDate(): DateTime
+    {
+        return $this->planningLine->getPlanningWeek()->getMondayDate()->modify('+'.floor($this->planningLine->getDay()/2).' day');
     }
     
 }

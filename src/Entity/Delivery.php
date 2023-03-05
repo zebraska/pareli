@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\DeliveryRepository;
 use Doctrine\ORM\Mapping as ORM;
+use DateTime;
 
 #[ORM\Entity(repositoryClass: DeliveryRepository::class)]
 class Delivery
@@ -145,6 +146,11 @@ class Delivery
         $this->weight = $weight;
 
         return $this;
+    }
+
+    public function getPlanifiedDate(): DateTime
+    {
+        return $this->planningLine->getPlanningWeek()->getMondayDate()->modify('+'.floor($this->planningLine->getDay()/2).' day');
     }
     
 }

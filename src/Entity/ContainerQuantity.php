@@ -64,4 +64,9 @@ class ContainerQuantity
 
         return $this;
     }
+
+    public function getDisplayName(): String
+    {
+        return 'x'.$this->quantity.' '.$this->container->getName();
+    }
 }

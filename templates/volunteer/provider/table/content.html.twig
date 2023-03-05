@@ -30,7 +30,7 @@
 				</span>
 			</div>
 			<div class='col-3 table-content-cell ajax-link-action' action="{{path('app_volunteer_provider_getform',{'type':'comment','id':provider.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal" style='overflow-y:hidden'>
-				{{provider.comment}}<br/>
+				{{provider.comment|nl2br}}<br/>
 				<span class='table-content-line-edit justify-content-right'>
 					<i class="fa-solid fa-pen-to-square"></i>
 				</span>

@@ -15,14 +15,14 @@
 							Non planifié
 						{% elseif delivery.state == 1 %}
 							<i class="fa-solid fa-calendar-plus text-primary text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':delivery.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
-							Planifié le 01/01/2020
+							Planifié le {{delivery.PlanifiedDate|date('d/m/Y')}}
 						{% elseif delivery.state == 2 %}
 							<i class="fa-solid fa-calendar-check text-success text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':delivery.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
-							Réalisé le 01/01/2020
+							Réalisé le {{delivery.PlanifiedDate|date('d/m/Y')}}
 						{% endif %}
 					</div>
 					<div class='col-3 ajax-link-action' style='height:30vh;overflow-y:hidden' action="{{path('app_volunteer_delivery_getform',{'id':delivery.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
-						{{delivery.comment}}
+						{{delivery.comment|nl2br}}
 						<span class='table-content-line-edit justify-content-right'>
 							<i class="fa-solid fa-pen-to-square"></i>
 						</span>

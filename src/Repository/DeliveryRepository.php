@@ -54,19 +54,18 @@ class DeliveryRepository extends ServiceEntityRepository
     public function getPaginationMainQuery(String $search = '', String $filter = ''): Query
     {
         $qb = $this->createQueryBuilder('d')->join('d.recycler', 'r');
-        if ($search!='') {
-            $qb = $qb->andWhere('r.name LIKE :search OR r.city LIKE :search')->setParameter('search', '%'.$search.'%');
+        if ($search != '') {
+            $qb = $qb->andWhere('r.name LIKE :search OR r.city LIKE :search')->setParameter('search', '%' . $search . '%');
         }
 
-        if ($filter=='1') {
+        if ($filter == '1') {
             $qb = $qb->andWhere('d.state=0');
-
-        }elseif($filter=='2') {
-                $qb = $qb->andWhere('d.state=1');
-        }elseif($filter=='3'){
+        } elseif ($filter == '2') {
+            $qb = $qb->andWhere('d.state=1');
+        } elseif ($filter == '3') {
             $qb = $qb->andWhere('d.state=2');
         }
-       
+
 
         return $qb->orderBy('d.dateCreate', 'DESC')
             ->setMaxResults(10)
@@ -74,13 +73,22 @@ class DeliveryRepository extends ServiceEntityRepository
     }
 
 
-    public function getAllDeliverysByInterval(\DateTime $dateStart, \DateTime $dateEnd){        
+    public function getAllDeliverysByInterval(\DateTime $dateStart, \DateTime $dateEnd, String $filter = '')
+    {
         $qb = $this->createQueryBuilder('d')
-                ->where('d.dateCreate BETWEEN :dateStart AND :dateEnd')
-                ->setParameter('dateStart', $dateStart)
-                ->setParameter('dateEnd', $dateEnd)
-                ->orderBy('d.dateCreate', 'DESC');
-        
+            ->where('d.dateCreate BETWEEN :dateStart AND :dateEnd')
+            ->setParameter('dateStart', $dateStart)
+            ->setParameter('dateEnd', $dateEnd)
+            ->orderBy('d.dateCreate', 'DESC');
+
+        if ($filter == '1') {
+            $qb = $qb->andWhere('d.state=0');
+        } elseif ($filter == '2') {
+            $qb = $qb->andWhere('d.state=1');
+        } elseif ($filter == '3') {
+            $qb = $qb->andWhere('d.state=2');
+        }
+
         return $qb->getQuery();
     }
 

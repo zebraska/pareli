@@ -24,7 +24,7 @@ $.fn.selectpicker.Constructor.BootstrapVersion = '5';
 // or you can include specific pieces
 // require('bootstrap/js/dist/tooltip');
 // require('bootstrap/js/dist/popover');
-var publicPath = 'http://localhost/pareli/public/';
+var publicPath = 'http://weqgubi.cluster029.hosting.ovh.net/public/';
 
 function loadPopovers() {
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
@@ -94,22 +94,28 @@ function executeAjaxAction(element, action = null) {
                 jqXHR.url = settings.url;
             },
             success: function (response) {
-                window.history.pushState(publicPath + response.bundleName, '', publicPath + response.bundleName);
-                for (var rank in response.views) {
-                    console.log(response.views[rank].target);
-                    document.getElementById(response.views[rank].target).innerHTML = response.views[rank].view;
+                if (response.bundleName) {
+                    window.history.pushState(publicPath + response.bundleName, '', publicPath + response.bundleName);
+                    for (var rank in response.views) {
+                        console.log(response.views[rank].target);
+                        document.getElementById(response.views[rank].target).innerHTML = response.views[rank].view;
+                    }
+                    //a enlever si pb redirection
+                    if (response.redirectTo != false) {
+                        window.location.href = response.redirectTo;
+                    }
+                    document.getElementById('flash-message').innerHTML = response.flashMessage;
+                    $(".alert-success").fadeTo(2500, 500).slideUp(500, function () {
+                        $(".alert-success").slideUp(500);
+                    });
+                    $(".tooltip").hide();
+                    loadTooltips();
+                    loadSelectpickers();
                 }
-                //a enlever si pb redirection
-                if (response.redirectTo != false) {
-                    window.location.href = response.redirectTo;
+                else {
+                    window.location.href = publicPath + "login";
+                    window.history.pushState(publicPath + "login", '', publicPath + "login");
                 }
-                document.getElementById('flash-message').innerHTML = response.flashMessage;
-                $(".alert-success").fadeTo(2500, 500).slideUp(500, function () {
-                    $(".alert-success").slideUp(500);
-                });
-                $(".tooltip").hide();
-                loadTooltips();
-                loadSelectpickers();
             },
             error: function (jqXHR, error) {
                 document.getElementById('flash-message').innerHTML = "<div class='alert alert-danger alert-dismissible fade show' role='alert'>"
@@ -151,26 +157,32 @@ function executeAjaxFormAction(event) {
             jqXHR.url = settings.url;
         },
         success: function (response) {
-            window.history.pushState(publicPath + response.bundleName, '', publicPath + response.bundleName);
-            this.btnSubmit.html(this.btnSubmitContent);
-            if (response.closeModal) {
-                const truck_modal = document.querySelector('#supplierModal');
-                const modal = bootstrap.Modal.getInstance(truck_modal);
-                modal.hide();
+            if (response.bundleName) {
+                window.history.pushState(publicPath + response.bundleName, '', publicPath + response.bundleName);
+                this.btnSubmit.html(this.btnSubmitContent);
+                if (response.closeModal) {
+                    const truck_modal = document.querySelector('#supplierModal');
+                    const modal = bootstrap.Modal.getInstance(truck_modal);
+                    modal.hide();
+                }
+                if (response.redirectTo != false) {
+                    window.location.href = response.redirectTo;
+                }
+                this.form.reset();
+                for (var rank in response.views) {
+                    document.getElementById(response.views[rank].target).innerHTML = response.views[rank].view;
+                }
+                document.getElementById('flash-message').innerHTML = response.flashMessage;
+                $(".alert-success").fadeTo(2500, 500).slideUp(500, function () {
+                    $(".alert-success").slideUp(500);
+                });
+                $('.selectpicker').selectpicker();
+                loadTooltips();
             }
-            if (response.redirectTo != false) {
-                window.location.href = response.redirectTo;
+            else {
+                window.location.href = publicPath + "login";
+                window.history.pushState(publicPath + "login", '', publicPath + "login");
             }
-            this.form.reset();
-            for (var rank in response.views) {
-                document.getElementById(response.views[rank].target).innerHTML = response.views[rank].view;
-            }
-            document.getElementById('flash-message').innerHTML = response.flashMessage;
-            $(".alert-success").fadeTo(2500, 500).slideUp(500, function () {
-                $(".alert-success").slideUp(500);
-            });
-            $('.selectpicker').selectpicker();
-            loadTooltips();
         },
         error: function (jqXHR, error) {
             document.getElementById('flash-message').innerHTML = "<div class='alert alert-danger alert-dismissible fade show' role='alert'>"

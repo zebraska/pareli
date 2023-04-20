@@ -5,6 +5,7 @@ namespace App\Service\Spreadsheet;
 use App\Entity\Removal;
 use App\Entity\Delivery;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\Types\String_;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class RemovalDeliveryModel {
@@ -15,10 +16,10 @@ class RemovalDeliveryModel {
     private $spreadsheet;
 
 
-    public function __construct(ManagerRegistry $doctrine, \DateTime $dateStart, \DateTime $dateEnd) {
+    public function __construct(ManagerRegistry $doctrine, \DateTime $dateStart, \DateTime $dateEnd, String $stateFilter) {
         $this->doctrine = $doctrine;
-        $this->removals = $doctrine->getRepository(Removal::class)->getAllRemovalsByInterval($dateStart, $dateEnd)->getResult();
-        $this->deliverys = $doctrine->getRepository(Delivery::class)->getAllDeliverysByInterval($dateStart, $dateEnd)->getResult();
+        $this->removals = $doctrine->getRepository(Removal::class)->getAllRemovalsByInterval($dateStart, $dateEnd, $stateFilter)->getResult();
+        $this->deliverys = $doctrine->getRepository(Delivery::class)->getAllDeliverysByInterval($dateStart, $dateEnd, $stateFilter)->getResult();
         $this->spreadsheet = self::generateSpreadsheet($dateStart, $dateEnd);
     }
     
@@ -30,30 +31,27 @@ class RemovalDeliveryModel {
         $sheet->getColumnDimension('B')->setWidth(8,'cm');
         $sheet->getColumnDimension('C')->setWidth(8,'cm');
         $sheet->getColumnDimension('D')->setWidth(2.23,'cm');
-        $sheet->getColumnDimension('E')->setWidth(2.23,'cm');
-        $sheet->getColumnDimension('F')->setWidth(8,'cm');        
+        $sheet->getColumnDimension('E')->setWidth(2.23,'cm');      
         $sheet->setCellValue('A1', 'Export des demandes du '.$dateStart->format('d/m/y').' au '.$dateEnd->format('d/m/y'));
-        $sheet->mergeCells('A1:F1');
-        $sheet->getStyle('A1:F1')->applyFromArray(self::generateH1StyleArray());
+        $sheet->mergeCells('A1:E1');
+        $sheet->getStyle('A1:E1')->applyFromArray(self::generateH1StyleArray());
         $sheet->getRowDimension('1')->setRowHeight(1, 'cm');                
         
         $sheet->setCellValue('A2', 'Enlèvements');
-        $sheet->mergeCells('A2:F2');
-        $sheet->getStyle('A2:F2')->applyFromArray(self::generateH2StyleArray());
+        $sheet->mergeCells('A2:E2');
+        $sheet->getStyle('A2:E2')->applyFromArray(self::generateH2StyleArray());
         
         $sheet->setCellValue('A3', 'Date');
-        $sheet->setCellValue('B3', 'Instructions');        
+        $sheet->setCellValue('B3', 'Commentaires');        
         $sheet->setCellValue('C3', 'Fournisseur');
         $sheet->setCellValue('D3', 'Poids');
         $sheet->setCellValue('E3', 'État');
-        $sheet->setCellValue('F3', 'Contenants');   
-        $sheet->getStyle('A3:F3')->applyFromArray(self::generateH3StyleArray());
+        $sheet->getStyle('A3:E3')->applyFromArray(self::generateH3StyleArray());
         
         //contains current row progression
         $y = 4;
                 
         foreach($this->removals as $removal) {
-            $containerString = '';
             $weightString = '';
             $providerString = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
             $providerName = $providerString->createTextRun($removal->getDisplayName());
@@ -62,16 +60,11 @@ class RemovalDeliveryModel {
             if($removal->getState() === 2){
                 $weightString = strval($removal->getWeight()).' kg';
             }
-            foreach($removal->getRemovalContainerQuantities() as $key => $containerQuantities){
-                $containerString .= strval($containerQuantities->getQuantity()).'x '.$containerQuantities->getContainer()->getName();
-                if($key + 1 !== count($removal->getRemovalContainerQuantities())){$containerString .= "\n";}
-            }
             $sheet->setCellValue([1,$y], $removal->getDateCreate()->format('d-m-Y'));
             $sheet->setCellValue([2,$y], $removal->getComment());
             $sheet->setCellValue([3,$y], $providerString);            
             $sheet->setCellValue([4,$y], $weightString);
             $sheet->setCellValue([5,$y], $removal->getStateString());
-            $sheet->setCellValue([6,$y], $containerString);
             $sheet->getRowDimension("$y")->setRowHeight(self::calculateRowHeight($removal), 'cm');                                
             if ($y % 2 === 0){
                 $sheet->getStyle([1,$y,6,$y])->getFill()->SetFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFDDDDDD');
@@ -93,7 +86,7 @@ class RemovalDeliveryModel {
         $y++;
         
         $sheet->setCellValue([1,$y], 'Date');
-        $sheet->setCellValue([2,$y], 'Instructions');
+        $sheet->setCellValue([2,$y], 'Commentaires');
         $sheet->setCellValue([3,$y], 'Fournisseur');
         $sheet->setCellValue([4,$y], 'Poids');
         $sheet->setCellValue([5,$y], 'État');
@@ -139,16 +132,16 @@ class RemovalDeliveryModel {
     public function completeSpreadsheet(){
         
         $sheet = $this->spreadsheet->getActiveSheet();
+        $sheet->getColumnDimension('F')->setWidth(4,'cm');
         $sheet->getColumnDimension('G')->setWidth(4,'cm');
         $sheet->getColumnDimension('H')->setWidth(4,'cm');
-        $sheet->getColumnDimension('I')->setWidth(4,'cm');
-        $sheet->mergeCells('A1:I1');
-        $sheet->mergeCells('A2:I2');
+        $sheet->mergeCells('A1:H1');
+        $sheet->mergeCells('A2:H2');
         
-        $sheet->setCellValue('G3', 'Véhicule');
-        $sheet->setCellValue('H3', 'Conducteur');        
-        $sheet->setCellValue('I3', 'Accompagnant');
-        $sheet->getStyle('G3:I3')->applyFromArray(self::generateH3StyleArray());
+        $sheet->setCellValue('F3', 'Véhicule');
+        $sheet->setCellValue('G3', 'Conducteur');        
+        $sheet->setCellValue('H3', 'Accompagnant');
+        $sheet->getStyle('F3:H3')->applyFromArray(self::generateH3StyleArray());
         
         $y = 4;
                 
@@ -160,26 +153,26 @@ class RemovalDeliveryModel {
                     $companionsString .= $companion->getDisplayName();
                     if($key + 1 !== count($planningLine->getCompanions())){$companionsString .= "\n";}
                 }
-                $sheet->setCellValue([7,$y], $planningLine->getVehicle()->getDisplayName());
-                $sheet->setCellValue([8,$y], $planningLine->getDriver()->getDisplayName());
-                $sheet->setCellValue([9,$y], $companionsString);
+                $sheet->setCellValue([6,$y], $planningLine->getVehicle()?$planningLine->getVehicle()->getDisplayName():'Non renseigné');
+                $sheet->setCellValue([7,$y], $planningLine->getDriver()?$planningLine->getDriver()->getDisplayName():'Non renseigné');
+                $sheet->setCellValue([8,$y], $companionsString);
             }
             if ($y % 2 === 0){
-                $sheet->getStyle([7,$y,9,$y])->getFill()->SetFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFDDDDDD');
+                $sheet->getStyle([6,$y,8,$y])->getFill()->SetFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFDDDDDD');
             }
             $y++;
         }
-        $sheet->getStyle([7,4,9,$y-1])->getBorders()->getVertical()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-        $sheet->getStyle([9,4,9,$y-1])
+        $sheet->getStyle([6,4,8,$y-1])->getBorders()->getVertical()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle([8,4,8,$y-1])
             ->getAlignment()->setWrapText(true);
         
-        $sheet->mergeCells([1,$y,9,$y]);
+        $sheet->mergeCells([1,$y,8,$y]);
         $y++;
         
-        $sheet->setCellValue([7,$y], 'Véhicule');
-        $sheet->setCellValue([8,$y], 'Conducteur');        
-        $sheet->setCellValue([9,$y], 'Accompagnant');
-        $sheet->getStyle([7,$y,9,$y])->applyFromArray(self::generateH3StyleArray());
+        $sheet->setCellValue([6,$y], 'Véhicule');
+        $sheet->setCellValue([7,$y], 'Conducteur');        
+        $sheet->setCellValue([8,$y], 'Accompagnant');
+        $sheet->getStyle([6,$y,8,$y])->applyFromArray(self::generateH3StyleArray());
         $y++;
         
         $yTopDelivery = $y;
@@ -191,22 +184,22 @@ class RemovalDeliveryModel {
                     $companionsString .= $companion->getDisplayName();
                     if($key + 1 !== count($planningLine->getCompanions())){$companionsString .= "\n";}
                 }
-                $sheet->setCellValue([7,$y], $planningLine->getVehicle()->getDisplayName());
-                $sheet->setCellValue([8,$y], $planningLine->getDriver()->getDisplayName());
-                $sheet->setCellValue([9,$y], $companionsString);
+                $sheet->setCellValue([6,$y], $planningLine->getVehicle()?$planningLine->getVehicle()->getDisplayName():'Non renseigné');
+                $sheet->setCellValue([7,$y], $planningLine->getDriver()?$planningLine->getDriver()->getDisplayName():'Non renseigné');
+                $sheet->setCellValue([8,$y], $companionsString);
             }
             if ($y % 2 === 0){
-                $sheet->getStyle([7,$y,9,$y])->getFill()->SetFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFDDDDDD');
+                $sheet->getStyle([6,$y,8,$y])->getFill()->SetFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFDDDDDD');
             }
             $y++;
         }
         
-        $sheet->getStyle([7,$yTopDelivery,9,$y-1])->getBorders()->getVertical()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-        $sheet->getStyle([9,4,9,$y-1])
+        $sheet->getStyle([6,$yTopDelivery,8,$y-1])->getBorders()->getVertical()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle([8,4,8,$y-1])
             ->getAlignment()->setWrapText(true);
         
-        $sheet->getStyle([1,1,9,$y-1])->getBorders()->getOutline()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-        $sheet->getPageSetup()->setPrintArea('A1:I'.$y-1);
+        $sheet->getStyle([1,1,8,$y-1])->getBorders()->getOutline()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getPageSetup()->setPrintArea('A1:H'.$y-1);
         
         
     }

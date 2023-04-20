@@ -2,16 +2,15 @@
 	<head></head>
 	<body style='font-size:15px'>
 		<div style='width:100%;'>
-			<div style='display:inline-block;width:50%;margin-top:7%'>
+			<div style='display:inline-block;width:50%;margin-top:7%;'>
 				<img src='{{absolute_url(asset('logo/transparent.png'))}}' style='height:80px'/>
 				<p>16 rue des Entrepreneurs</p>
 				<p>44120 Vertou - 06 75 67 98 02</p>
 				<p>N° Réservé bénévoles: 06 78 67 99 22</p>
 				<p>Mail: logistiquevertou@lespapiersdelespoir.fr</p>
-				<p>Bon d'enlèvement / Livraison Semaine
-					{{pLine.planningWeek.number}}</p>
 			</div>
-			<div style='display:inline-block;width:45%;'>
+			<div style='display:inline-block;width:45%;vertical-align: top;'>
+				<p>Bon d'enlèvement / Livraison Semaine {{pLine.planningWeek.number}}</p>
 				<p>Le:
 					{{dayDate|date('d/m/Y')}}
 				</p>
@@ -32,22 +31,22 @@
 		</div>
 		<table style='width:100vw;border: 1px solid;border-collapse: collapse;'>
 			<tr style='border: 1px solid;'>
-				<td style='width:400px;text-align:center;border: 1px solid;'>
+				<td style='width:350px;border: 1px solid;'>
 					Coordonnées
 				</td>
 				<td style='width:200px;text-align:center;border: 1px solid;'>
-					bacs et instructions
+					Bacs et instructions
 				</td>
-				<td style='width:50%;border: 1px solid;'>
-					Notez le N° des bacs à roulettes
+				<td style='width:75px;text-align:center;border: 1px solid;'>
+					N° Bacs
 				</td>
-				<td style='width:50%;border: 1px solid;'>
-					Notez le poids* des bacs
+				<td style='width:75px;text-align:center;border: 1px solid;'>
+					Poids*
 				</td>
 			</tr>
 			{% for demand in pLine.removals %}
 				<tr style='border: 1px solid;'>
-					<td style='border: 1px solid;width:400px;padding:5px'>
+					<td style='border: 1px solid;width:350px;padding:5px'>
 						<b>{{demand.provider.name}}
 							(Enlèvement)</b>
 						<br/>
@@ -80,8 +79,8 @@
 					<td style='padding:5px;'>
 						{{demand.comment|nl2br}}
 					</td>
-					<td style='border: 1px solid;width:50%;'></td>
-					<td style='border: 1px solid;width:50%'></td>
+					<td style='border: 1px solid;width:75px;'></td>
+					<td style='border: 1px solid;width:75px'></td>
 				</tr>
 			{% endfor %}
 			{% for demand in pLine.deliverys %}
@@ -113,44 +112,41 @@
 			{% endfor %}
 		</table>
 		<i>* en Kg pour vous aider une estimation 1 bac de brochure : 300 kg – autres 200 kg</i>
-		<p>Vos observations sur l’accès et la qualité de la collecte :
-		</p>
-		<br/><br/><br/>
-		<table style='width:100vw;border: 1px solid;border-collapse: collapse;'>
+		<table style='width:100vw;border: 1px solid;border-collapse: collapse;margin-top:100px;'>
 			<tr style='border: 1px solid;'>
-				<td style='border: 1px solid;width:50px;padding:5px'></td>
-				<td style='border: 1px solid;width:400px;padding:5px'>Votre disponibilité pour la semaine prochaine</td>
-				<td style='border: 1px solid;width:50px;padding:5px'></td>
-				<td style='border: 1px solid;width:100%;padding:5px'>Vos absences pour les prochaines semaines</td>
+				<td style='border: 1px solid;width:125px;padding:5px'></td>
+				<td style='border: 1px solid;width:250px;padding:5px'>Votre disponibilité pour la semaine prochaine</td>
+				<td style='border: 1px solid;width:125px;padding:5px'></td>
+				<td style='border: 1px solid;padding:5px'>Vos absences pour les prochaines semaines</td>
 			</tr>
 			<tr style='border: 1px solid;'>
-				<td style='border: 1px solid;width:50px;padding:5px'></td>
-				<td style='border: 1px solid;width:400px;padding:5px'>lundi</td>
-				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td style='border: 1px solid;padding:5px'></td>
+				<td style='border: 1px solid;padding:5px'>lundi</td>
+				<td style='border: 1px solid;padding:5px'></td>
 				<td></td>
 			</tr>
 			<tr style='border: 1px solid;'>
-				<td style='border: 1px solid;width:50px;padding:5px'></td>
-				<td style='border: 1px solid;width:400px;padding:5px'>mardi</td>
-				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td style='border: 1px solid;padding:5px'></td>
+				<td style='border: 1px solid;padding:5px'>mardi</td>
+				<td style='border: 1px solid;padding:5px'></td>
 				<td></td>
 			</tr>
 			<tr style='border: 1px solid;'>
-				<td style='border: 1px solid;width:50px;padding:5px'></td>
-				<td style='border: 1px solid;width:400px;padding:5px'>mercredi</td>
-				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td style='border: 1px solid;padding:5px'></td>
+				<td style='border: 1px solid;padding:5px'>mercredi</td>
+				<td style='border: 1px solid;padding:5px'></td>
 				<td></td>
 			</tr>
 			<tr style='border: 1px solid;'>
-				<td style='border: 1px solid;width:50px;padding:5px'></td>
-				<td style='border: 1px solid;width:400px;padding:5px'>jeudi</td>
-				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td style='border: 1px solid;padding:5px'></td>
+				<td style='border: 1px solid;padding:5px'>jeudi</td>
+				<td style='border: 1px solid;padding:5px'></td>
 				<td></td>
 			</tr>
 			<tr style='border: 1px solid;'>
-				<td style='border: 1px solid;width:50px;padding:5px'></td>
-				<td style='border: 1px solid;width:400px;padding:5px'>vendredi</td>
-				<td style='border: 1px solid;width:50px;padding:5px'></td>
+				<td style='border: 1px solid;padding:5px'></td>
+				<td style='border: 1px solid;padding:5px'>vendredi</td>
+				<td style='border: 1px solid;padding:5px'></td>
 				<td></td>
 			</tr>
 		</table>

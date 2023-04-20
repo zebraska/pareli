@@ -18,7 +18,7 @@ class ProviderCommentType extends AbstractType
     {
         $builder
             ->add('comment', TextareaType::class, [
-                'label' => "Instructions d'enlèvements permanentes",
+                'label' => "Commentaires d'enlèvement permanent",
                 'required' => false,
             ]);
     }

@@ -28,7 +28,7 @@ class RemovalType extends AbstractType
                 'label' => "Date de la demande"
             ])
             ->add('comment', TextareaType::class,[
-                'label' => "Instructions d'enlèvements ponctuelles",
+                'label' => "Commentaires ponctuels pour cet enlèvement",
                 'required' => false
             ])
             

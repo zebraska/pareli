@@ -47,22 +47,26 @@ class PlanningLineRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return PlanningLine[] Returns an array of PlanningLine objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
+    /**
+    * @return PlanningLine[] Returns an array of PlanningLine objects
     */
+    public function findForPlanning($pWeek, $day, $filter)
+    {
+        $qb = $this->createQueryBuilder('p');
+        if($filter==0){
+            $qb = $qb->andWhere("p.attachment = 'Vertou' OR p.attachment = 'Tous'");
+        }
+        else if($filter==1){
+            $qb = $qb->andWhere("p.attachment = 'Saint-Nazaire' OR p.attachment = 'Tous'");
+        }
+        
+        return $qb->andWhere('p.day = :day')
+        ->setParameter('day', $day)
+        ->andWhere('p.planningWeek = :planningWeek')
+        ->setParameter('planningWeek', $pWeek)
+        ->getQuery()
+        ->getResult();
+    }
 
     /*
     public function findOneBySomeField($value): ?PlanningLine

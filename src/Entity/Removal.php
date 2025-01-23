@@ -42,6 +42,12 @@ class Removal
     #[ORM\Column(type: 'integer', nullable: true)]
     private $weight;
 
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $dateRealized;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $datePlanified;
+
     public function __construct()
     {
         $this->removalContainerQuantities = new ArrayCollection();
@@ -188,9 +194,33 @@ class Removal
         return $this;
     }
 
-    public function getPlanifiedDate(): DateTime
+    public function generatePlanifiedDate(): DateTime
     {
         return $this->planningLine->getPlanningWeek()->getMondayDate()->modify('+'.floor($this->planningLine->getDay()/2).' day');
+    }
+
+    public function getDateRealized(): ?\DateTimeInterface
+    {
+        return $this->dateRealized;
+    }
+
+    public function setDateRealized( ?\DateTimeInterface $dateRealized): self
+    {
+        $this->dateRealized = $dateRealized;
+
+        return $this;
+    }
+
+    public function getDatePlanified(): ?\DateTimeInterface
+    {
+        return $this->datePlanified;
+    }
+
+    public function setDatePlanified(?\DateTimeInterface $datePlanified): self
+    {
+        $this->datePlanified = $datePlanified;
+
+        return $this;
     }
     
 }

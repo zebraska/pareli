@@ -25,7 +25,14 @@ class DeliveryController extends AbstractController
     #[Route('/volunteer/delivery', name: 'app_volunteer_delivery')]
     public function index(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
     {
-        $query = $doctrine->getRepository(Delivery::class)->getPaginationMainQuery('', '');
+        $filterattach='';
+        if($this->getUser()->getUserIdentifier() == 'stnazaire'){
+            $filterattach=2;
+        }
+        else if($this->getUser()->getUserIdentifier() == 'vertou'){
+            $filterattach=1;
+        }
+        $query = $doctrine->getRepository(Delivery::class)->getPaginationMainQuery('', '', $filterattach);
 
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
@@ -42,6 +49,7 @@ class DeliveryController extends AbstractController
                         'pagination' => $pagination,
                         'search' => '',
                         'filter' => '',
+                        'filterattach' => $filterattach,
                         'page' => 1,
                     ]
                 )->getContent(),
@@ -55,6 +63,7 @@ class DeliveryController extends AbstractController
             'pagination' => $pagination,
             'search' => '',
             'filter' => '',
+            'filterattach' => $filterattach,
             'page' => 1,
         ]);
     }
@@ -103,10 +112,10 @@ class DeliveryController extends AbstractController
     public function search(String $type, Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
     {
         $search = $request->query->get('search', '');
+        $filterattach = $request->query->get('filterattach', '');
         $filter = $request->query->get('filter', '');
-        
         $page = $request->query->getInt('page', 1);
-        $query = $doctrine->getRepository(Delivery::class)->getPaginationMainQuery($search, $filter);
+        $query = $doctrine->getRepository(Delivery::class)->getPaginationMainQuery($search, $filter, $filterattach);
 
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
@@ -122,6 +131,7 @@ class DeliveryController extends AbstractController
                     [
                         'pagination' => $pagination,
                         'search' => $search,
+                        'filterattach' => $filterattach,
                         'filter' => $filter,
                         'page' => $page,
                        
@@ -136,10 +146,24 @@ class DeliveryController extends AbstractController
                         [
                             'search' => $search,
                             'filter' => $filter,
+                            'filterattach' => $filterattach,
                             'page' => $page,
                         ]
                     )->getContent(),
                     'select-filters'
+                );
+                $ajaxResponse->addView(
+                    $this->render(
+                        'volunteer/delivery/component/filterattach.html.twig',
+                        [
+                            'search' => $search,
+                            'filterattach' => $filterattach,
+                            'filter' => $filter,
+                            'page' => $page,
+
+                        ]
+                    )->getContent(),
+                    'select-filtersattach'
                 );
             } else if ($type == 'filter') {
                 $ajaxResponse->addView(
@@ -148,10 +172,50 @@ class DeliveryController extends AbstractController
                         [
                             'search' => $search,
                             'filter' => $filter,
+                            'filterattach' => $filterattach,
                             'page' => $page,
                         ]
                     )->getContent(),
                     'input-search'
+                );
+                $ajaxResponse->addView(
+                    $this->render(
+                        'volunteer/delivery/component/filterattach.html.twig',
+                        [
+                            'search' => $search,
+                            'filterattach' => $filterattach,
+                            'filter' => $filter,
+                            'page' => $page,
+
+                        ]
+                    )->getContent(),
+                    'select-filtersattach'
+                );
+            } else if ($type == 'filterattach') {
+                $ajaxResponse->addView(
+                    $this->render(
+                        'volunteer/delivery/component/search.html.twig',
+                        [
+                            'search' => $search,
+                            'filterattach' => $filterattach,
+                            'filter' => $filter,
+                            'page' => $page,
+                        ]
+                    )->getContent(),
+                    'input-search'
+                );
+                $ajaxResponse->addView(
+                    $this->render(
+                        'volunteer/delivery/component/filter.html.twig',
+                        [
+                            'search' => $search,
+                            'filterattach' => $filterattach,
+                            'filter' => $filter,
+                            'page' => $page,
+
+                        ]
+                    )->getContent(),
+                    'select-filters'
                 );
             }
             return $ajaxResponse->generateContent();
@@ -161,6 +225,7 @@ class DeliveryController extends AbstractController
             'controller_name' => 'Volunteer/deliveryController',
             'pagination' => $pagination,
             'search' => '',
+            'filterattach' => '',
             'filter' => '',
            
         ]);
@@ -170,6 +235,14 @@ class DeliveryController extends AbstractController
     #[Route('/volunteer/delivery/create/{id}', defaults: ["id" => 0], name: 'app_volunteer_delivery_create')]
     public function create(int $id = 0, Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
     {
+        $filterattach='';
+        if($this->getUser()->getUserIdentifier() == 'stnazaire'){
+            $filterattach=2;
+        }
+        else if($this->getUser()->getUserIdentifier() == 'vertou'){
+            $filterattach=1;
+        }
+
         $recyclerId = $request->query->getInt('recyclerId', 0);
         $delivery = new Delivery();
         if ($request->isXmlHttpRequest()) {
@@ -211,6 +284,7 @@ class DeliveryController extends AbstractController
                                 'pagination' => $pagination,
                                 'search' => $delivery->getRecycler()->getName(),
                                 'filter' => '',
+                                'filterattach' => $filterattach,
                                 'page' => 1,
                             ]
                         )->getContent(),
@@ -230,7 +304,7 @@ class DeliveryController extends AbstractController
                 } catch (\Exception $e) {
                     $ajaxResponse->setCloseModal(false);
                     $ajaxResponse->addView(
-                        $this->render('volunteer/delivery/modal/formEdit.html.twig', ['form' => $form->createView(), 'recycler' => $delivery->getRecycler()])->getContent(),
+                        $this->render('volunteer/delivery/modal/formEdit.html.twig', ['form' => $form->createView(), 'recycler' => $delivery->getRecycler(), 'id' => $id])->getContent(),
                         'modal-content'
                     );
                     $this->addFlash('danger', 'Veuillez transmettre une capture d\'écran des données saisies dans le formulaire à l\'adresse cyril.contant@zebratero.com');
@@ -238,7 +312,7 @@ class DeliveryController extends AbstractController
             } else {
                 $ajaxResponse->setCloseModal(false);
                 $ajaxResponse->addView(
-                    $this->render('volunteer/delivery/modal/formEdit.html.twig', ['form' => $form->createView(), 'recycler' => $delivery->getRecycler()])->getContent(),
+                    $this->render('volunteer/delivery/modal/formEdit.html.twig', ['form' => $form->createView(), 'recycler' => $delivery->getRecycler(), 'id' => $id])->getContent(),
                     'modal-content'
                 );
                 $this->addFlash('danger', 'Une erreur est survenue lors de l\'ajout');

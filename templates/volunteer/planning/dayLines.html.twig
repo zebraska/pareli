@@ -1,6 +1,6 @@
 {% for line in linePerDay.lines %}
 	<div class='row' id='pLine{{line.id}}'>
-		{% include 'volunteer/planning/line.html.twig' with {pLine:line,pWeek:pWeek} only %}
+		{% include 'volunteer/planning/line.html.twig' with {pLine:line,pWeek:pWeek,filter:filter} only %}
 	</div>
     <hr/>
 {% endfor %}

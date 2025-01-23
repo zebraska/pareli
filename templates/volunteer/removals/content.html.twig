@@ -14,17 +14,15 @@
 			</div>
 		</div>
 
-		<div class='col-2 py-2'>
-			<div id='select-filtersattach' class='col-9'>
-				{% include 'volunteer/removals/component/filterattach.html.twig' %}
-			</div>
-		</div>
-		<div class='col-2 py-2'>
+		<div class='col-4 py-2'>
 			<div class='row'>
-				<div id='select-filters' class='col-9'>
+				<div id='select-filtersattach' class='col-4'>
+					{% include 'volunteer/removals/component/filterattach.html.twig' %}
+				</div>
+				<div id='select-filters' class='col-4'>
 					{% include 'volunteer/removals/component/filter.html.twig' %}
 				</div>
-				<div class='col-3 d-grid'>
+				<div class='col-4 d-grid'>
 					<button action="{{path('app_volunteer_removal')}}" data-bs-toggle='tooltip' data-bs-title='Réinialiser les filtres' data-bs-placement="top" data-target-spinner='body-interface' data-spinner-type='1' class='btn btn-dark ajax-link-action'>
 						<i class="fa-solid fa-rotate-right text-2 mt-1"></i>
 					</button>
@@ -39,8 +37,8 @@
 			<div class='col-11'>
 				<div class='row'>
 					<div class='col-3'>Date</div>
-					<div class='col-5'>Commentaires</div>
 					<div class='col-4'>Fournisseur</div>
+					<div class='col-5'>Commentaires</div>
 				</div>
 			</div>
 		</div>

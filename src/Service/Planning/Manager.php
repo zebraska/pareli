@@ -12,12 +12,12 @@ class Manager {
     private $pWeek;
     private $linesPerDay;
     
-    public function __construct(ManagerRegistry $em,PlanningWeek $pWeek) {
+    public function __construct(ManagerRegistry $em,PlanningWeek $pWeek,int $filter) {
         
         $this->doctrine = $em;
         $this->pWeek = $pWeek;
         $this->linesPerDay = [];
-        self::generateLinesPerDay();
+        self::generateLinesPerDay($filter);
         
     }
     
@@ -33,22 +33,22 @@ class Manager {
         $this->linesPerDay = $linesPerDay;
     }
     
-    public function generateLinesPerDay() {
+    public function generateLinesPerDay(int $filter) {
         
-        $this->linesPerDay[0] = ['title' => 'Lundi matin', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $this->pWeek, 'day' => 0])];
-        $this->linesPerDay[1] = ['title' => 'Lundi après-midi', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $this->pWeek, 'day' => 1])];
+        $this->linesPerDay[0] = ['title' => 'Lundi matin', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findForPlanning($this->pWeek,0,$filter)];
+        $this->linesPerDay[1] = ['title' => 'Lundi après-midi', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findForPlanning($this->pWeek,1,$filter)];
 
-        $this->linesPerDay[2] = ['title' => 'Mardi matin', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $this->pWeek, 'day' => 2])];
-        $this->linesPerDay[3] = ['title' => 'Mardi après-midi', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $this->pWeek, 'day' => 3])];
+        $this->linesPerDay[2] = ['title' => 'Mardi matin', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findForPlanning($this->pWeek,2,$filter)];
+        $this->linesPerDay[3] = ['title' => 'Mardi après-midi', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findForPlanning($this->pWeek,3,$filter)];
 
-        $this->linesPerDay[4] = ['title' => 'Mercredi matin', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $this->pWeek, 'day' => 4])];
-        $this->linesPerDay[5] = ['title' => 'Mercredi après-midi', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $this->pWeek, 'day' => 5])];
+        $this->linesPerDay[4] = ['title' => 'Mercredi matin', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findForPlanning($this->pWeek,4,$filter)];
+        $this->linesPerDay[5] = ['title' => 'Mercredi après-midi', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findForPlanning($this->pWeek,5,$filter)];
 
-        $this->linesPerDay[6] = ['title' => 'Jeudi matin', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $this->pWeek, 'day' => 6])];
-        $this->linesPerDay[7] = ['title' => 'Jeudi après-midi', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $this->pWeek, 'day' => 7])];
+        $this->linesPerDay[6] = ['title' => 'Jeudi matin', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findForPlanning($this->pWeek,6,$filter)];
+        $this->linesPerDay[7] = ['title' => 'Jeudi après-midi', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findForPlanning($this->pWeek,7,$filter)];
 
-        $this->linesPerDay[8] = ['title' => 'Vendredi matin', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $this->pWeek, 'day' => 8])];
-        $this->linesPerDay[9] = ['title' => 'Vendredi après-midi', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findBy(['planningWeek' => $this->pWeek, 'day' => 9])];
+        $this->linesPerDay[8] = ['title' => 'Vendredi matin', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findForPlanning($this->pWeek,8,$filter)];
+        $this->linesPerDay[9] = ['title' => 'Vendredi après-midi', 'lines' => $this->doctrine->getRepository(PlanningLine::class)->findForPlanning($this->pWeek,9,$filter)];
         
     }
     

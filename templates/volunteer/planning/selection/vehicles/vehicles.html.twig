@@ -4,10 +4,14 @@
 </div>
 <div class="modal-body">
 	<div class='row'>
-		{% for vehicle in vehicles %}
-			<div class='col-3 ajax-link-action' action="{{path('app_volunteer_planning_select_vehicle',{'vehicleId':vehicle.id,'pLineId':pLine.id})}}" data-target-spinner='select-vehicle-{{vehicle.id}}' data-spinner-type='2' id='select-vehicle-{{vehicle.id}}'>
-				{% include 'volunteer/planning/selection/vehicles/cell.html.twig' with {'active':(vehicle == pLine.vehicle)?true:false} %}
-			</div>
-		{% endfor %}
+		{% if(vehicles|length) %}
+			{% for vehicle in vehicles %}
+				<div class='col-3 ajax-link-action' action="{{path('app_volunteer_planning_select_vehicle',{'vehicleId':vehicle.id,'pLineId':pLine.id})}}" data-target-spinner='select-vehicle-{{vehicle.id}}' data-spinner-type='2' id='select-vehicle-{{vehicle.id}}'>
+					{% include 'volunteer/planning/selection/vehicles/cell.html.twig' with {'active':(vehicle == pLine.vehicle)?true:false} %}
+				</div>
+			{% endfor %}
+		{% else %}
+			Aucun véhicule pour ce site
+		{% endif %}
 	</div>
 </div>

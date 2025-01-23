@@ -25,7 +25,14 @@ class RecyclerController extends AbstractController
     #[Route('/volunteer/recycler', name: 'app_volunteer_recycler')]
     public function index(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
     {
-        $query = $doctrine->getRepository(Recycler::class)->getPaginationMainQuery('', '');
+        $filter='';
+        if($this->getUser()->getUserIdentifier() == 'stnazaire'){
+            $filter=2;
+        }
+        else if($this->getUser()->getUserIdentifier() == 'vertou'){
+            $filter=1;
+        }
+        $query = $doctrine->getRepository(Recycler::class)->getPaginationMainQuery('', $filter);
 
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
@@ -41,7 +48,7 @@ class RecyclerController extends AbstractController
                     [
                         'pagination' => $pagination,
                         'search' => '',
-                        'filter' => '',
+                        'filter' => $filter,
                         'page' => 1,
                     ]
                 )->getContent(),
@@ -65,7 +72,7 @@ class RecyclerController extends AbstractController
             'controller_name' => self::CONTROLLER_NAME,
             'pagination' => $pagination,
             'search' => '',
-            'filter' => '',
+            'filter' => $filter,
             'page' => 1,
         ]);
     }
@@ -111,7 +118,7 @@ class RecyclerController extends AbstractController
                     )->getContent(),
                     'select-filters'
                 );
-            } else if ($type == 'search') {
+            } else if ($type == 'filter') {
                 $ajaxResponse->addView(
                     $this->render(
                         'volunteer/recycler/component/search.html.twig',

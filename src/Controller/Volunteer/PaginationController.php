@@ -43,21 +43,27 @@ class PaginationController extends AbstractController
         $filter = $request->query->get('filter', '');
         $page = $request->query->getInt('page', 1);
         $className = $request->query->get('className','');
-        if($className=='removals'){
+        if($className=='removals' || $className=='delivery'){
             $filterattach = $request->query->get('filterattach', '');
+			$query = $doctrine->getRepository($tab[$className]['ClassName'])->getPaginationMainQuery($search, $filter, $filterattach);
         }
+		else{
+			$query = $doctrine->getRepository($tab[$className]['ClassName'])->getPaginationMainQuery($search, $filter);
+		}
       
         if($page!=1){
             //on affiche la page précédente
             $page=$page-1;
         }
 
-        $query = $doctrine->getRepository($tab[$className]['ClassName'])->getPaginationMainQuery($search, $filter);
-        
+        $limit=10;
+        if($className == "provider"){
+            $limit=50;
+        }
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
             $page, /*page number*/
-            10 /*limit per page*/
+            $limit /*limit per page*/
         );
 
 
@@ -156,9 +162,13 @@ class PaginationController extends AbstractController
         $filter = $request->query->get('filter', '');
         $page = $request->query->getInt('page', 1);
         $className = $request->query->get('className','');
-        if($className=='removals'){
+        if($className=='removals' || $className=='delivery'){
             $filterattach = $request->query->get('filterattach', '');
+			$query = $doctrine->getRepository($tab[$className]['ClassName'])->getPaginationMainQuery($search, $filter, $filterattach);
         }
+		else{
+			$query = $doctrine->getRepository($tab[$className]['ClassName'])->getPaginationMainQuery($search, $filter);
+		}
         $last = $request->query->getInt('last',1);
         if($page != $last){
             //on affiche la page suivante
@@ -166,11 +176,14 @@ class PaginationController extends AbstractController
            
         }
         
-        $query = $doctrine->getRepository($tab[$className]['ClassName'])->getPaginationMainQuery($search, $filter);
+        $limit=10;
+        if($className == "provider"){
+            $limit=50;
+        }
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
             $page, /*page number*/
-            10 /*limit per page*/
+            $limit /*limit per page*/
         );
 
         $ajaxResponse = new AjaxResponse('volunteer/pagination');

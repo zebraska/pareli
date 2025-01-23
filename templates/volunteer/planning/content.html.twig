@@ -6,6 +6,15 @@
 					<i class="fa-solid fa-calendar-days pr-2"></i>Planning</h1>
 			</div>
 		</div>
+		<div id='select-filters' class='col-2 py-2'>
+			<div class="input-group" style='height:5vh'>
+				<select class="form-control rounded border border-primary ajax-filter-action" style='height:5vh'>
+					<option value='2' data-target-spinner='table-content' action='{{path('app_volunteer_planning_filter',{'filter':'2','pWeekId':pWeek.id})}}' {% if filter == 2 %} selected {% endif %}>Vertou et Saint-Nazaire</option>
+					<option value='0' data-target-spinner='table-content' action='{{path('app_volunteer_planning_filter',{'filter':'0','pWeekId':pWeek.id})}}' {% if filter == 0 %} selected {% endif %}>Vertou</option>
+					<option value='1' data-target-spinner='table-content' action='{{path('app_volunteer_planning_filter',{'filter':'1','pWeekId':pWeek.id})}}' {% if filter == 1 %} selected {% endif %}>Saint-Nazaire</option>
+				</select>
+			</div>
+		</div>
 		{% if 'now' | date('W') != (pWeek.number) or 'now' | date('Y') != pWeek.year %}
 			{% include 'volunteer/planning/currentWeekButton.html.twig' %}
 		{% endif %}
@@ -14,7 +23,7 @@
 	<div class='table-title'>
 		<div class='row row-cols-3 h-100'>
 			<div class='col-3 position-relative h-100'>
-				<button class='btn btn-secondary h-75 position-absolute top-50 start-0 translate-middle-y ajax-link-action pt-1' style="--bs-btn-font-size: 1.5vh;" data-bs-toggle='tooltip' data-bs-title='Semaine précédente' action='{{path('app_volunteer_week_change',{oldMonday:pWeek.mondayDate|date('m-d-Y'),action:'previous'})}}' data-target-spinner='body-interface'>
+				<button class='btn btn-secondary h-75 position-absolute top-50 start-0 translate-middle-y ajax-link-action pt-1' style="--bs-btn-font-size: 1.5vh;" data-bs-toggle='tooltip' data-bs-title='Semaine précédente' action='{{path('app_volunteer_week_change',{oldMonday:pWeek.mondayDate|date('m-d-Y'),action:'previous',filter:filter})}}' data-target-spinner='body-interface'>
 					<i class="fa-solid fa-arrow-left"></i>
 					Précédent
 				</button>
@@ -26,7 +35,7 @@
 				au vendredi
 				{{pWeek.mondayDate|date_modify('+4 day')|date('d')}}/{{pWeek.mondayDate|date_modify('+4 day')|date('m')}}</div>
 			<div class='col-3 position-relative'>
-				<button class='btn btn-secondary h-75 position-absolute top-50 end-0 translate-middle-y ajax-link-action pt-1' style="--bs-btn-font-size: 1.5vh;" data-bs-toggle='tooltip' data-bs-title='Semaine suivante' action='{{path('app_volunteer_week_change',{oldMonday:pWeek.mondayDate|date('m-d-Y'),action:'next'})}}' data-target-spinner='body-interface'>
+				<button class='btn btn-secondary h-75 position-absolute top-50 end-0 translate-middle-y ajax-link-action pt-1' style="--bs-btn-font-size: 1.5vh;" data-bs-toggle='tooltip' data-bs-title='Semaine suivante' action='{{path('app_volunteer_week_change',{oldMonday:pWeek.mondayDate|date('m-d-Y'),action:'next',filter:filter})}}' data-target-spinner='body-interface'>
 					Suivant
 					<i class="fa-solid fa-arrow-right"></i>
 				</button>
@@ -34,7 +43,7 @@
 		</div>
 	</div>
 	<hr/>
-	<div class='table-content'>
+	<div class='table-content' id='table-content'>
 		{% for key, linePerDay in linesPerDay %}
 			<div class='row'>
 				<div class='col-9'>
@@ -42,13 +51,13 @@
 				</div>
 				<div class='col-3 py-2'>
 					<div class="d-grid">
-						<button class='btn btn-secondary ajax-link-action' style='font-size:1.2vh' action='{{path('app_volunteer_planning_add_planning_line',{day:key,lineWeekId:pWeek.id})}}' data-target-spinner='dayLines{{key}}' data-spinner-type='2'>Ajouter une ligne</button>
+						<button class='btn btn-secondary ajax-link-action' style='font-size:1.2vh' action='{{path('app_volunteer_planning_add_planning_line',{day:key,lineWeekId:pWeek.id,filter:filter})}}' data-target-spinner='dayLines{{key}}' data-spinner-type='2'>Ajouter une ligne</button>
 					</div>
 				</div>
 			</div>
 			<hr/>
 			<span id='dayLines{{key}}'>
-				{% include 'volunteer/planning/dayLines.html.twig' with {linePerDay:linePerDay,key:key,pWeek:pWeek} only %}
+				{% include 'volunteer/planning/dayLines.html.twig' with {linePerDay:linePerDay,key:key,pWeek:pWeek,filter:filter} only %}
 			</span>
 		{% endfor %}
 	</div>

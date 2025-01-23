@@ -1,25 +1,23 @@
 <div class="modal-body" id="modal-body">
 	<div class='row'>
-{% if drivers is defined %}
-    {% for driver in drivers %}
-            <div class='col-3 ajax-link-action' action="{{path('app_volunteer_planning_select_driver',{'driverId':driver.id,'pLineId':pLine.id})}}" data-target-spinner='select-driver-{{driver.id}}' data-spinner-type='2' id='select-driver-{{driver.id}}'>
-                    {% include 'volunteer/planning/selection/drivers/cell.html.twig' with {'active':(driver == pLine.driver)?true:false} %}
-            </div>
-    {% endfor %}
-{% else %}
-    {% for companion in companions %}
-            {% set active = false %}
-            {% for sCompanion in pLine.companions %}
-                {% if sCompanion == companion %}
-                    {% set active = true %}
-                {% endif %}
-            {% endfor %}
-			<div class='col-3 ajax-link-action' action="#" data-target-spinner='select-companion-{{companion.id}}' data-spinner-type='2' id='select-companion-{{companion.id}}'>
-				{% include 'volunteer/planning/selection/companions/cell.html.twig' %}
-			</div>
-		{% endfor %}
-{% endif %}
-    
-    	</div>
+		{% if drivers is defined %}
+			{% for driver in drivers %}
+				<div class='col-3 ajax-link-action' action="{{path('app_volunteer_planning_select_driver',{'driverId':driver.id,'pLineId':pLine.id})}}" data-target-spinner='select-driver-{{driver.id}}' data-spinner-type='2' id='select-driver-{{driver.id}}'>
+					{% include 'volunteer/planning/selection/drivers/cell.html.twig' with {'active':(driver == pLine.driver)?true:false} %}
+				</div>
+			{% endfor %}
+		{% else %}
+			{% for companion in companions %}
+				{% set active = false %}
+				{% for sCompanion in pLine.companions %}
+					{% if sCompanion == companion %}
+						{% set active = true %}
+					{% endif %}
+				{% endfor %}
+				<div class='col-3 ajax-link-action' action="#" data-target-spinner='select-companion-{{companion.id}}' data-spinner-type='2' id='select-companion-{{companion.id}}'>
+					{% include 'volunteer/planning/selection/companions/cell.html.twig' %}
+				</div>
+			{% endfor %}
+		{% endif %}
+	</div>
 </div>
-

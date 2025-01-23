@@ -15,10 +15,10 @@
 							Non planifié
 						{% elseif delivery.state == 1 %}
 							<i class="fa-solid fa-calendar-plus text-primary text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':delivery.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
-							Planifié le {{delivery.PlanifiedDate|date('d/m/Y')}}
+							Planifié le {{delivery.datePlanified|date('d/m/Y')}}
 						{% elseif delivery.state == 2 %}
 							<i class="fa-solid fa-calendar-check text-success text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':delivery.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
-							Réalisé le {{delivery.PlanifiedDate|date('d/m/Y')}}
+							Réalisé le {{delivery.datePlanified|date('d/m/Y')}}
 						{% endif %}
 					</div>
 					<div class='col-3 ajax-link-action' style='height:30vh;overflow-y:hidden' action="{{path('app_volunteer_delivery_getform',{'id':delivery.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
@@ -44,7 +44,7 @@
 <div class='row table-bottom pt-1' style='height:5vh'>
 	<div class="precedent col-1 text-center">
 		{% if (page!=1) %}
-			<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'page':page,'className':'delivery'})}}'>
+			<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'filterattach':filterattach,'page':page,'className':'delivery'})}}'>
 				<i class="fa-solid fa-arrow-left text-4"></i>
 			</a>
 		{% endif %}
@@ -56,7 +56,7 @@
 		{% endif %}
 		<select class='form-control border border-dark ajax-filter-action'>
 			{% for i in 1..last %}
-				<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>
+				<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'page','search':search,'filter':filter,'filterattach':filterattach,'page':i})}}' {% if page == i %} selected {% endif %}>
 					Page
 					{{i}}/{{last}}
 				</option>
@@ -65,7 +65,7 @@
 	</div>
 	<div class="suivant col-1 text-center">
 		{% if (page!=last) %}
-			<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'page':page,'className':'delivery','last':last})}}'>
+			<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'filterattach':filterattach,'page':page,'className':'delivery','last':last})}}'>
 				<i class="fa-solid fa-arrow-right text-4"></i>
 			</a>
 		{% endif %}

@@ -15,6 +15,18 @@
 			{{ form_label(form.dateEnd) }}
 			{{ form_widget(form.dateEnd, { 'attr': {'class': 'form-control border border-primary'} }) }}
         </div>
+        <div class='col-6 mb-3'>
+			{{ form_label(form.providerStart) }}
+			{{ form_widget(form.providerStart, { 'attr': {'class': 'form-control border border-primary'} }) }}
+        </div>
+        <div class='col-6 mb-3'>
+			{{ form_label(form.providerEnd) }}
+			{{ form_widget(form.providerEnd, { 'attr': {'class': 'form-control border border-primary'} }) }}
+        </div>
+        <div class='col-12 mb-3'>
+			{{ form_label(form.filterCertificate) }}
+			{{ form_widget(form.filterCertificate, { 'attr': {'class': 'form-control border border-primary'} }) }}
+        </div>
         <div class='col-12 mb-3'>
 			{{ form_label(form.stateFilter) }}
 			{{ form_widget(form.stateFilter, { 'attr': {'class': 'form-control border border-primary'} }) }}

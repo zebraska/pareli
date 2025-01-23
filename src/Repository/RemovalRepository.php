@@ -87,13 +87,23 @@ class RemovalRepository extends ServiceEntityRepository
         return $qb->getQuery();
     }
 
-    public function getAllRemovalsByInterval(\DateTime $dateStart, \DateTime $dateEnd, String $filter = '')
+    public function getAllRemovalsByInterval(\DateTime $dateStart, \DateTime $dateEnd, String $filter = '', String $providerStart, String $providerEnd, bool $filterCertificate)
     {
         $qb = $this->createQueryBuilder('r')
-            ->where('r.dateCreate BETWEEN :dateStart AND :dateEnd')
+            ->innerJoin('r.provider', 'p')
+            ->andWhere('(r.state = 0 AND (r.dateCreate BETWEEN :dateStart AND :dateEnd)) OR (r.state != 0 AND (r.datePlanified BETWEEN :dateStart AND :dateEnd))')
             ->setParameter('dateStart', $dateStart)
             ->setParameter('dateEnd', $dateEnd)
-            ->orderBy('r.dateCreate', 'DESC');
+            ->andWhere('p.name >= :providerStart')
+            ->andWhere('p.name <= :providerEnd')
+            ->setParameter('providerStart', $providerStart)
+            ->setParameter('providerEnd', $providerEnd)
+            ->addOrderBy('r.datePlanified', 'DESC')
+            ->addOrderBy('r.dateCreate', 'DESC');
+
+        if ($filterCertificate) {
+            $qb = $qb->andWhere('p.certificateContactMail IS NOT NULL');
+        }
 
         if ($filter == '1') {
             $qb = $qb->andWhere('r.state=0');
@@ -105,32 +115,19 @@ class RemovalRepository extends ServiceEntityRepository
 
         return $qb->getQuery();
     }
-    // /**
-    //  * @return Removal[] Returns an array of Removal objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Removal
+    public function getPlanningSelection(String $attachment = null): array
     {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
+        $qb = $this->createQueryBuilder('r')->join('r.provider', 'p');
+
+        if ($attachment) {
+            $qb = $qb
+                ->andWhere('p.attachment = :attachment')
+                ->setParameter('attachment', $attachment);
+        }
+
+        return $qb->andWhere('r.state = 0')
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
 }

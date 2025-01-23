@@ -10,6 +10,7 @@ use App\Form\RemovalContainerQuantityType;
 use App\Form\RemovalType;
 use App\Service\Ajax\AjaxResponse;
 use App\Service\Spreadsheet\RemovalDeliveryModel;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -30,8 +31,14 @@ class RemovalsController extends AbstractController
     #[Route('/volunteer/removal', name: 'app_volunteer_removal')]
     public function index(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
     {
-        $query = $doctrine->getRepository(Removal::class)->getPaginationMainQuery('', '', '');
-
+        $filterattach='';
+        if($this->getUser()->getUserIdentifier() == 'stnazaire'){
+            $filterattach=2;
+        }
+        else if($this->getUser()->getUserIdentifier() == 'vertou'){
+            $filterattach=1;
+        }
+        $query = $doctrine->getRepository(Removal::class)->getPaginationMainQuery('', '', $filterattach);
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
@@ -40,10 +47,16 @@ class RemovalsController extends AbstractController
         if (null !== $request->query->get('date1') && null !== $request->query->get('date2') && null !== $request->query->get('completeSwitch')) {
             $dateStart = new \Datetime($request->query->get('date1'));
             $dateEnd = new \Datetime($request->query->get('date2'));
+            $providerStart = $request->query->get('providerStart');
+            $providerEnd = $request->query->get('providerEnd');
+            $filterCertificate = $request->query->get('filterCertificate');
             $stateFilter = $request->query->get('stateFilter');
-            $spreadsheetModel = new RemovalDeliveryModel($doctrine, $dateStart, $dateEnd,$stateFilter);
+            $spreadsheetModel = new RemovalDeliveryModel($doctrine, $dateStart, $dateEnd, $stateFilter,$providerStart,$providerEnd,$filterCertificate);
             if ($request->query->get('completeSwitch')) {
                 $spreadsheetModel->completeSpreadsheet();
+            }
+            else{
+                $spreadsheetModel->shortSpreadsheet();
             }
             $spreadsheet = $spreadsheetModel->getSpreadsheet();
             $writer = new Xlsx($spreadsheet);
@@ -61,7 +74,7 @@ class RemovalsController extends AbstractController
                     [
                         'pagination' => $pagination,
                         'search' => '',
-                        'filterattach' => '',
+                        'filterattach' => $filterattach,
                         'filter' => '',
                         'page' => 1,
                     ]
@@ -85,7 +98,7 @@ class RemovalsController extends AbstractController
             'controller_name' => self::CONTROLLER_NAME,
             'pagination' => $pagination,
             'search' => '',
-            'filterattach' => '',
+            'filterattach' => $filterattach,
             'filter' => '',
             'page' => 1,
         ]);
@@ -442,7 +455,7 @@ class RemovalsController extends AbstractController
     }
 
     #[Route('/volunteer/removal/container/quantity/create/{id}', defaults: ["id" => 0], name: 'app_volunteer_removal_container_quantity_create')]
-    public function containerQuantityCreate(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine,int $id = 0): Response
+    public function containerQuantityCreate(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine, int $id = 0): Response
     {
 
         if ($request->isXmlHttpRequest()) {
@@ -506,7 +519,7 @@ class RemovalsController extends AbstractController
     }
 
     #[Route('/volunteer/removal/container/quantity/delete/{id}', defaults: ["id" => 0], name: 'app_volunteer_removal_container_quantity_delete')]
-    public function containerQuantityDelete(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine,int $id = 0): Response
+    public function containerQuantityDelete(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine, int $id = 0): Response
     {
         if ($request->isXmlHttpRequest()) {
             $ajaxResponse = new AjaxResponse('volunteer/removal');
@@ -577,13 +590,36 @@ class RemovalsController extends AbstractController
             $dateStart = new \DateTime();
             $dateEnd = new \DateTime();
             $dateEnd->modify('+1 week');
-            $defaultData = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'completeSwitch' => false];
+
+            $providers = $doctrine->getRepository(Provider::class)->findBy([], ['name' => 'ASC']);
+            $lastEntity = end($providers);
+
+            $defaultData = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'removalStart' => null, 'removalEnd' => null, 'filterCertificate' => false, 'completeSwitch' => false];
             $form = $this->createFormBuilder($defaultData, [
                 'action' => $this->generateUrl('app_volunteer_removal_spreadsheet_generate'),
                 'attr' => ['class' => 'form-check form-switch', 'style' => 'padding-left: 0']
             ])
                 ->add('dateStart', \Symfony\Component\Form\Extension\Core\Type\DateType::class, ['label' => 'Date de début', 'widget' => 'single_text'])
                 ->add('dateEnd', \Symfony\Component\Form\Extension\Core\Type\DateType::class, ['label' => 'Date de fin', 'widget' => 'single_text'])
+                ->add('providerStart', \Symfony\Bridge\Doctrine\Form\Type\EntityType::class, [
+                    'label' => 'Fournisseur de', 'class' => Provider::class, 'choice_label' => 'name',
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('p')
+                            ->orderBy('p.name', 'ASC');
+                    },
+                ])
+                ->add('providerEnd', \Symfony\Bridge\Doctrine\Form\Type\EntityType::class, [
+                    'label' => 'à', 'class' => Provider::class, 'choice_label' => 'name',
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('p')
+                            ->orderBy('p.name', 'ASC');
+                    },
+                    'data' => $lastEntity,
+                ])
+                ->add('filterCertificate', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, ['label' => 'Uniquement certificat de destruction', 'choices' => [
+                    'Non' => false,
+                    'Oui' => true,
+                ]])
                 ->add('completeSwitch', \Symfony\Component\Form\Extension\Core\Type\CheckboxType::class, [
                     'label' => 'Informations complètes',
                     'label_attr' => ['class' => 'form-check-label ms-2'],
@@ -609,9 +645,20 @@ class RemovalsController extends AbstractController
             if ($form->isSubmitted() and $form->isValid()) {
                 $dateStart = $form->getData()['dateStart'];
                 $dateEnd = $form->getData()['dateEnd'];
+                $providerStart = $form->getData()['providerStart'];
+                $providerEnd = $form->getData()['providerEnd'];
+                $filterCertificate = $form->getData()['filterCertificate'];
                 $completeSwitch = $form->getData()['completeSwitch'];
                 $stateFilter = $form->getData()['stateFilter'];
-                $ajaxResponse->setRedirectTo($this->generateUrl('app_volunteer_removal', ['date1' => $dateStart->format('Y-m-d'), 'date2' => $dateEnd->format('Y-m-d'), 'completeSwitch' => $completeSwitch, 'stateFilter' => $stateFilter]));
+                $ajaxResponse->setRedirectTo($this->generateUrl('app_volunteer_removal', [
+                    'date1' => $dateStart->format('Y-m-d'),
+                    'date2' => $dateEnd->format('Y-m-d'),
+                    'completeSwitch' => $completeSwitch,
+                    'stateFilter' => $stateFilter,
+                    'providerStart' => $providerStart->getName(),
+                    'providerEnd' => $providerEnd->getName(),
+                    'filterCertificate' => $filterCertificate,
+                ]));
             }
             return $ajaxResponse->generateContent();
         }

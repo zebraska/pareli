@@ -1,6 +1,7 @@
 <div class="input-group" style='height:5vh'>
 	<select class="form-control rounded border border-primary ajax-filter-action" style='height:5vh'>
 		<option value='0' data-target-spinner='table-content' action='{{path('app_volunteer_recycler_search',{'type':'filter','search':search,'filter':'0','page':1})}}' {% if filter == 0 %} selected {% endif %}>Tous</option>
-		<option value='1' data-target-spinner='table-content' action='{{path('app_volunteer_recycler_search',{'type':'filter','search':search,'filter':'1','page':1})}}' {% if filter == 1 %} selected {% endif %}>Aucun contenant</option>
+		<option value='1' data-target-spinner='table-content' action='{{path('app_volunteer_recycler_search',{'type':'filter','search':search,'filter':'1','page':1})}}' {% if filter == 1 %} selected {% endif %}>Vertou</option>
+		<option value='2' data-target-spinner='table-content' action='{{path('app_volunteer_recycler_search',{'type':'filter','search':search,'filter':'2','page':1})}}' {% if filter == 2 %} selected {% endif %}>St-Nazaire</option>
 	</select>
 </div>

@@ -25,7 +25,14 @@ class ProviderController extends AbstractController
     #[Route('/volunteer/provider', name: 'app_volunteer_provider')]
     public function index(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
     {
-        $query = $doctrine->getRepository(Provider::class)->getPaginationMainQuery('', '');
+        $filter='';
+        if($this->getUser()->getUserIdentifier() == 'stnazaire'){
+            $filter=2;
+        }
+        else if($this->getUser()->getUserIdentifier() == 'vertou'){
+            $filter=1;
+        }
+        $query = $doctrine->getRepository(Provider::class)->getPaginationMainQuery('', $filter);
 
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
@@ -41,7 +48,7 @@ class ProviderController extends AbstractController
                     [
                         'pagination' => $pagination,
                         'search' => '',
-                        'filter' => '',
+                        'filter' => $filter,
                         'page' => 1,
                     ]
                 )->getContent(),
@@ -64,7 +71,7 @@ class ProviderController extends AbstractController
             'controller_name' => self::CONTROLLER_NAME,
             'pagination' => $pagination,
             'search' => '',
-            'filter' => '',
+            'filter' => $filter,
             'page' => 1,
         ]);
     }
@@ -233,6 +240,7 @@ class ProviderController extends AbstractController
                 'volunteer/provider/modal/comment.html.twig'
             ],
         ];
+
         if ($request->isXmlHttpRequest()) {
             $provider = new Provider();
             if (!is_null($id)) {
@@ -244,7 +252,7 @@ class ProviderController extends AbstractController
             $ajaxResponse = new AjaxResponse('volunteer/provider');
 
             $ajaxResponse->addView(
-                $this->render($forms[$type][1], ['form' => $form->createView()])->getContent(),
+                $this->render($forms[$type][1], ['form' => $form->createView(),'id' => $id])->getContent(),
                 'modal-content'
             );
             $ajaxResponse->setRedirectTo(false);

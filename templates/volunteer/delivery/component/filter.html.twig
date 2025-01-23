@@ -1,8 +1,8 @@
 <div class="input-group" style='height:5vh'>
 	<select class="form-control rounded border border-primary ajax-filter-action" style='height:5vh'>
-		<option value='0' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'filter','search':search,'filter':'0','page':1})}}' {% if filter == 0 %} selected {% endif %}>Tous</option>
-		<option value='1' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'filter','search':search,'filter':'1','page':1})}}' {% if filter == 1 %} selected {% endif %}>A faire</option>
-		<option value='2' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'filter','search':search,'filter':'2','page':1})}}' {% if filter == 2 %} selected {% endif %}>Planifié</option>
-		<option value='3' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'filter','search':search,'filter':'3','page':1})}}' {% if filter == 3 %} selected {% endif %}>Réalisé</option>
+		<option value='0' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'filter','search':search,'filter':'0','filterattach':filterattach,'page':1})}}' {% if filter == 0 %} selected {% endif %}>Tous</option>
+		<option value='1' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'filter','search':search,'filter':'1','filterattach':filterattach,'page':1})}}' {% if filter == 1 %} selected {% endif %}>A faire</option>
+		<option value='2' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'filter','search':search,'filter':'2','filterattach':filterattach,'page':1})}}' {% if filter == 2 %} selected {% endif %}>Planifié</option>
+		<option value='3' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'filter','search':search,'filter':'3','filterattach':filterattach,'page':1})}}' {% if filter == 3 %} selected {% endif %}>Réalisé</option>
 	</select>
 </div>

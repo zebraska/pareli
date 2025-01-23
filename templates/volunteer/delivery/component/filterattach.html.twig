@@ -1,0 +1,7 @@
+<div class="input-group" style='height:5vh'>
+	<select class="form-control rounded border border-primary ajax-filter-action" style='height:5vh'>
+		<option value='0' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'filterattach','search':search,'filter':filter,'filterattach':'0','page':1})}}' {% if filterattach == 0 %} selected {% endif %}>Vertou et Saint-Nazaire</option>
+		<option value='1' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'filterattach','search':search,'filter':filter,'filterattach':'1','page':1})}}' {% if filterattach == 1 %} selected {% endif %}>Vertou</option>
+		<option value='2' data-target-spinner='table-content' action='{{path('app_volunteer_delivery_search',{'type':'filterattach','search':search,'filter':filter,'filterattach':'2','page':1})}}' {% if filterattach == 2 %} selected {% endif %}>Saint-Nazaire</option>
+	</select>
+</div>

@@ -19,6 +19,12 @@ class Vehicle
     #[ORM\Column(type: 'boolean', nullable: true)]
     private $hgv;
 
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    private $attachment;
+
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private $enable;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -51,5 +57,29 @@ class Vehicle
     public function getDisplayName(): ?string
     {
         return ($this->hgv) ? 'PL '.$this->name : $this->name;
+    }
+
+    public function getAttachment(): ?string
+    {
+        return $this->attachment;
+    }
+
+    public function setAttachment(?string $attachment): self
+    {
+        $this->attachment = $attachment;
+
+        return $this;
+    }
+
+    public function getEnable(): ?bool
+    {
+        return $this->enable;
+    }
+
+    public function setEnable(?bool $enable): self
+    {
+        $this->enable = $enable;
+
+        return $this;
     }
 }

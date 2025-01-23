@@ -51,7 +51,7 @@ class DeliveryRepository extends ServiceEntityRepository
     /**
      * @return Query Return dql query for the main vue
      */
-    public function getPaginationMainQuery(String $search = '', String $filter = ''): Query
+    public function getPaginationMainQuery(String $search = '', String $filter = '', string $filterattach = ''): Query
     {
         $qb = $this->createQueryBuilder('d')->join('d.recycler', 'r');
         if ($search != '') {
@@ -66,6 +66,11 @@ class DeliveryRepository extends ServiceEntityRepository
             $qb = $qb->andWhere('d.state=2');
         }
 
+        if ($filterattach == '1') {
+            $qb = $qb->andWhere('r.attachment = :attach')->setParameter('attach', 'Vertou');
+        } elseif ($filterattach == '2') {
+            $qb = $qb->andWhere('r.attachment=:attach')->setParameter('attach', 'Saint-Nazaire');
+        }
 
         return $qb->orderBy('d.dateCreate', 'DESC')
             ->setMaxResults(10)
@@ -76,10 +81,11 @@ class DeliveryRepository extends ServiceEntityRepository
     public function getAllDeliverysByInterval(\DateTime $dateStart, \DateTime $dateEnd, String $filter = '')
     {
         $qb = $this->createQueryBuilder('d')
-            ->where('d.dateCreate BETWEEN :dateStart AND :dateEnd')
+            ->where('(d.state = 0 AND (d.dateCreate BETWEEN :dateStart AND :dateEnd)) OR (d.state != 0 AND (d.datePlanified BETWEEN :dateStart AND :dateEnd))')
             ->setParameter('dateStart', $dateStart)
             ->setParameter('dateEnd', $dateEnd)
-            ->orderBy('d.dateCreate', 'DESC');
+            ->addOrderBy('d.datePlanified', 'DESC')
+            ->addOrderBy('d.dateCreate', 'DESC');
 
         if ($filter == '1') {
             $qb = $qb->andWhere('d.state=0');
@@ -92,32 +98,18 @@ class DeliveryRepository extends ServiceEntityRepository
         return $qb->getQuery();
     }
 
-    // /**
-    //  * @return Delivery[] Returns an array of Delivery objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getPlanningSelection(String $attachment = null): array
     {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('d.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('d')->join('d.recycler', 'r');
 
-    /*
-    public function findOneBySomeField($value): ?Delivery
-    {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
+        if ($attachment) {
+            $qb = $qb
+                ->andWhere('r.attachment = :attachment')
+                ->setParameter('attachment', $attachment);
+        }
+
+        return $qb->andWhere('d.state = 0')
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
 }

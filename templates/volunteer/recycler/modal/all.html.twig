@@ -1,10 +1,10 @@
 {{ form_start(form) }}
 <div class="modal-header">
-{% if id == 0 %}
-	<h5 class="modal-title" id="supplierModalLabel">Ajouter un recyleur</h5>
-{% else %}
-	<h5 class="modal-title" id="supplierModalLabel">Modifier un recyleur</h5>
-{% endif %}
+	{% if id == 0 %}
+		<h5 class="modal-title" id="supplierModalLabel">Ajouter un recyleur</h5>
+	{% else %}
+		<h5 class="modal-title" id="supplierModalLabel">Modifier un recyleur</h5>
+	{% endif %}
 	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <div id='modal-body' class="modal-body p-0 m-0">
@@ -20,18 +20,30 @@
 			{{ form_label(form.address) }}
 			{{ form_widget(form.address, { 'attr': {'class': 'form-control border border-primary'} }) }}
 		</div>
-		<div class='col-6 mb-3'>
+		<div class='col-4 mb-3'>
 			{{ form_label(form.zipCode) }}
 			{{ form_widget(form.zipCode, { 'attr': {'class': 'form-control border border-primary'} }) }}
 		</div>
-		<div class='col-6 mb-3'>
+		<div class='col-4 mb-3'>
 			{{ form_label(form.city) }}
 			{{ form_widget(form.city, { 'attr': {'class': 'form-control border border-primary'} }) }}
 		</div>
+		<div class='col-4 mb-3'>
+			{{ form_label(form.attachment) }}
+			{% if id != 0 %}
+				{{ form_widget(form.attachment, { 'attr': {'class': 'form-control border border-primary'} }) }}
+			{% else %}
+				{% if app.user.username == 'stnazaire' %}
+					{{ form_widget(form.attachment, { 'value': 'Saint-Nazaire','attr': {'class': 'form-control border border-primary'} }) }}
+				{% else %}
+					{{ form_widget(form.attachment, { 'attr': {'class': 'form-control border border-primary'} }) }}
+				{% endif %}
+			{% endif %}
+		</div>
 	</div>
-        <hr/>
-        <div class='row'>
-                <p>
+	<hr/>
+	<div class='row'>
+		<p>
 			<b>Interlocuteur commercial</b>
 		</p>
 		<div class='col-4 mb-3'>
@@ -46,10 +58,10 @@
 			{{ form_label(form.commercialContactMail) }}
 			{{ form_widget(form.commercialContactMail, { 'attr': {'class': 'form-control border border-primary'} }) }}
 		</div>
-        </div>
-        <hr/>
-        <div class='row'>
-                <p>
+	</div>
+	<hr/>
+	<div class='row'>
+		<p>
 			<b>Autre interlocuteur</b>
 		</p>
 		<div class='col-3 mb-3'>
@@ -60,7 +72,7 @@
 			{{ form_label(form.contactTelOne) }}
 			{{ form_widget(form.contactTelOne, { 'attr': {'class': 'form-control border border-primary'} }) }}
 		</div>
-                <div class='col-3 mb-3'>
+		<div class='col-3 mb-3'>
 			{{ form_label(form.contactTelTwo) }}
 			{{ form_widget(form.contactTelTwo, { 'attr': {'class': 'form-control border border-primary'} }) }}
 		</div>
@@ -68,8 +80,8 @@
 			{{ form_label(form.contactMail) }}
 			{{ form_widget(form.contactMail, { 'attr': {'class': 'form-control border border-primary'} }) }}
 		</div>
-        </div>
-        
+	</div>
+
 </div>
 <hr/>
 <div class="row py-2">

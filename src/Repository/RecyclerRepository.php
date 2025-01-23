@@ -58,6 +58,14 @@ class RecyclerRepository extends ServiceEntityRepository
             $qb = $qb->andWhere('r.name LIKE :search OR r.city LIKE :search')->setParameter('search', '%'.$search.'%');
         }
 
+        if ($filter=='1') {
+            $qb = $qb->andWhere('r.attachment = :attachment')->setParameter('attachment', 'Vertou');
+        }
+
+        if ($filter=='2') {
+            $qb = $qb->andWhere('r.attachment = :attachment')->setParameter('attachment', 'Saint-Nazaire');
+        }
+
         return $qb->orderBy('r.name', 'ASC')
             ->setMaxResults(10)
             ->getQuery();

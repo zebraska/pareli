@@ -16,20 +16,14 @@
 									Non planifié
 								{% elseif removal.state == 1 %}
 									<i class="fa-solid fa-calendar-plus text-primary text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':removal.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
-									Planifié le {{removal.PlanifiedDate|date('d/m/Y')}}
+									Planifié le {{removal.datePlanified|date('d/m/Y')}}
 								{% elseif removal.state == 2 %}
 									<i class="fa-solid fa-calendar-check text-success text-3 mt-3 ajax-link-action" action="{{path('app_volunteer_provider_delete',{'id':removal.id,'page':page,'search':search,'filter':filter})}}" data-target-spinner='modal-content' data-spinner-type='2'></i>
-									Réalisé le {{removal.PlanifiedDate|date('d/m/Y')}}<br/>
+									Réalisé le {{removal.datePlanified|date('d/m/Y')}}<br/>
 									Poids:
 									{{removal.weight}}
 									Kg
 								{% endif %}
-							</div>
-							<div class='col-5 ajax-link-action' style='height:30vh;overflow-y:hidden' action="{{path('app_volunteer_removal_getform',{'id':removal.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
-								{{removal.comment|nl2br}}
-								<span class='table-content-line-edit justify-content-right'>
-									<i class="fa-solid fa-pen-to-square"></i>
-								</span>
 							</div>
 
 							<div class='col-4 ajax-link-action' action="{{path('app_volunteer_removal_getform',{'id':removal.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
@@ -40,6 +34,13 @@
 								({{removal.provider.attachment}})<br/>
 								Enlèvements
 								{{removal.provider.isRegular?'réguliers':'ponctuels'}}<br/>
+								<span class='table-content-line-edit justify-content-right'>
+									<i class="fa-solid fa-pen-to-square"></i>
+								</span>
+							</div>
+
+							<div class='col-5 ajax-link-action' style='height:30vh;overflow-y:hidden' action="{{path('app_volunteer_removal_getform',{'id':removal.id})}}" data-target-spinner='modal-content' data-spinner-type='2' data-bs-toggle="modal" data-bs-target="#supplierModal">
+								{{removal.comment|nl2br}}
 								<span class='table-content-line-edit justify-content-right'>
 									<i class="fa-solid fa-pen-to-square"></i>
 								</span>
@@ -59,7 +60,7 @@
 <div class='row table-bottom pt-1' style='height:5vh'>
 	<div class="precedent col-1 text-center">
 		{% if (page!=1) %}
-			<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'page':page,'className':'removals'})}}'>
+			<a href='{{path('app_volunteer_pagination_left',{'type':'page','search':search,'filter':filter,'filterattach':filterattach,'page':page,'className':'removals'})}}'>
 				<i class="fa-solid fa-arrow-left text-4"></i>
 			</a>
 		{% endif %}
@@ -71,7 +72,7 @@
 		{% endif %}
 		<select style='height:3vh' class='form-control border border-dark ajax-filter-action'>
 			{% for i in 1..last %}
-				<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_removal_search',{'type':'page','search':search,'filter':filter,'page':i})}}' {% if page == i %} selected {% endif %}>
+				<option style='height:3vh;font-size:1vh' value='1' data-target-spinner='table-content' action='{{path('app_volunteer_removal_search',{'type':'page','search':search,'filter':filter,'filterattach':filterattach,'page':i})}}' {% if page == i %} selected {% endif %}>
 					Page
 					{{i}}/{{last}}
 				</option>
@@ -82,7 +83,7 @@
 
 	<div class="suivant col-1 text-center">
 		{% if (page!=last) %}
-			<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'page':page,'className':'removals','last':last})}}'>
+			<a href='{{path('app_volunteer_pagination_right',{'type':'page','search':search,'filter':filter,'filterattach':filterattach,'page':page,'className':'removals','last':last})}}'>
 				<i class="fa-solid fa-arrow-right text-4"></i>
 			</a>
 		{% endif %}

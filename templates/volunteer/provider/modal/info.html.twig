@@ -27,7 +27,15 @@
 		</div>
 		<div class='col-4 mb-3'>
 			{{ form_label(form.attachment) }}
-			{{ form_widget(form.attachment, { 'attr': {'class': 'form-control border border-primary'} }) }}
+			{% if id != 0 %}
+				{{ form_widget(form.attachment, { 'attr': {'class': 'form-control border border-primary'} }) }}
+			{% else %}
+				{% if app.user.username == 'stnazaire' %}
+					{{ form_widget(form.attachment, { 'value': 'Saint-Nazaire','attr': {'class': 'form-control border border-primary'} }) }}
+				{% else %}
+					{{ form_widget(form.attachment, { 'attr': {'class': 'form-control border border-primary'} }) }}
+				{% endif %}
+			{% endif %}
 		</div>
 		<div class='col-8 mb-3'>
 			{{ form_label(form.isRegular) }}

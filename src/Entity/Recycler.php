@@ -46,6 +46,9 @@ class Recycler
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $contactMail;
 
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    private $attachment;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -186,5 +189,17 @@ class Recycler
     public function getDisplayAddress(): string
     {
         return $this->address."\n".$this->city.' '.$this->zipCode;
+    }
+
+    public function getAttachment(): ?string
+    {
+        return $this->attachment;
+    }
+
+    public function setAttachment(?string $attachment): self
+    {
+        $this->attachment = $attachment;
+
+        return $this;
     }
 }

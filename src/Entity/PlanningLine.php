@@ -42,6 +42,9 @@ class PlanningLine
     #[ORM\Column(type: 'boolean')]
     private $valid;
 
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    private $attachment;
+
     public function __construct()
     {
         $this->deliverys = new ArrayCollection();
@@ -208,5 +211,31 @@ class PlanningLine
         foreach($this->deliverys as $delivery){
             $delivery->setState(0);
         }
+    }
+
+    public function getAttachment(): ?string
+    {
+        return $this->attachment;
+    }
+
+    public function setAttachment(?string $attachment): self
+    {
+        $this->attachment = $attachment;
+
+        return $this;
+    }
+
+    public function getDayName(): string
+    {
+        $daysOfWeek = array(
+            0 => 'Lundi',
+            1 => 'Mardi',
+            2 => 'Mercredi',
+            3 => 'Jeudi',
+            4 => 'Vendredi',
+            5 => 'Samedi',
+            6 => 'Dimanche'
+        );    
+        return $daysOfWeek[floor($this->day/2)];
     }
 }

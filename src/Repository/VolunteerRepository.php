@@ -47,56 +47,80 @@ class VolunteerRepository extends ServiceEntityRepository
         }
     }
 
-    public function findVolunteersForSelection()
+    public function findVolunteersForSelection($attachment = null): array
     {
-        return $this->createQueryBuilder('v')
-            ->orderBy('v.lastname', 'ASC')
+        $qb = $this->createQueryBuilder('v')
+            ->orderBy('v.lastname', 'ASC');
+
+        if ($attachment) {
+            $qb = $qb->andWhere('v.attachment = :attachment')
+                ->setParameter('attachment', $attachment);
+        }
+        return $qb->andWhere('v.enable = true')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
-    public function findDriversForSelection()
+    public function findDriversForSelection(string $attachment = null)
     {
-        return $this->createQueryBuilder('v')
+        $qb = $this->createQueryBuilder('v')
             ->andWhere('v.type = :valPL OR v.type = :valVL')
             ->setParameter('valPL', 'PL')
-            ->setParameter('valVL', 'VL')
+            ->setParameter('valVL', 'VL');
+
+        if ($attachment) {
+            $qb = $qb->andWhere('v.attachment = :attachment')
+                ->setParameter('attachment', $attachment);
+        }
+
+        return $qb->andWhere('v.enable = 1')
             ->orderBy('v.lastname', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    
-    public function findHgvDriversForSelection()
+
+    public function findHgvDriversForSelection(string $attachment = null)
     {
-        return $this->createQueryBuilder('v')
+        $qb = $this->createQueryBuilder('v')
             ->andWhere('v.type = :valPL')
-            ->setParameter('valPL', 'PL')
+            ->setParameter('valPL', 'PL');
+
+        if ($attachment) {
+            $qb = $qb->andWhere('v.attachment = :attachment')
+                ->setParameter('attachment', $attachment);
+        }
+
+        return $qb->andWhere('v.enable = 1')
             ->orderBy('v.lastname', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    
-    
-    public function getVolunteerByName(String $search = '', String $type = '')
+
+
+    public function getVolunteerByName(String $attachment, String $search = '', String $type = '')
     {
-        $qb = $this->createQueryBuilder('v');
-        if ($type === 'driver'){
-                $qb = $qb->andWhere('v.type = :valPL OR v.type = :valVL')
-                      ->setParameter('valPL', 'PL')
-                      ->setParameter('valVL', 'VL');
-            }
-        if ($type === 'hgvDriver'){
-                $qb = $qb->andWhere('v.type = :valPL')
-                      ->setParameter('valPL', 'PL'); 
-            }
-        if ($search!='') {
+        $qb = $this->createQueryBuilder('v')
+            ->andWhere('v.enable = true');
+
+        if ($attachment != "Tous") {
+            $qb = $qb->andWhere('v.attachment = :attachment')
+            ->setParameter('attachment', $attachment);
+        }
+        
+        if ($type === 'driver') {
+            $qb = $qb->andWhere('v.type = :valPL OR v.type = :valVL')
+                ->setParameter('valPL', 'PL')
+                ->setParameter('valVL', 'VL');
+        }
+        if ($type === 'hgvDriver') {
+            $qb = $qb->andWhere('v.type = :valPL')
+                ->setParameter('valPL', 'PL');
+        }
+        if ($search != '') {
             $searchArray = explode(' ', $search);
-            foreach ($searchArray as $searchElement){
-                if ($searchElement !== ' '){
-                    $qb = $qb->andWhere('v.firstname LIKE :search OR v.lastname LIKE :search')->setParameter('search', '%'.$searchElement.'%');
+            foreach ($searchArray as $searchElement) {
+                if ($searchElement !== ' ') {
+                    $qb = $qb->andWhere('v.firstname LIKE :search OR v.lastname LIKE :search')->setParameter('search', '%' . $searchElement . '%');
                 }
             }
         }

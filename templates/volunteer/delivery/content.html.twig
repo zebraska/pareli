@@ -7,18 +7,21 @@
 				</button>
 			</div>
 		</div>
-		<div class='col-8 pt-2'>
+		<div class='col-6 pt-2'>
 			<div id='input-search' class="input-group">
 				{% include 'volunteer/delivery/component/search.html.twig' %}
 			</div>
 		</div>
-		
-		<div class='col-2 py-2'>
+
+		<div class='col-4 py-2'>
 			<div class='row'>
-				<div id='select-filters' class='col-9'>
+				<div id='select-filtersattach' class='col-4'>
+					{% include 'volunteer/delivery/component/filterattach.html.twig' %}
+				</div>
+				<div id='select-filters' class='col-4'>
 					{% include 'volunteer/delivery/component/filter.html.twig' %}
 				</div>
-				<div class='col-3 d-grid'>
+				<div class='col-4 d-grid'>
 					<button action="{{path('app_volunteer_delivery')}}" data-bs-toggle='tooltip' data-bs-title='Réinialiser les filtres' data-bs-placement="top" data-target-spinner='body-interface' data-spinner-type='1' class='btn btn-dark ajax-link-action'>
 						<i class="fa-solid fa-rotate-right text-2 mt-1"></i>
 					</button>
